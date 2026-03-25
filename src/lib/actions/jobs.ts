@@ -44,6 +44,7 @@ export async function createJob(
     salary_type: formData.get("salary_type") as string,
     contact_phone: formData.get("contact_phone") as string,
     contact_name: (formData.get("contact_name") as string) || undefined,
+    required_skill: (formData.get("required_skill") as string) || undefined,
     description: (formData.get("description") as string) || undefined,
     is_urgent: formData.get("is_urgent") === "on",
   };
@@ -91,6 +92,7 @@ export async function createJob(
     daily_rate,
     contact_phone: validated.contact_phone,
     contact_name: validated.contact_name || null,
+    required_skill: validated.required_skill || null,
     status: "active",
     is_urgent: validated.is_urgent,
   });

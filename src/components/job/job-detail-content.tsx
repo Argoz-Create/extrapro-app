@@ -62,6 +62,16 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
           <p className="mt-4 text-2xl font-bold text-primary">{salary}</p>
         )}
 
+        {/* Required skill */}
+        {job.required_skill && (
+          <div className="mt-4">
+            <h2 className="text-sm font-semibold text-text-primary mb-1">
+              {t("job.requiredSkill")}
+            </h2>
+            <p className="text-sm text-text-secondary">{job.required_skill}</p>
+          </div>
+        )}
+
         {/* Description */}
         {job.description && (
           <div className="mt-4">
