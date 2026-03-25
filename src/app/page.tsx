@@ -7,10 +7,17 @@ import { JobFeed } from "@/components/job/job-feed";
 import { getActiveJobs } from "@/lib/queries/jobs";
 import { getProfessions } from "@/lib/queries/professions";
 import { getCities } from "@/lib/queries/cities";
-import type { JobAdWithRelations, Profession, City } from "@/lib/types/database";
+import { getRegions } from "@/lib/queries/regions";
+import { getDepartments } from "@/lib/queries/departments";
+import type { JobAdWithRelations, Profession, City, Region, Department } from "@/lib/types/database";
 
 type HomeProps = {
-  searchParams: Promise<{ profession?: string; city?: string }>;
+  searchParams: Promise<{
+    profession?: string;
+    city?: string;
+    region?: string;
+    department?: string;
+  }>;
 };
 
 export default async function Home({ searchParams }: HomeProps) {
@@ -19,17 +26,23 @@ export default async function Home({ searchParams }: HomeProps) {
   const filters = {
     profession_id: params.profession || undefined,
     city_id: params.city || undefined,
+    region_id: params.region || undefined,
+    department_id: params.department || undefined,
   };
 
   let jobs: JobAdWithRelations[] = [];
   let professions: Profession[] = [];
   let cities: City[] = [];
+  let regions: Region[] = [];
+  let departments: Department[] = [];
 
   try {
-    [jobs, professions, cities] = await Promise.all([
+    [jobs, professions, cities, regions, departments] = await Promise.all([
       getActiveJobs(filters),
       getProfessions(),
       getCities(),
+      getRegions(),
+      getDepartments(),
     ]);
   } catch {
     // Supabase not configured or unreachable — render with empty data
@@ -46,9 +59,13 @@ export default async function Home({ searchParams }: HomeProps) {
           <JobFilters
             professions={professions}
             cities={cities}
+            regions={regions}
+            departments={departments}
             currentFilters={{
               profession: params.profession,
               city: params.city,
+              region: params.region,
+              department: params.department,
             }}
           />
         </Suspense>

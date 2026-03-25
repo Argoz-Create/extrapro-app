@@ -18,11 +18,20 @@ export interface Region {
   created_at: string;
 }
 
+export interface Department {
+  id: string;
+  name: string;
+  code: string;
+  region_id: string;
+  created_at: string;
+}
+
 export interface City {
   id: string;
   name: string;
   postal_code: string;
   region_id: string;
+  department_id: string | null;
   created_at: string;
 }
 
@@ -70,6 +79,7 @@ export interface JobAd {
   daily_rate: number | null;
   contact_phone: string;
   contact_name: string | null;
+  required_skill: string | null;
   status: JobStatus;
   is_urgent: boolean;
   view_count: number;

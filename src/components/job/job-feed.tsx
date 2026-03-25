@@ -8,7 +8,12 @@ import type { JobAdWithRelations } from "@/lib/types/database";
 
 type JobFeedProps = {
   initialJobs: JobAdWithRelations[];
-  filters: { profession_id?: string; city_id?: string };
+  filters: {
+    profession_id?: string;
+    city_id?: string;
+    department_id?: string;
+    region_id?: string;
+  };
 };
 
 export function JobFeed({ initialJobs, filters }: JobFeedProps) {
@@ -33,14 +38,34 @@ export function JobFeed({ initialJobs, filters }: JobFeedProps) {
       const supabase = createClient();
       let query = supabase
         .from("job_ads")
-        .select("*, professions(name_fr, icon), cities(name)")
+        .select("*, professions(name_fr, icon), cities(name, department_id, region_id)")
         .eq("status", "active")
         .order("published_at", { ascending: false })
         .lt("published_at", lastJob.published_at)
         .limit(20);
 
       if (filters.profession_id) query = query.eq("profession_id", filters.profession_id);
-      if (filters.city_id) query = query.eq("city_id", filters.city_id);
+
+      if (filters.city_id) {
+        query = query.eq("city_id", filters.city_id);
+      } else if (filters.department_id || filters.region_id) {
+        // For department/region filtering, fetch matching city IDs
+        const cityQuery = supabase.from("cities").select("id");
+        if (filters.department_id) {
+          cityQuery.eq("department_id", filters.department_id);
+        } else if (filters.region_id) {
+          cityQuery.eq("region_id", filters.region_id);
+        }
+        const { data: cityData } = await cityQuery;
+        if (cityData && cityData.length > 0) {
+          const cityIds = cityData.map((c: { id: string }) => c.id);
+          query = query.in("city_id", cityIds);
+        } else {
+          setHasMore(false);
+          setLoading(false);
+          return;
+        }
+      }
 
       const { data, error } = await query;
       if (error) throw error;

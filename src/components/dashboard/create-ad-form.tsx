@@ -110,6 +110,12 @@ export function CreateAdForm({ professions, cities }: CreateAdFormProps) {
         placeholder="Jean Dupont"
       />
 
+      <Input
+        label={t("createAd.requiredSkill")}
+        name="required_skill"
+        placeholder={t("createAd.requiredSkillPlaceholder")}
+      />
+
       <Textarea
         label={t("createAd.description")}
         name="description"

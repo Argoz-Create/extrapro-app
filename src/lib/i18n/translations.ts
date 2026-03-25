@@ -34,7 +34,14 @@ export const translations = {
 
     // Filters
     "filter.allProfessions": "Tous les metiers",
+    "filter.allRegions": "Toutes les regions",
+    "filter.allDepartments": "Tous les departements",
     "filter.allCities": "Toutes les villes",
+
+    // Job card fields
+    "job.location": "Ville",
+    "job.position": "Poste",
+    "job.requiredSkill": "Competence requise",
 
     // Auth
     "auth.login": "Connexion",
@@ -109,6 +116,8 @@ export const translations = {
     "createAd.salaryType": "Type",
     "createAd.contactPhone": "Telephone de contact",
     "createAd.contactName": "Nom du contact (optionnel)",
+    "createAd.requiredSkill": "Competence requise (optionnel)",
+    "createAd.requiredSkillPlaceholder": "Ex: 3 ans d'experience en cuisine, HACCP...",
     "createAd.description": "Description (optionnel)",
     "createAd.descriptionPlaceholder": "Details sur le poste, tenue, experience souhaitee...",
     "createAd.urgent": "Marquer comme urgent",
@@ -183,7 +192,14 @@ export const translations = {
 
     // Filters
     "filter.allProfessions": "All professions",
+    "filter.allRegions": "All regions",
+    "filter.allDepartments": "All departments",
     "filter.allCities": "All cities",
+
+    // Job card fields
+    "job.location": "Location",
+    "job.position": "Position",
+    "job.requiredSkill": "Required skill",
 
     // Auth
     "auth.login": "Log in",
@@ -258,6 +274,8 @@ export const translations = {
     "createAd.salaryType": "Type",
     "createAd.contactPhone": "Contact phone",
     "createAd.contactName": "Contact name (optional)",
+    "createAd.requiredSkill": "Required skill (optional)",
+    "createAd.requiredSkillPlaceholder": "E.g.: 3 years cooking experience, HACCP...",
     "createAd.description": "Description (optional)",
     "createAd.descriptionPlaceholder": "Details about the position, dress code, experience required...",
     "createAd.urgent": "Mark as urgent",

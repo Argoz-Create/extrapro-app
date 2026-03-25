@@ -30,9 +30,26 @@ export function JobCard({ job }: JobCardProps) {
           {job.is_urgent && <Badge variant="urgent">{t("job.urgent")}</Badge>}
         </div>
 
+        {/* Location, Position, Required Skill */}
+        <div className="mt-2 space-y-1">
+          <div className="flex items-center gap-2 text-sm text-text-secondary">
+            <span className="font-medium text-text-tertiary">{t("job.location")}:</span>
+            <span>{"\u{1F4CD}"} {job.cities.name}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-text-secondary">
+            <span className="font-medium text-text-tertiary">{t("job.position")}:</span>
+            <span>{job.professions.icon} {job.professions.name_fr}</span>
+          </div>
+          {job.required_skill && (
+            <div className="flex items-center gap-2 text-sm text-text-secondary">
+              <span className="font-medium text-text-tertiary">{t("job.requiredSkill")}:</span>
+              <span>{job.required_skill}</span>
+            </div>
+          )}
+        </div>
+
         {/* Meta info */}
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-secondary">
-          <span>{"\u{1F4CD}"} {job.cities.name}</span>
           <span>{"\u{1F4C5}"} {formatDate(job.work_date)}</span>
           <span>{"\u23F0"} {formatTimeRange(job.start_time, job.end_time)}</span>
         </div>
