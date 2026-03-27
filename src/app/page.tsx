@@ -2,9 +2,11 @@ import { Suspense } from "react";
 import { TopBar } from "@/components/layout/top-bar";
 import { Footer } from "@/components/layout/footer";
 import { SolidarityBanner } from "@/components/layout/solidarity-banner";
+import { HeroSection } from "@/components/layout/hero-section";
 import { JobFilters } from "@/components/job/job-filters";
 import { JobFeed } from "@/components/job/job-feed";
-import { getActiveJobs } from "@/lib/queries/jobs";
+import { ListingsHeader } from "@/components/job/listings-header";
+import { getActiveJobs, getActiveJobCount } from "@/lib/queries/jobs";
 import { getProfessions } from "@/lib/queries/professions";
 import { getCities } from "@/lib/queries/cities";
 import { getRegions } from "@/lib/queries/regions";
@@ -35,14 +37,16 @@ export default async function Home({ searchParams }: HomeProps) {
   let cities: City[] = [];
   let regions: Region[] = [];
   let departments: Department[] = [];
+  let totalCount = 0;
 
   try {
-    [jobs, professions, cities, regions, departments] = await Promise.all([
+    [jobs, professions, cities, regions, departments, totalCount] = await Promise.all([
       getActiveJobs(filters),
       getProfessions(),
       getCities(),
       getRegions(),
       getDepartments(),
+      getActiveJobCount(),
     ]);
   } catch {
     // Supabase not configured or unreachable — render with empty data
@@ -52,6 +56,7 @@ export default async function Home({ searchParams }: HomeProps) {
     <div className="min-h-screen bg-background">
       <TopBar />
       <SolidarityBanner />
+      <HeroSection jobCount={totalCount} />
 
       <main className="mx-auto max-w-lg px-4 py-4">
         {/* Filters */}
@@ -70,8 +75,11 @@ export default async function Home({ searchParams }: HomeProps) {
           />
         </Suspense>
 
+        {/* Listings header */}
+        <ListingsHeader count={jobs.length} />
+
         {/* Job feed */}
-        <div className="mt-4">
+        <div className="mt-2">
           <JobFeed initialJobs={jobs} filters={filters} />
         </div>
       </main>
