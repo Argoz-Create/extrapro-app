@@ -145,16 +145,19 @@ export async function toggleJobStatus(
   revalidatePath("/");
 }
 
-export async function confirmHire(jobAdId: string) {
+export async function confirmHire(jobAdId: string): Promise<{ error: string | null }> {
   const supabase = await createClient();
   const { error } = await supabase
     .from("job_ads")
     .update({ hire_confirmed: true, status: "filled" })
     .eq("id", jobAdId);
 
-  if (error) throw error;
+  if (error) {
+    return { error: "Erreur lors de la confirmation. Veuillez reessayer." };
+  }
 
   // The DB trigger generate_donation_on_hire handles donation creation
   revalidatePath("/dashboard");
   revalidatePath("/");
+  return { error: null };
 }
