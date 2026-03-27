@@ -16,7 +16,7 @@ export async function getActiveJobs(
   const supabase = await createClient();
   let query = supabase
     .from("job_ads")
-    .select("*, professions(name_fr, icon), cities(name, department_id, region_id)")
+    .select("*, professions(name_fr, icon), cities(name, department_id, region_id), employers(company_name, contact_name)")
     .eq("status", "active")
     .order("published_at", { ascending: false })
     .limit(limit);
