@@ -147,6 +147,17 @@ export const translations = {
     "about.partnerName": "Les Restos du Coeur",
     "about.partnerText": "Fondes par Coluche en 1985, Les Restos du Coeur aident les personnes demunies en leur distribuant des repas et en leur offrant un accompagnement social. Grace a EXTRAPRO, chaque recrutement contribue a cette belle mission.",
 
+    // Landing page
+    "landing.headline": "Trouvez votre prochain extra en restauration",
+    "landing.subheadline": "Parcourez les offres disponibles librement, sans inscription. Appelez directement l'employeur.",
+    "landing.activeListings": "{count} annonces disponibles",
+    "landing.step1": "Parcourez",
+    "landing.step2": "Appelez",
+    "landing.step3": "Travaillez",
+    "landing.employerCta": "Vous recrutez ? Espace Pro",
+    "landing.noLoginRequired": "Aucune inscription requise pour consulter les annonces",
+    "landing.availableListings": "Annonces disponibles",
+
     // 404
     "notFound.title": "Page introuvable",
     "notFound.message": "La page que vous recherchez n'existe pas ou a ete deplacee.",
@@ -304,6 +315,17 @@ export const translations = {
     "about.partnerTitle": "Partner",
     "about.partnerName": "Les Restos du Coeur",
     "about.partnerText": "Founded by Coluche in 1985, Les Restos du Coeur help those in need by distributing meals and providing social support. Thanks to EXTRAPRO, every hire contributes to this wonderful mission.",
+
+    // Landing page
+    "landing.headline": "Find your next restaurant & hospitality gig",
+    "landing.subheadline": "Browse available listings freely, no sign-up needed. Call the employer directly.",
+    "landing.activeListings": "{count} listings available",
+    "landing.step1": "Browse",
+    "landing.step2": "Call",
+    "landing.step3": "Work",
+    "landing.employerCta": "Hiring? Pro Area",
+    "landing.noLoginRequired": "No sign-up required to view listings",
+    "landing.availableListings": "Available listings",
 
     // 404
     "notFound.title": "Page not found",
