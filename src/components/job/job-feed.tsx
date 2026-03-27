@@ -38,7 +38,7 @@ export function JobFeed({ initialJobs, filters }: JobFeedProps) {
       const supabase = createClient();
       let query = supabase
         .from("job_ads")
-        .select("*, professions(name_fr, icon), cities(name, department_id, region_id)")
+        .select("*, professions(name_fr, icon), cities(name, department_id, region_id), employers(company_name, contact_name)")
         .eq("status", "active")
         .order("published_at", { ascending: false })
         .lt("published_at", lastJob.published_at)

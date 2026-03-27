@@ -30,44 +30,56 @@ export function JobCard({ job }: JobCardProps) {
           {job.is_urgent && <Badge variant="urgent">{t("job.urgent")}</Badge>}
         </div>
 
-        {/* Location, Position, Required Skill */}
-        <div className="mt-2 space-y-1">
+        <div className="mt-3 space-y-1.5">
+          {/* 1. Ville / City */}
           <div className="flex items-center gap-2 text-sm text-text-secondary">
+            <span className="flex-shrink-0">{"\u{1F4CD}"}</span>
             <span className="font-medium text-text-tertiary">{t("job.location")}:</span>
-            <span>{"\u{1F4CD}"} {job.cities.name}</span>
+            <span>{job.cities.name}</span>
           </div>
+
+          {/* 2. Poste / Position */}
           <div className="flex items-center gap-2 text-sm text-text-secondary">
+            <span className="flex-shrink-0">{job.professions.icon}</span>
             <span className="font-medium text-text-tertiary">{t("job.position")}:</span>
-            <span>{job.professions.icon} {job.professions.name_fr}</span>
+            <span>{job.professions.name_fr}</span>
           </div>
+
+          {/* 3. Competence requise / Required skill */}
           {job.required_skill && (
             <div className="flex items-center gap-2 text-sm text-text-secondary">
+              <span className="flex-shrink-0">{"\u{1F3AF}"}</span>
               <span className="font-medium text-text-tertiary">{t("job.requiredSkill")}:</span>
               <span>{job.required_skill}</span>
             </div>
           )}
+
+          {/* 4. Date, Heure et Emplacement */}
+          <div className="flex items-center gap-2 text-sm text-text-secondary">
+            <span className="flex-shrink-0">{"\u{1F4C5}"}</span>
+            <span>
+              {formatDate(job.work_date)} {"\u00B7"} {formatTimeRange(job.start_time, job.end_time)} {"\u00B7"} {job.cities.name}
+            </span>
+          </div>
+
+          {/* 5. Salaire */}
+          {salary && (
+            <div className="flex items-center gap-2">
+              <span className="flex-shrink-0">{"\u{1F4B0}"}</span>
+              <span className="text-lg font-bold text-primary">{salary}</span>
+            </div>
+          )}
         </div>
-
-        {/* Meta info */}
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-secondary">
-          <span>{"\u{1F4C5}"} {formatDate(job.work_date)}</span>
-          <span>{"\u23F0"} {formatTimeRange(job.start_time, job.end_time)}</span>
-        </div>
-
-        {/* Salary */}
-        {salary && (
-          <p className="mt-2 text-xl font-bold text-primary">{salary}</p>
-        )}
-
-        {/* Solidarity message */}
-        <p className="mt-2 text-xs text-primary">
-          {t("solidarity.message")}
-        </p>
       </Link>
 
-      {/* Call button - outside the Link to prevent navigation */}
+      {/* 6. CTA: phone number + employer/recruiter name */}
       <div className="px-4 pb-4 pt-2">
-        <CallButton phone={job.contact_phone} jobAdId={job.id} />
+        <CallButton
+          phone={job.contact_phone}
+          jobAdId={job.id}
+          contactName={job.contact_name}
+          companyName={job.employers?.company_name}
+        />
       </div>
     </Card>
   );

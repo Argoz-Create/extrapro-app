@@ -96,6 +96,7 @@ export interface JobAd {
 export interface JobAdWithRelations extends JobAd {
   professions: Pick<Profession, "name_fr" | "icon">;
   cities: Pick<City, "name">;
+  employers?: Pick<Employer, "company_name" | "contact_name">;
 }
 
 export interface Donation {
