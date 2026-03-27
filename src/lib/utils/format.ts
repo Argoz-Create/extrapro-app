@@ -16,11 +16,20 @@ export function formatTimeRange(start: string, end: string): string {
 
 export function formatSalary(
   hourlyRate: number | null,
-  dailyRate: number | null
+  dailyRate: number | null,
+  flatRate?: number | null
 ): string {
   if (hourlyRate) return `${hourlyRate}\u20AC/h`;
   if (dailyRate) return `${dailyRate}\u20AC/jour`;
+  if (flatRate) return `${flatRate}\u20AC (forfait)`;
   return "";
+}
+
+export function formatDateRange(startDate: string, endDate: string | null): string {
+  const start = formatDate(startDate);
+  if (!endDate || endDate === startDate) return start;
+  const end = formatDate(endDate);
+  return `${start} \u2192 ${end}`;
 }
 
 export function formatCurrency(amount: number): string {

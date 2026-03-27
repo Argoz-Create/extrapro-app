@@ -3,6 +3,7 @@ export const translations = {
     // Top bar
     "nav.espacePro": "Espace Pro",
     "nav.logout": "Deconnexion",
+    "nav.home": "Accueil",
 
     // Solidarity banner
     "solidarity.banner": "Chaque recrutement soutient Les Restos du Coeur \u{1F495}",
@@ -30,6 +31,7 @@ export const translations = {
     "job.contact": "Contact",
     "job.perHour": "Par heure",
     "job.perDay": "Par jour",
+    "job.perJob": "Forfait",
     "job.backToListings": "Retour aux annonces",
 
     // Filters
@@ -107,11 +109,20 @@ export const translations = {
     "createAd.title": "Nouvelle annonce",
     "createAd.profession": "Profession",
     "createAd.selectProfession": "Choisir une profession",
+    "createAd.startDate": "Date de debut",
+    "createAd.endDate": "Date de fin (optionnel)",
     "createAd.workDate": "Date de travail",
     "createAd.startTime": "Heure de debut",
     "createAd.endTime": "Heure de fin",
     "createAd.city": "Ville",
     "createAd.selectCity": "Choisir une ville",
+    "createAd.addNewCity": "Ajouter une nouvelle ville",
+    "createAd.newCityName": "Nom de la ville",
+    "createAd.newCityPostalCode": "Code postal",
+    "createAd.publicSection": "Visible publiquement",
+    "createAd.publicSectionHint": "Ces informations sont visibles par tous",
+    "createAd.privateSection": "Informations privees",
+    "createAd.privateSectionHint": "Visibles uniquement sur le bouton d'appel",
     "createAd.salary": "Salaire",
     "createAd.salaryType": "Type",
     "createAd.contactPhone": "Telephone de contact",
@@ -172,6 +183,7 @@ export const translations = {
     // Top bar
     "nav.espacePro": "Pro Area",
     "nav.logout": "Log out",
+    "nav.home": "Home",
 
     // Solidarity banner
     "solidarity.banner": "Every hire supports Les Restos du Coeur \u{1F495}",
@@ -199,6 +211,7 @@ export const translations = {
     "job.contact": "Contact",
     "job.perHour": "Per hour",
     "job.perDay": "Per day",
+    "job.perJob": "Flat rate",
     "job.backToListings": "Back to listings",
 
     // Filters
@@ -276,11 +289,20 @@ export const translations = {
     "createAd.title": "New listing",
     "createAd.profession": "Profession",
     "createAd.selectProfession": "Choose a profession",
+    "createAd.startDate": "Start date",
+    "createAd.endDate": "End date (optional)",
     "createAd.workDate": "Work date",
     "createAd.startTime": "Start time",
     "createAd.endTime": "End time",
     "createAd.city": "City",
     "createAd.selectCity": "Choose a city",
+    "createAd.addNewCity": "Add a new city",
+    "createAd.newCityName": "City name",
+    "createAd.newCityPostalCode": "Postal code",
+    "createAd.publicSection": "Publicly visible",
+    "createAd.publicSectionHint": "This information is visible to everyone",
+    "createAd.privateSection": "Private information",
+    "createAd.privateSectionHint": "Only shown on the call button",
     "createAd.salary": "Salary",
     "createAd.salaryType": "Type",
     "createAd.contactPhone": "Contact phone",

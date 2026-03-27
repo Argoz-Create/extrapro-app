@@ -33,6 +33,16 @@ export function DashboardHeader() {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-primary transition-colors"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            {t("nav.home")}
+          </Link>
           <LanguageToggle />
           <button
             onClick={handleLogout}

@@ -29,11 +29,14 @@ export const createAdSchema = z
   .object({
     profession_id: z.string().min(1, "Veuillez choisir une profession"),
     city_id: z.string().min(1, "Veuillez choisir une ville"),
+    new_city_name: z.string().optional(),
+    new_city_postal_code: z.string().optional(),
     work_date: z.string().min(1, "La date de travail est requise"),
+    work_end_date: z.string().optional(),
     start_time: z.string().min(1, "L'heure de debut est requise"),
     end_time: z.string().min(1, "L'heure de fin est requise"),
     salary: z.coerce.number().positive("Le salaire doit etre positif"),
-    salary_type: z.enum(["hourly", "daily"]),
+    salary_type: z.enum(["hourly", "daily", "flat"]),
     contact_phone: z
       .string()
       .regex(frenchPhoneRegex, "Numero de telephone francais invalide"),
@@ -48,6 +51,13 @@ export const createAdSchema = z
       return data.work_date >= today;
     },
     { message: "La date doit etre aujourd'hui ou dans le futur", path: ["work_date"] }
+  )
+  .refine(
+    (data) => {
+      if (data.work_end_date) return data.work_end_date >= data.work_date;
+      return true;
+    },
+    { message: "La date de fin doit etre apres la date de debut", path: ["work_end_date"] }
   )
   .refine((data) => data.end_time > data.start_time, {
     message: "L'heure de fin doit etre apres l'heure de debut",

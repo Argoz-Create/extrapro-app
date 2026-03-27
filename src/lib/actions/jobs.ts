@@ -37,7 +37,10 @@ export async function createJob(
   const raw = {
     profession_id: formData.get("profession_id") as string,
     city_id: formData.get("city_id") as string,
+    new_city_name: (formData.get("new_city_name") as string) || undefined,
+    new_city_postal_code: (formData.get("new_city_postal_code") as string) || undefined,
     work_date: formData.get("work_date") as string,
+    work_end_date: (formData.get("work_end_date") as string) || undefined,
     start_time: formData.get("start_time") as string,
     end_time: formData.get("end_time") as string,
     salary: formData.get("salary") as string,
@@ -58,6 +61,23 @@ export async function createJob(
 
   const validated = result.data;
 
+  // Handle "add new city" option
+  let cityId = validated.city_id;
+  if (cityId === "__new__" && validated.new_city_name) {
+    const { data: newCity, error: cityError } = await supabase
+      .from("cities")
+      .insert({
+        name: validated.new_city_name,
+        postal_code: validated.new_city_postal_code || "00000",
+      })
+      .select("id")
+      .single();
+    if (cityError || !newCity) {
+      return { error: "Erreur lors de l'ajout de la nouvelle ville." };
+    }
+    cityId = newCity.id;
+  }
+
   // Get profession name and city name for auto-generated title
   const [{ data: profession }, { data: city }] = await Promise.all([
     supabase
@@ -68,7 +88,7 @@ export async function createJob(
     supabase
       .from("cities")
       .select("name")
-      .eq("id", validated.city_id)
+      .eq("id", cityId)
       .single(),
   ]);
 
@@ -77,19 +97,22 @@ export async function createJob(
   // Determine rate fields based on salary_type
   const hourly_rate = validated.salary_type === "hourly" ? validated.salary : null;
   const daily_rate = validated.salary_type === "daily" ? validated.salary : null;
+  const flat_rate = validated.salary_type === "flat" ? validated.salary : null;
 
   // Insert job ad
   const { error } = await supabase.from("job_ads").insert({
     employer_id: employer.id,
     profession_id: validated.profession_id,
-    city_id: validated.city_id,
+    city_id: cityId,
     title,
     description: validated.description || null,
     work_date: validated.work_date,
+    work_end_date: validated.work_end_date || null,
     start_time: validated.start_time,
     end_time: validated.end_time,
     hourly_rate,
     daily_rate,
+    flat_rate,
     contact_phone: validated.contact_phone,
     contact_name: validated.contact_name || null,
     required_skill: validated.required_skill || null,

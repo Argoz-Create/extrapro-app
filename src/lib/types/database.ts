@@ -9,7 +9,7 @@ export type JobStatus = "active" | "inactive" | "filled" | "expired";
 
 export type DonationStatus = "pending" | "confirmed" | "transferred";
 
-export type SalaryType = "hourly" | "daily";
+export type SalaryType = "hourly" | "daily" | "flat";
 
 export interface Region {
   id: string;
@@ -73,10 +73,12 @@ export interface JobAd {
   title: string;
   description: string | null;
   work_date: string;
+  work_end_date: string | null;
   start_time: string;
   end_time: string;
   hourly_rate: number | null;
   daily_rate: number | null;
+  flat_rate: number | null;
   contact_phone: string;
   contact_name: string | null;
   required_skill: string | null;
