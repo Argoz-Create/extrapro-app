@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CallButton } from "@/components/job/call-button";
-import { formatDate, formatTimeRange, formatSalary } from "@/lib/utils/format";
+import { formatDateRange, formatTimeRange, formatSalary } from "@/lib/utils/format";
 import { useTranslation } from "@/lib/i18n/context";
 import type { JobAdWithRelations } from "@/lib/types/database";
 
@@ -14,20 +14,20 @@ type JobCardProps = {
 
 export function JobCard({ job }: JobCardProps) {
   const { t } = useTranslation();
-  const salary = formatSalary(job.hourly_rate, job.daily_rate);
+  const salary = formatSalary(job.hourly_rate, job.daily_rate, job.flat_rate);
+  const shortId = job.id.slice(0, 8).toUpperCase();
 
   return (
     <Card clickable className="overflow-hidden">
       <Link href={`/annonces/${job.id}`} className="block p-4 pb-2">
-        {/* Header: profession + urgent badge */}
+        {/* Header: listing ID + urgent badge */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xl flex-shrink-0">{job.professions.icon}</span>
-            <h3 className="font-semibold text-text-primary truncate">
-              {job.professions.name_fr}
-            </h3>
+            <span className="text-xs font-mono bg-gray-100 text-text-tertiary px-2 py-0.5 rounded">
+              #{shortId}
+            </span>
+            {job.is_urgent && <Badge variant="urgent">{t("job.urgent")}</Badge>}
           </div>
-          {job.is_urgent && <Badge variant="urgent">{t("job.urgent")}</Badge>}
         </div>
 
         <div className="mt-3 space-y-1.5">
@@ -58,7 +58,7 @@ export function JobCard({ job }: JobCardProps) {
           <div className="flex items-center gap-2 text-sm text-text-secondary">
             <span className="flex-shrink-0">{"\u{1F4C5}"}</span>
             <span>
-              {formatDate(job.work_date)} {"\u00B7"} {formatTimeRange(job.start_time, job.end_time)} {"\u00B7"} {job.cities.name}
+              {formatDateRange(job.work_date, job.work_end_date)} {"\u00B7"} {formatTimeRange(job.start_time, job.end_time)} {"\u00B7"} {job.cities.name}
             </span>
           </div>
 

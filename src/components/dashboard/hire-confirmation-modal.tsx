@@ -28,14 +28,22 @@ export function HireConfirmationModal({
 
   function handleConfirm() {
     startTransition(async () => {
-      await confirmHire(job!.id);
-      toast.success(
-        t("hire.success", {
-          amount: String(DONATION_AMOUNT),
-          charity: CHARITY_NAME,
-        })
-      );
-      onClose();
+      try {
+        const result = await confirmHire(job!.id);
+        if (result.error) {
+          toast.error(result.error);
+          return;
+        }
+        toast.success(
+          t("hire.success", {
+            amount: String(DONATION_AMOUNT),
+            charity: CHARITY_NAME,
+          })
+        );
+        onClose();
+      } catch {
+        toast.error(t("common.error"));
+      }
     });
   }
 
