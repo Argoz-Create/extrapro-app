@@ -90,12 +90,17 @@ export const translations = {
     "ad.activate": "Activer",
     "ad.markFilled": "Poste pourvu",
     "ad.noAds": "Aucune annonce dans cette categorie",
+    "ad.continueDraft": "Continuer le brouillon",
+    "ad.saveDraft": "Sauvegarder brouillon",
+    "ad.draftSaved": "Brouillon sauvegarde !",
+    "ad.draftLoaded": "Brouillon charge",
 
     // Ad status
     "status.active": "Actif",
     "status.inactive": "Inactif",
     "status.filled": "Pourvue",
     "status.expired": "Expire",
+    "status.draft": "Brouillon",
 
     // Hire modal
     "hire.confirmTitle": "Confirmer le recrutement ?",
@@ -277,12 +282,17 @@ export const translations = {
     "ad.activate": "Activate",
     "ad.markFilled": "Position filled",
     "ad.noAds": "No listings in this category",
+    "ad.continueDraft": "Continue draft",
+    "ad.saveDraft": "Save draft",
+    "ad.draftSaved": "Draft saved!",
+    "ad.draftLoaded": "Draft loaded",
 
     // Ad status
     "status.active": "Active",
     "status.inactive": "Inactive",
     "status.filled": "Filled",
     "status.expired": "Expired",
+    "status.draft": "Draft",
 
     // Hire modal
     "hire.confirmTitle": "Confirm hire?",

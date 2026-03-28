@@ -17,6 +17,7 @@ export function AdList({ jobs }: AdListProps) {
   const tabs = [
     { value: "all", label: t("tabs.all") },
     { value: "active", label: t("tabs.active") },
+    { value: "draft", label: t("status.draft") },
     { value: "inactive", label: t("tabs.inactive") },
     { value: "filled", label: t("tabs.filled") },
   ];
