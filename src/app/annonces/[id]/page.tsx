@@ -17,8 +17,8 @@ export async function generateMetadata({ params }: JobDetailProps): Promise<Meta
     const job = await getJobById(id);
     const salary = formatSalary(job.hourly_rate, job.daily_rate);
     return {
-      title: `${job.professions.name_fr} a ${job.cities.name} — EXTRAPRO`,
-      description: `${job.professions.name_fr} a ${job.cities.name}${salary ? ` — ${salary}` : ""}. Recrutement solidaire via EXTRAPRO.`,
+      title: `${job.professions?.name_fr ?? "Extra"} a ${job.cities?.name ?? ""} — EXTRAPRO`,
+      description: `${job.professions?.name_fr ?? "Extra"} a ${job.cities?.name ?? ""}${salary ? ` — ${salary}` : ""}. Recrutement solidaire via EXTRAPRO.`,
     };
   } catch {
     return {
