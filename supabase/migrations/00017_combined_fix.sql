@@ -10,6 +10,8 @@ ALTER TABLE job_ads ADD COLUMN IF NOT EXISTS required_skill TEXT;
 ALTER TABLE job_ads ADD COLUMN IF NOT EXISTS work_end_date DATE;
 ALTER TABLE job_ads ADD COLUMN IF NOT EXISTS flat_rate NUMERIC(8,2);
 ALTER TABLE job_ads ADD COLUMN IF NOT EXISTS contact_name TEXT;
+ALTER TABLE job_ads ADD COLUMN IF NOT EXISTS contact_email TEXT;
+ALTER TABLE job_ads ADD COLUMN IF NOT EXISTS contact_whatsapp TEXT;
 
 -- 2. Allow authenticated users to insert cities (from migration 00015)
 DO $$

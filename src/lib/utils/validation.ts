@@ -41,6 +41,8 @@ export const createAdSchema = z
       .string()
       .regex(frenchPhoneRegex, "Numero de telephone francais invalide"),
     contact_name: z.string().optional(),
+    contact_email: z.string().email("Adresse email invalide").optional().or(z.literal("")),
+    contact_whatsapp: z.string().optional(),
     required_skill: z.string().max(200, "Maximum 200 caracteres").optional(),
     description: z.string().max(500, "Maximum 500 caracteres").optional(),
     is_urgent: z.boolean().default(false),

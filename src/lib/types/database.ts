@@ -81,6 +81,8 @@ export interface JobAd {
   flat_rate: number | null;
   contact_phone: string | null;
   contact_name: string | null;
+  contact_email: string | null;
+  contact_whatsapp: string | null;
   required_skill: string | null;
   status: JobStatus;
   is_urgent: boolean;

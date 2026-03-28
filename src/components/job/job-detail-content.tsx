@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CallButton } from "@/components/job/call-button";
+import { ContactDetails } from "@/components/job/contact-details";
 import { ShareButton } from "@/components/job/share-button";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/lib/i18n/context";
@@ -84,25 +84,21 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
           </div>
         )}
 
-        {/* Contact info */}
-        <div className="mt-4 border-t border-border-light pt-4">
-          <h2 className="text-sm font-semibold text-text-primary mb-2">
-            {t("job.contact")}
-          </h2>
-          {job.contact_name && (
-            <p className="text-sm text-text-secondary">{job.contact_name}</p>
-          )}
-          {job.contact_phone && <p className="text-sm text-text-secondary">{job.contact_phone}</p>}
-        </div>
-
         {/* Share button */}
         <div className="mt-4">
           <ShareButton />
         </div>
 
-        {/* Call button */}
+        {/* Contact details */}
         <div className="mt-4">
-          <CallButton phone={job.contact_phone ?? ""} jobAdId={job.id} />
+          <ContactDetails
+            phone={job.contact_phone ?? ""}
+            jobAdId={job.id}
+            contactName={job.contact_name}
+            contactEmail={job.contact_email}
+            contactWhatsapp={job.contact_whatsapp}
+            companyName={job.employers?.company_name}
+          />
         </div>
       </div>
 
