@@ -7,6 +7,7 @@ import { createAdSchema } from "@/lib/utils/validation";
 
 type JobActionState = {
   error: string | null;
+  fieldErrors?: Record<string, string>;
 };
 
 export async function createJob(
@@ -57,7 +58,14 @@ export async function createJob(
   const result = createAdSchema.safeParse(raw);
 
   if (!result.success) {
-    return { error: result.error.issues[0].message };
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of result.error.issues) {
+      const field = issue.path[0]?.toString();
+      if (field && !fieldErrors[field]) {
+        fieldErrors[field] = issue.message;
+      }
+    }
+    return { error: result.error.issues[0].message, fieldErrors };
   }
 
   const validated = result.data;
@@ -130,6 +138,82 @@ export async function createJob(
   redirect("/dashboard");
 }
 
+export async function saveJobDraft(
+  prevState: JobActionState,
+  formData: FormData
+): Promise<JobActionState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Non authentifie" };
+  }
+
+  const { data: employer } = await supabase
+    .from("employers")
+    .select("id")
+    .eq("auth_user_id", user.id)
+    .single();
+
+  if (!employer) {
+    return { error: "Profil employeur introuvable" };
+  }
+
+  const workEndDate = (formData.get("work_end_date") as string)?.trim();
+  const salaryType = (formData.get("salary_type") as string) || "hourly";
+  const salaryRaw = parseFloat((formData.get("salary") as string) || "0");
+  const salary = isNaN(salaryRaw) || salaryRaw <= 0 ? null : salaryRaw;
+
+  const hourly_rate = salaryType === "hourly" ? salary : null;
+  const daily_rate = salaryType === "daily" ? salary : null;
+  const flat_rate = salaryType === "flat" ? salary : null;
+
+  let cityId = (formData.get("city_id") as string) || null;
+  if (cityId === "__new__" || cityId === "") cityId = null;
+
+  const professionId = (formData.get("profession_id") as string) || null;
+
+  // Build a partial title
+  let title = "Brouillon";
+  if (professionId) {
+    const { data: profession } = await supabase
+      .from("professions")
+      .select("name_fr")
+      .eq("id", professionId)
+      .single();
+    if (profession) title = `${profession.name_fr} - Brouillon`;
+  }
+
+  const { error } = await supabase.from("job_ads").insert({
+    employer_id: employer.id,
+    profession_id: professionId,
+    city_id: cityId,
+    title,
+    description: (formData.get("description") as string)?.trim() || null,
+    work_date: (formData.get("work_date") as string) || null,
+    work_end_date: workEndDate || null,
+    start_time: (formData.get("start_time") as string) || null,
+    end_time: (formData.get("end_time") as string) || null,
+    hourly_rate,
+    daily_rate,
+    flat_rate,
+    contact_phone: (formData.get("contact_phone") as string) || null,
+    contact_name: (formData.get("contact_name") as string)?.trim() || null,
+    required_skill: (formData.get("required_skill") as string)?.trim() || null,
+    status: "draft",
+    is_urgent: formData.get("is_urgent") === "on",
+  });
+
+  if (error) {
+    return { error: "Erreur lors de la sauvegarde du brouillon." };
+  }
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
+}
+
 export async function updateJob(
   prevState: JobActionState,
   formData: FormData
@@ -195,7 +279,14 @@ export async function updateJob(
   const result = createAdSchema.safeParse(raw);
 
   if (!result.success) {
-    return { error: result.error.issues[0].message };
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of result.error.issues) {
+      const field = issue.path[0]?.toString();
+      if (field && !fieldErrors[field]) {
+        fieldErrors[field] = issue.message;
+      }
+    }
+    return { error: result.error.issues[0].message, fieldErrors };
   }
 
   const validated = result.data;

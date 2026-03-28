@@ -5,7 +5,7 @@ export type CompanyType =
   | "evenementiel"
   | "autre";
 
-export type JobStatus = "active" | "inactive" | "filled" | "expired";
+export type JobStatus = "active" | "inactive" | "filled" | "expired" | "draft";
 
 export type DonationStatus = "pending" | "confirmed" | "transferred";
 
@@ -68,18 +68,18 @@ export interface Employer {
 export interface JobAd {
   id: string;
   employer_id: string;
-  profession_id: string;
-  city_id: string;
-  title: string;
+  profession_id: string | null;
+  city_id: string | null;
+  title: string | null;
   description: string | null;
-  work_date: string;
+  work_date: string | null;
   work_end_date: string | null;
-  start_time: string;
-  end_time: string;
+  start_time: string | null;
+  end_time: string | null;
   hourly_rate: number | null;
   daily_rate: number | null;
   flat_rate: number | null;
-  contact_phone: string;
+  contact_phone: string | null;
   contact_name: string | null;
   required_skill: string | null;
   status: JobStatus;
@@ -88,7 +88,7 @@ export interface JobAd {
   call_click_count: number;
   hire_confirmed: boolean;
   donation_generated: boolean;
-  published_at: string;
+  published_at: string | null;
   expires_at: string | null;
   filled_at: string | null;
   created_at: string;
@@ -96,8 +96,8 @@ export interface JobAd {
 }
 
 export interface JobAdWithRelations extends JobAd {
-  professions: Pick<Profession, "name_fr" | "icon">;
-  cities: Pick<City, "name">;
+  professions: Pick<Profession, "name_fr" | "icon"> | null;
+  cities: Pick<City, "name"> | null;
   employers?: Pick<Employer, "company_name" | "contact_name">;
 }
 

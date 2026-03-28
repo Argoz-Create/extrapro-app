@@ -33,8 +33,9 @@ export function AdCard({ job }: AdCardProps) {
     inactive: t("status.inactive"),
     filled: t("status.filled"),
     expired: t("status.expired"),
+    draft: t("status.draft"),
   };
-  const salary = formatSalary(job.hourly_rate, job.daily_rate);
+  const salary = formatSalary(job.hourly_rate, job.daily_rate, job.flat_rate);
 
   return (
     <>
@@ -42,23 +43,23 @@ export function AdCard({ job }: AdCardProps) {
         {/* Header: profession + status */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xl flex-shrink-0">{job.professions.icon}</span>
+            <span className="text-xl flex-shrink-0">{job.professions?.icon ?? "\u{1F4DD}"}</span>
             <div className="min-w-0">
               <p className="font-semibold text-sm text-text-primary truncate">
-                {job.professions.name_fr}
+                {job.professions?.name_fr ?? t("status.draft")}
               </p>
-              <p className="text-xs text-text-secondary">{job.cities.name}</p>
+              <p className="text-xs text-text-secondary">{job.cities?.name ?? ""}</p>
             </div>
           </div>
-          <Badge variant={optimisticStatus as "active" | "inactive" | "filled"}>
+          <Badge variant={optimisticStatus as "active" | "inactive" | "filled" | "draft"}>
             {statusLabelMap[optimisticStatus] || optimisticStatus}
           </Badge>
         </div>
 
         {/* Details */}
         <div className="mt-3 flex items-center gap-3 text-xs text-text-secondary">
-          <span>{"\u{1F4C5}"} {formatDate(job.work_date)}</span>
-          <span>{"\u{1F550}"} {formatTimeRange(job.start_time, job.end_time)}</span>
+          {job.work_date && <span>{"\u{1F4C5}"} {formatDate(job.work_date)}</span>}
+          {job.start_time && job.end_time && <span>{"\u{1F550}"} {formatTimeRange(job.start_time, job.end_time)}</span>}
           {salary && <span>{"\u{1F4B6}"} {salary}</span>}
         </div>
 
@@ -69,6 +70,17 @@ export function AdCard({ job }: AdCardProps) {
         </div>
 
         {/* Actions */}
+        {optimisticStatus === "draft" && (
+          <div className="mt-3 flex items-center gap-2">
+            <Button
+              variant="primary"
+              size="sm"
+              href={`/dashboard/edit/${job.id}`}
+            >
+              {t("ad.continueDraft")}
+            </Button>
+          </div>
+        )}
         {(optimisticStatus === "active" || optimisticStatus === "inactive") && (
           <div className="mt-3 flex items-center gap-2">
             <Button

@@ -1,6 +1,6 @@
 import React from "react";
 
-type BadgeVariant = "urgent" | "active" | "inactive" | "filled";
+type BadgeVariant = "urgent" | "active" | "inactive" | "filled" | "draft";
 
 type BadgeProps = {
   variant?: BadgeVariant;
@@ -13,6 +13,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   active: "bg-green-100 text-green-800 text-xs",
   inactive: "bg-gray-100 text-gray-600 text-xs",
   filled: "bg-blue-100 text-blue-800 text-xs",
+  draft: "bg-amber-100 text-amber-800 text-xs",
 };
 
 export function Badge({ variant = "active", className = "", children }: BadgeProps) {

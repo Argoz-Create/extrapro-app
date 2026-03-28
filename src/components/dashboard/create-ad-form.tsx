@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useActionState } from "react";
-import { createJob } from "@/lib/actions/jobs";
-import { CHARITY_NAME } from "@/lib/utils/constants";
+import { useState, useRef, useCallback, useEffect, useTransition } from "react";
+import { createJob, saveJobDraft } from "@/lib/actions/jobs";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,14 +18,173 @@ type CreateAdFormProps = {
   cities: SelectOption[];
 };
 
+type FormValues = {
+  profession_id: string;
+  city_id: string;
+  new_city_name: string;
+  new_city_postal_code: string;
+  required_skill: string;
+  work_date: string;
+  work_end_date: string;
+  start_time: string;
+  end_time: string;
+  salary: string;
+  salary_type: string;
+  description: string;
+  contact_phone: string;
+  contact_name: string;
+  is_urgent: boolean;
+};
+
+const DRAFT_KEY = "extrapro-draft-ad";
+
+function loadDraft(): Partial<FormValues> | null {
+  try {
+    const saved = localStorage.getItem(DRAFT_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+function saveDraftToStorage(values: FormValues) {
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(values));
+  } catch {
+    // ignore
+  }
+}
+
+function clearDraftFromStorage() {
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+const frenchPhoneRegex =
+  /^(?:(?:\+|00)33[\s.-]?|0)[1-9](?:[\s.-]?\d{2}){4}$/;
+
+function validateForm(values: FormValues, t: (key: string) => string): Record<string, string> {
+  const errors: Record<string, string> = {};
+
+  if (!values.profession_id) {
+    errors.profession_id = t("createAd.selectProfession");
+  }
+  if (!values.city_id) {
+    errors.city_id = t("createAd.selectCity");
+  }
+  if (values.city_id === "__new__" && !values.new_city_name.trim()) {
+    errors.new_city_name = t("createAd.newCityName");
+  }
+  if (!values.work_date) {
+    errors.work_date = "La date de travail est requise";
+  } else {
+    const today = new Date().toISOString().split("T")[0];
+    if (values.work_date < today) {
+      errors.work_date = "La date doit etre aujourd'hui ou dans le futur";
+    }
+  }
+  if (values.work_end_date && values.work_date && values.work_end_date < values.work_date) {
+    errors.work_end_date = "La date de fin doit etre apres la date de debut";
+  }
+  if (!values.start_time) {
+    errors.start_time = "L'heure de debut est requise";
+  }
+  if (!values.end_time) {
+    errors.end_time = "L'heure de fin est requise";
+  }
+  if (values.start_time && values.end_time && values.end_time <= values.start_time) {
+    errors.end_time = "L'heure de fin doit etre apres l'heure de debut";
+  }
+  if (!values.salary || parseFloat(values.salary) <= 0) {
+    errors.salary = "Le salaire doit etre positif";
+  }
+  if (!values.contact_phone) {
+    errors.contact_phone = "Le telephone est requis";
+  } else if (!frenchPhoneRegex.test(values.contact_phone)) {
+    errors.contact_phone = "Numero de telephone francais invalide";
+  }
+  if (values.required_skill && values.required_skill.length > 200) {
+    errors.required_skill = "Maximum 200 caracteres";
+  }
+  if (values.description && values.description.length > 500) {
+    errors.description = "Maximum 500 caracteres";
+  }
+
+  return errors;
+}
+
 export function CreateAdForm({ professions, cities: initialCities }: CreateAdFormProps) {
-  const [state, formAction, pending] = useActionState(createJob, {
-    error: null,
-  });
   const { t } = useTranslation();
-  const [showNewCity, setShowNewCity] = useState(false);
-  const [selectedCity, setSelectedCity] = useState("");
-  const [cities, setCities] = useState(initialCities);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isPending, startTransition] = useTransition();
+  const [isDraftPending, startDraftTransition] = useTransition();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [cities] = useState(initialCities);
+
+  // Form values - controlled inputs to preserve data on validation
+  const [values, setValues] = useState<FormValues>(() => {
+    const defaults: FormValues = {
+      profession_id: "",
+      city_id: "",
+      new_city_name: "",
+      new_city_postal_code: "",
+      required_skill: "",
+      work_date: "",
+      work_end_date: "",
+      start_time: "",
+      end_time: "",
+      salary: "",
+      salary_type: "hourly",
+      description: "",
+      contact_phone: "",
+      contact_name: "",
+      is_urgent: false,
+    };
+    return defaults;
+  });
+
+  // Load draft from localStorage on mount
+  useEffect(() => {
+    const draft = loadDraft();
+    if (draft) {
+      setValues((prev) => ({ ...prev, ...draft }));
+    }
+  }, []);
+
+  // Auto-save draft on value changes (debounced)
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => {
+    clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      const hasAnyValue = Object.entries(values).some(
+        ([key, val]) => key !== "salary_type" && key !== "is_urgent" && val !== "" && val !== false
+      );
+      if (hasAnyValue) {
+        saveDraftToStorage(values);
+      }
+    }, 500);
+    return () => clearTimeout(saveTimeoutRef.current);
+  }, [values]);
+
+  const updateField = useCallback((field: keyof FormValues, value: string | boolean) => {
+    setValues((prev) => ({ ...prev, [field]: value }));
+    // Clear field error when user starts typing
+    setFieldErrors((prev) => {
+      if (prev[field]) {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      }
+      return prev;
+    });
+  }, []);
+
+  const showNewCity = values.city_id === "__new__";
 
   const salaryTypes = [
     { value: "hourly", label: t("job.perHour") },
@@ -39,17 +197,89 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
     { value: "__new__", label: `+ ${t("createAd.addNewCity")}` },
   ];
 
-  function handleCityChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const value = e.target.value;
-    setSelectedCity(value);
-    setShowNewCity(value === "__new__");
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    // Client-side validation
+    const errors = validateForm(values, t);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setServerError(null);
+      // Scroll to first error
+      const firstErrorField = Object.keys(errors)[0];
+      const el = formRef.current?.querySelector(`[name="${firstErrorField}"]`);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    setFieldErrors({});
+    setServerError(null);
+
+    // Build FormData and submit to server action
+    const formData = new FormData();
+    formData.set("profession_id", values.profession_id);
+    formData.set("city_id", values.city_id);
+    if (values.new_city_name) formData.set("new_city_name", values.new_city_name);
+    if (values.new_city_postal_code) formData.set("new_city_postal_code", values.new_city_postal_code);
+    formData.set("work_date", values.work_date);
+    if (values.work_end_date) formData.set("work_end_date", values.work_end_date);
+    formData.set("start_time", values.start_time);
+    formData.set("end_time", values.end_time);
+    formData.set("salary", values.salary);
+    formData.set("salary_type", values.salary_type);
+    if (values.description) formData.set("description", values.description);
+    formData.set("contact_phone", values.contact_phone);
+    if (values.contact_name) formData.set("contact_name", values.contact_name);
+    if (values.required_skill) formData.set("required_skill", values.required_skill);
+    if (values.is_urgent) formData.set("is_urgent", "on");
+
+    startTransition(async () => {
+      const result = await createJob({ error: null }, formData);
+      if (result?.error) {
+        setServerError(result.error);
+        if (result.fieldErrors) {
+          setFieldErrors(result.fieldErrors);
+        }
+      } else {
+        // Success - clear draft
+        clearDraftFromStorage();
+      }
+    });
+  }
+
+  function handleSaveDraft() {
+    const formData = new FormData();
+    formData.set("profession_id", values.profession_id);
+    formData.set("city_id", values.city_id);
+    if (values.new_city_name) formData.set("new_city_name", values.new_city_name);
+    if (values.new_city_postal_code) formData.set("new_city_postal_code", values.new_city_postal_code);
+    formData.set("work_date", values.work_date);
+    if (values.work_end_date) formData.set("work_end_date", values.work_end_date);
+    formData.set("start_time", values.start_time);
+    formData.set("end_time", values.end_time);
+    formData.set("salary", values.salary);
+    formData.set("salary_type", values.salary_type);
+    if (values.description) formData.set("description", values.description);
+    formData.set("contact_phone", values.contact_phone);
+    if (values.contact_name) formData.set("contact_name", values.contact_name);
+    if (values.required_skill) formData.set("required_skill", values.required_skill);
+    if (values.is_urgent) formData.set("is_urgent", "on");
+
+    startDraftTransition(async () => {
+      const result = await saveJobDraft({ error: null }, formData);
+      if (result?.error) {
+        setServerError(result.error);
+      } else {
+        clearDraftFromStorage();
+      }
+    });
   }
 
   return (
-    <form action={formAction} className="space-y-6">
-      {state?.error && (
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+      {serverError && (
         <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[10px]">
-          {state.error}
+          {serverError}
         </div>
       )}
 
@@ -66,7 +296,9 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           options={professions}
           placeholder={t("createAd.selectProfession")}
           required
-          defaultValue=""
+          value={values.profession_id}
+          onChange={(e) => updateField("profession_id", e.target.value)}
+          error={fieldErrors.profession_id}
         />
 
         <div>
@@ -76,9 +308,9 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             options={cityOptionsWithNew}
             placeholder={t("createAd.selectCity")}
             required
-            defaultValue=""
-            value={selectedCity}
-            onChange={handleCityChange}
+            value={values.city_id}
+            onChange={(e) => updateField("city_id", e.target.value)}
+            error={fieldErrors.city_id}
           />
           {showNewCity && (
             <div className="mt-2 space-y-2 pl-3 border-l-2 border-primary/30">
@@ -87,11 +319,16 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
                 name="new_city_name"
                 placeholder="Ex: Biarritz"
                 required
+                value={values.new_city_name}
+                onChange={(e) => updateField("new_city_name", e.target.value)}
+                error={fieldErrors.new_city_name}
               />
               <Input
                 label={t("createAd.newCityPostalCode")}
                 name="new_city_postal_code"
                 placeholder="64200"
+                value={values.new_city_postal_code}
+                onChange={(e) => updateField("new_city_postal_code", e.target.value)}
               />
             </div>
           )}
@@ -101,6 +338,9 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           label={t("createAd.requiredSkill")}
           name="required_skill"
           placeholder={t("createAd.requiredSkillPlaceholder")}
+          value={values.required_skill}
+          onChange={(e) => updateField("required_skill", e.target.value)}
+          error={fieldErrors.required_skill}
         />
 
         {/* Date range */}
@@ -110,11 +350,17 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             name="work_date"
             type="date"
             required
+            value={values.work_date}
+            onChange={(e) => updateField("work_date", e.target.value)}
+            error={fieldErrors.work_date}
           />
           <Input
             label={t("createAd.endDate")}
             name="work_end_date"
             type="date"
+            value={values.work_end_date}
+            onChange={(e) => updateField("work_end_date", e.target.value)}
+            error={fieldErrors.work_end_date}
           />
         </div>
 
@@ -124,12 +370,18 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             name="start_time"
             type="time"
             required
+            value={values.start_time}
+            onChange={(e) => updateField("start_time", e.target.value)}
+            error={fieldErrors.start_time}
           />
           <Input
             label={t("createAd.endTime")}
             name="end_time"
             type="time"
             required
+            value={values.end_time}
+            onChange={(e) => updateField("end_time", e.target.value)}
+            error={fieldErrors.end_time}
           />
         </div>
 
@@ -142,12 +394,16 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             min="1"
             step="0.5"
             required
+            value={values.salary}
+            onChange={(e) => updateField("salary", e.target.value)}
+            error={fieldErrors.salary}
           />
           <Select
             label={t("createAd.salaryType")}
             name="salary_type"
             options={salaryTypes}
-            defaultValue="hourly"
+            value={values.salary_type}
+            onChange={(e) => updateField("salary_type", e.target.value)}
           />
         </div>
 
@@ -157,6 +413,9 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           placeholder={t("createAd.descriptionPlaceholder")}
           rows={3}
           maxLength={500}
+          value={values.description}
+          onChange={(e) => updateField("description", e.target.value)}
+          error={fieldErrors.description}
         />
       </div>
 
@@ -173,18 +432,25 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           type="tel"
           placeholder="06 XX XX XX XX"
           required
+          value={values.contact_phone}
+          onChange={(e) => updateField("contact_phone", e.target.value)}
+          error={fieldErrors.contact_phone}
         />
 
         <Input
           label={t("createAd.contactName")}
           name="contact_name"
           placeholder="Jean Dupont"
+          value={values.contact_name}
+          onChange={(e) => updateField("contact_name", e.target.value)}
         />
 
         <label className="flex items-start gap-2 cursor-pointer">
           <input
             type="checkbox"
             name="is_urgent"
+            checked={values.is_urgent}
+            onChange={(e) => updateField("is_urgent", e.target.checked)}
             className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary/20 accent-primary"
           />
           <span className="text-sm text-text-secondary">
@@ -200,9 +466,20 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
         </p>
       </div>
 
-      <Button type="submit" fullWidth loading={pending}>
-        {t("createAd.publish")}
-      </Button>
+      <div className="space-y-2">
+        <Button type="submit" fullWidth loading={isPending}>
+          {t("createAd.publish")}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          fullWidth
+          loading={isDraftPending}
+          onClick={handleSaveDraft}
+        >
+          {t("ad.saveDraft")}
+        </Button>
+      </div>
     </form>
   );
 }

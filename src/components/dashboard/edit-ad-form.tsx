@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useActionState } from "react";
+import { useState, useRef, useCallback, useTransition } from "react";
 import { updateJob } from "@/lib/actions/jobs";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -15,16 +15,16 @@ type SelectOption = {
 
 type JobData = {
   id: string;
-  profession_id: string;
-  city_id: string;
-  work_date: string;
+  profession_id: string | null;
+  city_id: string | null;
+  work_date: string | null;
   work_end_date: string | null;
-  start_time: string;
-  end_time: string;
+  start_time: string | null;
+  end_time: string | null;
   hourly_rate: number | null;
   daily_rate: number | null;
   flat_rate: number | null;
-  contact_phone: string;
+  contact_phone: string | null;
   contact_name: string | null;
   required_skill: string | null;
   description: string | null;
@@ -37,23 +37,126 @@ type EditAdFormProps = {
   job: JobData;
 };
 
+type FormValues = {
+  profession_id: string;
+  city_id: string;
+  new_city_name: string;
+  new_city_postal_code: string;
+  required_skill: string;
+  work_date: string;
+  work_end_date: string;
+  start_time: string;
+  end_time: string;
+  salary: string;
+  salary_type: string;
+  description: string;
+  contact_phone: string;
+  contact_name: string;
+  is_urgent: boolean;
+};
+
 function getSalaryType(job: JobData): string {
   if (job.daily_rate) return "daily";
   if (job.flat_rate) return "flat";
   return "hourly";
 }
 
-function getSalaryValue(job: JobData): number {
-  return job.hourly_rate ?? job.daily_rate ?? job.flat_rate ?? 0;
+function getSalaryValue(job: JobData): string {
+  const val = job.hourly_rate ?? job.daily_rate ?? job.flat_rate;
+  return val ? String(val) : "";
+}
+
+const frenchPhoneRegex =
+  /^(?:(?:\+|00)33[\s.-]?|0)[1-9](?:[\s.-]?\d{2}){4}$/;
+
+function validateForm(values: FormValues): Record<string, string> {
+  const errors: Record<string, string> = {};
+
+  if (!values.profession_id) {
+    errors.profession_id = "Veuillez choisir une profession";
+  }
+  if (!values.city_id) {
+    errors.city_id = "Veuillez choisir une ville";
+  }
+  if (values.city_id === "__new__" && !values.new_city_name.trim()) {
+    errors.new_city_name = "Nom de la ville requis";
+  }
+  if (!values.work_date) {
+    errors.work_date = "La date de travail est requise";
+  } else {
+    const today = new Date().toISOString().split("T")[0];
+    if (values.work_date < today) {
+      errors.work_date = "La date doit etre aujourd'hui ou dans le futur";
+    }
+  }
+  if (values.work_end_date && values.work_date && values.work_end_date < values.work_date) {
+    errors.work_end_date = "La date de fin doit etre apres la date de debut";
+  }
+  if (!values.start_time) {
+    errors.start_time = "L'heure de debut est requise";
+  }
+  if (!values.end_time) {
+    errors.end_time = "L'heure de fin est requise";
+  }
+  if (values.start_time && values.end_time && values.end_time <= values.start_time) {
+    errors.end_time = "L'heure de fin doit etre apres l'heure de debut";
+  }
+  if (!values.salary || parseFloat(values.salary) <= 0) {
+    errors.salary = "Le salaire doit etre positif";
+  }
+  if (!values.contact_phone) {
+    errors.contact_phone = "Le telephone est requis";
+  } else if (!frenchPhoneRegex.test(values.contact_phone)) {
+    errors.contact_phone = "Numero de telephone francais invalide";
+  }
+  if (values.required_skill && values.required_skill.length > 200) {
+    errors.required_skill = "Maximum 200 caracteres";
+  }
+  if (values.description && values.description.length > 500) {
+    errors.description = "Maximum 500 caracteres";
+  }
+
+  return errors;
 }
 
 export function EditAdForm({ professions, cities: initialCities, job }: EditAdFormProps) {
-  const [state, formAction, pending] = useActionState(updateJob, {
-    error: null,
-  });
   const { t } = useTranslation();
-  const [showNewCity, setShowNewCity] = useState(false);
-  const [selectedCity, setSelectedCity] = useState(job.city_id);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isPending, startTransition] = useTransition();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const [values, setValues] = useState<FormValues>({
+    profession_id: job.profession_id ?? "",
+    city_id: job.city_id ?? "",
+    new_city_name: "",
+    new_city_postal_code: "",
+    required_skill: job.required_skill ?? "",
+    work_date: job.work_date ?? "",
+    work_end_date: job.work_end_date ?? "",
+    start_time: job.start_time ?? "",
+    end_time: job.end_time ?? "",
+    salary: getSalaryValue(job),
+    salary_type: getSalaryType(job),
+    description: job.description ?? "",
+    contact_phone: job.contact_phone ?? "",
+    contact_name: job.contact_name ?? "",
+    is_urgent: job.is_urgent,
+  });
+
+  const updateField = useCallback((field: keyof FormValues, value: string | boolean) => {
+    setValues((prev) => ({ ...prev, [field]: value }));
+    setFieldErrors((prev) => {
+      if (prev[field]) {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      }
+      return prev;
+    });
+  }, []);
+
+  const showNewCity = values.city_id === "__new__";
 
   const salaryTypes = [
     { value: "hourly", label: t("job.perHour") },
@@ -66,19 +169,56 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
     { value: "__new__", label: `+ ${t("createAd.addNewCity")}` },
   ];
 
-  function handleCityChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const value = e.target.value;
-    setSelectedCity(value);
-    setShowNewCity(value === "__new__");
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const errors = validateForm(values);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setServerError(null);
+      const firstErrorField = Object.keys(errors)[0];
+      const el = formRef.current?.querySelector(`[name="${firstErrorField}"]`);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    setFieldErrors({});
+    setServerError(null);
+
+    const formData = new FormData();
+    formData.set("job_id", job.id);
+    formData.set("profession_id", values.profession_id);
+    formData.set("city_id", values.city_id);
+    if (values.new_city_name) formData.set("new_city_name", values.new_city_name);
+    if (values.new_city_postal_code) formData.set("new_city_postal_code", values.new_city_postal_code);
+    formData.set("work_date", values.work_date);
+    if (values.work_end_date) formData.set("work_end_date", values.work_end_date);
+    formData.set("start_time", values.start_time);
+    formData.set("end_time", values.end_time);
+    formData.set("salary", values.salary);
+    formData.set("salary_type", values.salary_type);
+    if (values.description) formData.set("description", values.description);
+    formData.set("contact_phone", values.contact_phone);
+    if (values.contact_name) formData.set("contact_name", values.contact_name);
+    if (values.required_skill) formData.set("required_skill", values.required_skill);
+    if (values.is_urgent) formData.set("is_urgent", "on");
+
+    startTransition(async () => {
+      const result = await updateJob({ error: null }, formData);
+      if (result?.error) {
+        setServerError(result.error);
+        if (result.fieldErrors) {
+          setFieldErrors(result.fieldErrors);
+        }
+      }
+    });
   }
 
   return (
-    <form action={formAction} className="space-y-6">
-      <input type="hidden" name="job_id" value={job.id} />
-
-      {state?.error && (
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+      {serverError && (
         <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[10px]">
-          {state.error}
+          {serverError}
         </div>
       )}
 
@@ -95,7 +235,9 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
           options={professions}
           placeholder={t("createAd.selectProfession")}
           required
-          defaultValue={job.profession_id}
+          value={values.profession_id}
+          onChange={(e) => updateField("profession_id", e.target.value)}
+          error={fieldErrors.profession_id}
         />
 
         <div>
@@ -105,8 +247,9 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             options={cityOptionsWithNew}
             placeholder={t("createAd.selectCity")}
             required
-            value={selectedCity}
-            onChange={handleCityChange}
+            value={values.city_id}
+            onChange={(e) => updateField("city_id", e.target.value)}
+            error={fieldErrors.city_id}
           />
           {showNewCity && (
             <div className="mt-2 space-y-2 pl-3 border-l-2 border-primary/30">
@@ -115,11 +258,16 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
                 name="new_city_name"
                 placeholder="Ex: Biarritz"
                 required
+                value={values.new_city_name}
+                onChange={(e) => updateField("new_city_name", e.target.value)}
+                error={fieldErrors.new_city_name}
               />
               <Input
                 label={t("createAd.newCityPostalCode")}
                 name="new_city_postal_code"
                 placeholder="64200"
+                value={values.new_city_postal_code}
+                onChange={(e) => updateField("new_city_postal_code", e.target.value)}
               />
             </div>
           )}
@@ -129,7 +277,9 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
           label={t("createAd.requiredSkill")}
           name="required_skill"
           placeholder={t("createAd.requiredSkillPlaceholder")}
-          defaultValue={job.required_skill ?? ""}
+          value={values.required_skill}
+          onChange={(e) => updateField("required_skill", e.target.value)}
+          error={fieldErrors.required_skill}
         />
 
         {/* Date range */}
@@ -139,13 +289,17 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             name="work_date"
             type="date"
             required
-            defaultValue={job.work_date}
+            value={values.work_date}
+            onChange={(e) => updateField("work_date", e.target.value)}
+            error={fieldErrors.work_date}
           />
           <Input
             label={t("createAd.endDate")}
             name="work_end_date"
             type="date"
-            defaultValue={job.work_end_date ?? ""}
+            value={values.work_end_date}
+            onChange={(e) => updateField("work_end_date", e.target.value)}
+            error={fieldErrors.work_end_date}
           />
         </div>
 
@@ -155,14 +309,18 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             name="start_time"
             type="time"
             required
-            defaultValue={job.start_time}
+            value={values.start_time}
+            onChange={(e) => updateField("start_time", e.target.value)}
+            error={fieldErrors.start_time}
           />
           <Input
             label={t("createAd.endTime")}
             name="end_time"
             type="time"
             required
-            defaultValue={job.end_time}
+            value={values.end_time}
+            onChange={(e) => updateField("end_time", e.target.value)}
+            error={fieldErrors.end_time}
           />
         </div>
 
@@ -175,13 +333,16 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             min="1"
             step="0.5"
             required
-            defaultValue={String(getSalaryValue(job))}
+            value={values.salary}
+            onChange={(e) => updateField("salary", e.target.value)}
+            error={fieldErrors.salary}
           />
           <Select
             label={t("createAd.salaryType")}
             name="salary_type"
             options={salaryTypes}
-            defaultValue={getSalaryType(job)}
+            value={values.salary_type}
+            onChange={(e) => updateField("salary_type", e.target.value)}
           />
         </div>
 
@@ -191,7 +352,9 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
           placeholder={t("createAd.descriptionPlaceholder")}
           rows={3}
           maxLength={500}
-          defaultValue={job.description ?? ""}
+          value={values.description}
+          onChange={(e) => updateField("description", e.target.value)}
+          error={fieldErrors.description}
         />
       </div>
 
@@ -208,21 +371,25 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
           type="tel"
           placeholder="06 XX XX XX XX"
           required
-          defaultValue={job.contact_phone}
+          value={values.contact_phone}
+          onChange={(e) => updateField("contact_phone", e.target.value)}
+          error={fieldErrors.contact_phone}
         />
 
         <Input
           label={t("createAd.contactName")}
           name="contact_name"
           placeholder="Jean Dupont"
-          defaultValue={job.contact_name ?? ""}
+          value={values.contact_name}
+          onChange={(e) => updateField("contact_name", e.target.value)}
         />
 
         <label className="flex items-start gap-2 cursor-pointer">
           <input
             type="checkbox"
             name="is_urgent"
-            defaultChecked={job.is_urgent}
+            checked={values.is_urgent}
+            onChange={(e) => updateField("is_urgent", e.target.checked)}
             className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary/20 accent-primary"
           />
           <span className="text-sm text-text-secondary">
@@ -231,7 +398,7 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
         </label>
       </div>
 
-      <Button type="submit" fullWidth loading={pending}>
+      <Button type="submit" fullWidth loading={isPending}>
         {t("ad.edit")}
       </Button>
     </form>

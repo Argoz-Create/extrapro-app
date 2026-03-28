@@ -35,14 +35,14 @@ export function JobCard({ job }: JobCardProps) {
           <div className="flex items-center gap-2 text-sm text-text-secondary">
             <span className="flex-shrink-0">{"\u{1F4CD}"}</span>
             <span className="font-medium text-text-tertiary">{t("job.location")}:</span>
-            <span>{job.cities.name}</span>
+            <span>{job.cities?.name}</span>
           </div>
 
           {/* 2. Poste / Position */}
           <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <span className="flex-shrink-0">{job.professions.icon}</span>
+            <span className="flex-shrink-0">{job.professions?.icon}</span>
             <span className="font-medium text-text-tertiary">{t("job.position")}:</span>
-            <span>{job.professions.name_fr}</span>
+            <span>{job.professions?.name_fr}</span>
           </div>
 
           {/* 3. Competence requise / Required skill */}
@@ -58,7 +58,7 @@ export function JobCard({ job }: JobCardProps) {
           <div className="flex items-center gap-2 text-sm text-text-secondary">
             <span className="flex-shrink-0">{"\u{1F4C5}"}</span>
             <span>
-              {formatDateRange(job.work_date, job.work_end_date)} {"\u00B7"} {formatTimeRange(job.start_time, job.end_time)} {"\u00B7"} {job.cities.name}
+              {job.work_date && formatDateRange(job.work_date, job.work_end_date)} {"\u00B7"} {job.start_time && job.end_time && formatTimeRange(job.start_time, job.end_time)} {"\u00B7"} {job.cities?.name}
             </span>
           </div>
 
@@ -75,7 +75,7 @@ export function JobCard({ job }: JobCardProps) {
       {/* 6. CTA: phone number + employer/recruiter name */}
       <div className="px-4 pb-4 pt-2">
         <CallButton
-          phone={job.contact_phone}
+          phone={job.contact_phone ?? ""}
           jobAdId={job.id}
           contactName={job.contact_name}
           companyName={job.employers?.company_name}

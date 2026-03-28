@@ -35,10 +35,10 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
         {/* Header */}
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-3xl">{job.professions.icon}</span>
+            <span className="text-3xl">{job.professions?.icon}</span>
             <div>
               <h1 className="text-xl font-bold text-text-primary">
-                {job.professions.name_fr}
+                {job.professions?.name_fr}
               </h1>
               {job.employers?.company_name && (
                 <p className="text-sm text-text-secondary">
@@ -52,9 +52,9 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
 
         {/* Meta */}
         <div className="mt-4 space-y-2 text-sm text-text-secondary">
-          <p>{"\u{1F4CD}"} {job.cities.name}</p>
-          <p>{"\u{1F4C5}"} {formatDate(job.work_date)}</p>
-          <p>{"\u23F0"} {formatTimeRange(job.start_time, job.end_time)}</p>
+          {job.cities?.name && <p>{"\u{1F4CD}"} {job.cities.name}</p>}
+          {job.work_date && <p>{"\u{1F4C5}"} {formatDate(job.work_date)}</p>}
+          {job.start_time && job.end_time && <p>{"\u23F0"} {formatTimeRange(job.start_time, job.end_time)}</p>}
         </div>
 
         {/* Salary */}
@@ -92,7 +92,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
           {job.contact_name && (
             <p className="text-sm text-text-secondary">{job.contact_name}</p>
           )}
-          <p className="text-sm text-text-secondary">{job.contact_phone}</p>
+          {job.contact_phone && <p className="text-sm text-text-secondary">{job.contact_phone}</p>}
         </div>
 
         {/* Share button */}
@@ -102,7 +102,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
 
         {/* Call button */}
         <div className="mt-4">
-          <CallButton phone={job.contact_phone} jobAdId={job.id} />
+          <CallButton phone={job.contact_phone ?? ""} jobAdId={job.id} />
         </div>
       </div>
 
