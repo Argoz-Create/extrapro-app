@@ -33,6 +33,8 @@ type FormValues = {
   description: string;
   contact_phone: string;
   contact_name: string;
+  contact_email: string;
+  contact_whatsapp: string;
   is_urgent: boolean;
 };
 
@@ -54,6 +56,8 @@ const emptyForm: FormValues = {
   description: "",
   contact_phone: "",
   contact_name: "",
+  contact_email: "",
+  contact_whatsapp: "",
   is_urgent: false,
 };
 
@@ -180,6 +184,8 @@ function buildFormData(values: FormValues): FormData {
   if (values.description) formData.set("description", values.description);
   formData.set("contact_phone", values.contact_phone);
   if (values.contact_name) formData.set("contact_name", values.contact_name);
+  if (values.contact_email) formData.set("contact_email", values.contact_email);
+  if (values.contact_whatsapp) formData.set("contact_whatsapp", values.contact_whatsapp);
   if (values.required_skill) formData.set("required_skill", values.required_skill);
   if (values.is_urgent) formData.set("is_urgent", "on");
   return formData;
@@ -456,6 +462,25 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           placeholder="Jean Dupont"
           value={values.contact_name}
           onChange={(e) => updateField("contact_name", e.target.value)}
+        />
+
+        <Input
+          label={t("createAd.contactEmail")}
+          name="contact_email"
+          type="email"
+          placeholder="contact@example.com"
+          value={values.contact_email}
+          onChange={(e) => updateField("contact_email", e.target.value)}
+          error={fieldErrors.contact_email}
+        />
+
+        <Input
+          label={t("createAd.contactWhatsapp")}
+          name="contact_whatsapp"
+          type="tel"
+          placeholder="+33 6 XX XX XX XX"
+          value={values.contact_whatsapp}
+          onChange={(e) => updateField("contact_whatsapp", e.target.value)}
         />
 
         <label className="flex items-start gap-2 cursor-pointer">

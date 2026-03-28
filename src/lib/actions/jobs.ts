@@ -49,6 +49,8 @@ export async function createJob(
     salary_type: (formData.get("salary_type") as string) || "hourly",
     contact_phone: (formData.get("contact_phone") as string) || "",
     contact_name: (formData.get("contact_name") as string)?.trim() || undefined,
+    contact_email: (formData.get("contact_email") as string)?.trim() || undefined,
+    contact_whatsapp: (formData.get("contact_whatsapp") as string)?.trim() || undefined,
     required_skill: (formData.get("required_skill") as string)?.trim() || undefined,
     description: (formData.get("description") as string)?.trim() || undefined,
     is_urgent: formData.get("is_urgent") === "on",
@@ -124,13 +126,16 @@ export async function createJob(
     flat_rate,
     contact_phone: validated.contact_phone,
     contact_name: validated.contact_name || null,
+    contact_email: validated.contact_email || null,
+    contact_whatsapp: validated.contact_whatsapp || null,
     required_skill: validated.required_skill || null,
     status: "active",
     is_urgent: validated.is_urgent,
   });
 
   if (error) {
-    return { error: "Erreur lors de la publication. Veuillez reessayer." };
+    console.error("createJob insert error:", error);
+    return { error: `Erreur: ${error.message}` };
   }
 
   revalidatePath("/dashboard");
@@ -201,13 +206,16 @@ export async function saveJobDraft(
     flat_rate,
     contact_phone: (formData.get("contact_phone") as string) || null,
     contact_name: (formData.get("contact_name") as string)?.trim() || null,
+    contact_email: (formData.get("contact_email") as string)?.trim() || null,
+    contact_whatsapp: (formData.get("contact_whatsapp") as string)?.trim() || null,
     required_skill: (formData.get("required_skill") as string)?.trim() || null,
     status: "draft",
     is_urgent: formData.get("is_urgent") === "on",
   });
 
   if (error) {
-    return { error: "Erreur lors de la sauvegarde du brouillon." };
+    console.error("saveJobDraft insert error:", error);
+    return { error: `Erreur: ${error.message}` };
   }
 
   revalidatePath("/dashboard");
@@ -270,6 +278,8 @@ export async function updateJob(
     salary_type: (formData.get("salary_type") as string) || "hourly",
     contact_phone: (formData.get("contact_phone") as string) || "",
     contact_name: (formData.get("contact_name") as string)?.trim() || undefined,
+    contact_email: (formData.get("contact_email") as string)?.trim() || undefined,
+    contact_whatsapp: (formData.get("contact_whatsapp") as string)?.trim() || undefined,
     required_skill: (formData.get("required_skill") as string)?.trim() || undefined,
     description: (formData.get("description") as string)?.trim() || undefined,
     is_urgent: formData.get("is_urgent") === "on",
@@ -346,13 +356,16 @@ export async function updateJob(
       flat_rate,
       contact_phone: validated.contact_phone,
       contact_name: validated.contact_name || null,
+      contact_email: validated.contact_email || null,
+      contact_whatsapp: validated.contact_whatsapp || null,
       required_skill: validated.required_skill || null,
       is_urgent: validated.is_urgent,
     })
     .eq("id", jobId);
 
   if (error) {
-    return { error: "Erreur lors de la mise a jour. Veuillez reessayer." };
+    console.error("updateJob error:", error);
+    return { error: `Erreur: ${error.message}` };
   }
 
   revalidatePath("/dashboard");

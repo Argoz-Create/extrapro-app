@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CallButton } from "@/components/job/call-button";
+import { ContactDetails } from "@/components/job/contact-details";
 import { formatDateRange, formatTimeRange, formatSalary } from "@/lib/utils/format";
 import { useTranslation } from "@/lib/i18n/context";
 import type { JobAdWithRelations } from "@/lib/types/database";
@@ -72,12 +72,14 @@ export function JobCard({ job }: JobCardProps) {
         </div>
       </Link>
 
-      {/* 6. CTA: phone number + employer/recruiter name */}
+      {/* 6. Contact details */}
       <div className="px-4 pb-4 pt-2">
-        <CallButton
+        <ContactDetails
           phone={job.contact_phone ?? ""}
           jobAdId={job.id}
           contactName={job.contact_name}
+          contactEmail={job.contact_email}
+          contactWhatsapp={job.contact_whatsapp}
           companyName={job.employers?.company_name}
         />
       </div>
