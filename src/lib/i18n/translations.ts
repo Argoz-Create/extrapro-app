@@ -169,6 +169,13 @@ export const translations = {
     "landing.noLoginRequired": "Aucune inscription requise pour consulter les annonces",
     "landing.availableListings": "Annonces disponibles",
 
+    // Mission section (homepage)
+    "mission.title": "Notre Mission",
+    "mission.text": "EXTRAPRO est la premiere plateforme de recrutement solidaire dediee a la restauration et l'hotellerie. Notre mission : connecter employeurs et extras qualifies, tout en soutenant Les Restos du Coeur. A chaque recrutement, une contribution est versee.",
+    "mission.solidarity": "Recrutement solidaire",
+    "mission.free": "100% gratuit",
+    "mission.fast": "Simple et rapide",
+
     // 404
     "notFound.title": "Page introuvable",
     "notFound.message": "La page que vous recherchez n'existe pas ou a ete deplacee.",
@@ -348,6 +355,13 @@ export const translations = {
     "landing.employerCta": "Hiring? Pro Area",
     "landing.noLoginRequired": "No sign-up required to view listings",
     "landing.availableListings": "Available listings",
+
+    // Mission section (homepage)
+    "mission.title": "Our Mission",
+    "mission.text": "EXTRAPRO is the first solidarity recruitment platform dedicated to the restaurant and hospitality industry. Our mission: connect employers with qualified temporary staff, while supporting Les Restos du Coeur. With each hire, a contribution is made.",
+    "mission.solidarity": "Solidarity hiring",
+    "mission.free": "100% free",
+    "mission.fast": "Simple and fast",
 
     // 404
     "notFound.title": "Page not found",
