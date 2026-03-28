@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useTransition } from "react";
+import { useState, useRef, useCallback, useEffect, useTransition } from "react";
 import { updateJob } from "@/lib/actions/jobs";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -66,6 +66,43 @@ function getSalaryValue(job: JobData): string {
   return val ? String(val) : "";
 }
 
+function getEditDraftKey(jobId: string) {
+  return `extrapro-edit-draft-${jobId}`;
+}
+
+function getInitialEditValues(job: JobData): FormValues {
+  // Try to restore from localStorage first (survives remounts on server error)
+  if (typeof window !== "undefined") {
+    try {
+      const saved = localStorage.getItem(getEditDraftKey(job.id));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed as FormValues;
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  return {
+    profession_id: job.profession_id ?? "",
+    city_id: job.city_id ?? "",
+    new_city_name: "",
+    new_city_postal_code: "",
+    required_skill: job.required_skill ?? "",
+    work_date: job.work_date ?? "",
+    work_end_date: job.work_end_date ?? "",
+    start_time: job.start_time ?? "",
+    end_time: job.end_time ?? "",
+    salary: getSalaryValue(job),
+    salary_type: getSalaryType(job),
+    description: job.description ?? "",
+    contact_phone: job.contact_phone ?? "",
+    contact_name: job.contact_name ?? "",
+    is_urgent: job.is_urgent,
+  };
+}
+
 const frenchPhoneRegex =
   /^(?:(?:\+|00)33[\s.-]?|0)[1-9](?:[\s.-]?\d{2}){4}$/;
 
@@ -126,23 +163,16 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
   const [serverError, setServerError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const [values, setValues] = useState<FormValues>({
-    profession_id: job.profession_id ?? "",
-    city_id: job.city_id ?? "",
-    new_city_name: "",
-    new_city_postal_code: "",
-    required_skill: job.required_skill ?? "",
-    work_date: job.work_date ?? "",
-    work_end_date: job.work_end_date ?? "",
-    start_time: job.start_time ?? "",
-    end_time: job.end_time ?? "",
-    salary: getSalaryValue(job),
-    salary_type: getSalaryType(job),
-    description: job.description ?? "",
-    contact_phone: job.contact_phone ?? "",
-    contact_name: job.contact_name ?? "",
-    is_urgent: job.is_urgent,
-  });
+  const [values, setValues] = useState<FormValues>(() => getInitialEditValues(job));
+
+  // Save to localStorage on value changes (for remount persistence)
+  useEffect(() => {
+    try {
+      localStorage.setItem(getEditDraftKey(job.id), JSON.stringify(values));
+    } catch {
+      // ignore
+    }
+  }, [values, job.id]);
 
   const updateField = useCallback((field: keyof FormValues, value: string | boolean) => {
     setValues((prev) => ({ ...prev, [field]: value }));
@@ -204,18 +234,26 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
     if (values.is_urgent) formData.set("is_urgent", "on");
 
     startTransition(async () => {
-      const result = await updateJob({ error: null }, formData);
-      if (result?.error) {
-        setServerError(result.error);
-        if (result.fieldErrors) {
-          setFieldErrors(result.fieldErrors);
+      try {
+        const result = await updateJob({ error: null }, formData);
+        if (result?.error) {
+          setServerError(result.error);
+          if (result.fieldErrors) {
+            setFieldErrors(result.fieldErrors);
+          }
+        } else {
+          // Success - clear edit draft
+          try { localStorage.removeItem(getEditDraftKey(job.id)); } catch { /* ignore */ }
         }
+      } catch {
+        // redirect() throws on success
+        try { localStorage.removeItem(getEditDraftKey(job.id)); } catch { /* ignore */ }
       }
     });
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6" noValidate>
       {serverError && (
         <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[10px]">
           {serverError}
@@ -234,7 +272,6 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
           name="profession_id"
           options={professions}
           placeholder={t("createAd.selectProfession")}
-          required
           value={values.profession_id}
           onChange={(e) => updateField("profession_id", e.target.value)}
           error={fieldErrors.profession_id}
@@ -246,7 +283,6 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             name="city_id"
             options={cityOptionsWithNew}
             placeholder={t("createAd.selectCity")}
-            required
             value={values.city_id}
             onChange={(e) => updateField("city_id", e.target.value)}
             error={fieldErrors.city_id}
@@ -257,7 +293,6 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
                 label={t("createAd.newCityName")}
                 name="new_city_name"
                 placeholder="Ex: Biarritz"
-                required
                 value={values.new_city_name}
                 onChange={(e) => updateField("new_city_name", e.target.value)}
                 error={fieldErrors.new_city_name}
@@ -288,7 +323,6 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             label={t("createAd.startDate")}
             name="work_date"
             type="date"
-            required
             value={values.work_date}
             onChange={(e) => updateField("work_date", e.target.value)}
             error={fieldErrors.work_date}
@@ -308,7 +342,6 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             label={t("createAd.startTime")}
             name="start_time"
             type="time"
-            required
             value={values.start_time}
             onChange={(e) => updateField("start_time", e.target.value)}
             error={fieldErrors.start_time}
@@ -317,7 +350,6 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             label={t("createAd.endTime")}
             name="end_time"
             type="time"
-            required
             value={values.end_time}
             onChange={(e) => updateField("end_time", e.target.value)}
             error={fieldErrors.end_time}
@@ -332,7 +364,6 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             placeholder="14"
             min="1"
             step="0.5"
-            required
             value={values.salary}
             onChange={(e) => updateField("salary", e.target.value)}
             error={fieldErrors.salary}
@@ -370,7 +401,6 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
           name="contact_phone"
           type="tel"
           placeholder="06 XX XX XX XX"
-          required
           value={values.contact_phone}
           onChange={(e) => updateField("contact_phone", e.target.value)}
           error={fieldErrors.contact_phone}
