@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useActionState } from "react";
-import { createJob } from "@/lib/actions/jobs";
-import { CHARITY_NAME } from "@/lib/utils/constants";
+import { updateJob } from "@/lib/actions/jobs";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,19 +13,47 @@ type SelectOption = {
   label: string;
 };
 
-type CreateAdFormProps = {
-  professions: SelectOption[];
-  cities: SelectOption[];
+type JobData = {
+  id: string;
+  profession_id: string;
+  city_id: string;
+  work_date: string;
+  work_end_date: string | null;
+  start_time: string;
+  end_time: string;
+  hourly_rate: number | null;
+  daily_rate: number | null;
+  flat_rate: number | null;
+  contact_phone: string;
+  contact_name: string | null;
+  required_skill: string | null;
+  description: string | null;
+  is_urgent: boolean;
 };
 
-export function CreateAdForm({ professions, cities: initialCities }: CreateAdFormProps) {
-  const [state, formAction, pending] = useActionState(createJob, {
+type EditAdFormProps = {
+  professions: SelectOption[];
+  cities: SelectOption[];
+  job: JobData;
+};
+
+function getSalaryType(job: JobData): string {
+  if (job.daily_rate) return "daily";
+  if (job.flat_rate) return "flat";
+  return "hourly";
+}
+
+function getSalaryValue(job: JobData): number {
+  return job.hourly_rate ?? job.daily_rate ?? job.flat_rate ?? 0;
+}
+
+export function EditAdForm({ professions, cities: initialCities, job }: EditAdFormProps) {
+  const [state, formAction, pending] = useActionState(updateJob, {
     error: null,
   });
   const { t } = useTranslation();
   const [showNewCity, setShowNewCity] = useState(false);
-  const [selectedCity, setSelectedCity] = useState("");
-  const [cities, setCities] = useState(initialCities);
+  const [selectedCity, setSelectedCity] = useState(job.city_id);
 
   const salaryTypes = [
     { value: "hourly", label: t("job.perHour") },
@@ -35,7 +62,7 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
   ];
 
   const cityOptionsWithNew = [
-    ...cities,
+    ...initialCities,
     { value: "__new__", label: `+ ${t("createAd.addNewCity")}` },
   ];
 
@@ -47,6 +74,8 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
 
   return (
     <form action={formAction} className="space-y-6">
+      <input type="hidden" name="job_id" value={job.id} />
+
       {state?.error && (
         <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[10px]">
           {state.error}
@@ -66,7 +95,7 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           options={professions}
           placeholder={t("createAd.selectProfession")}
           required
-          defaultValue=""
+          defaultValue={job.profession_id}
         />
 
         <div>
@@ -76,7 +105,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             options={cityOptionsWithNew}
             placeholder={t("createAd.selectCity")}
             required
-            defaultValue=""
             value={selectedCity}
             onChange={handleCityChange}
           />
@@ -101,6 +129,7 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           label={t("createAd.requiredSkill")}
           name="required_skill"
           placeholder={t("createAd.requiredSkillPlaceholder")}
+          defaultValue={job.required_skill ?? ""}
         />
 
         {/* Date range */}
@@ -110,11 +139,13 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             name="work_date"
             type="date"
             required
+            defaultValue={job.work_date}
           />
           <Input
             label={t("createAd.endDate")}
             name="work_end_date"
             type="date"
+            defaultValue={job.work_end_date ?? ""}
           />
         </div>
 
@@ -124,12 +155,14 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             name="start_time"
             type="time"
             required
+            defaultValue={job.start_time}
           />
           <Input
             label={t("createAd.endTime")}
             name="end_time"
             type="time"
             required
+            defaultValue={job.end_time}
           />
         </div>
 
@@ -142,12 +175,13 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             min="1"
             step="0.5"
             required
+            defaultValue={String(getSalaryValue(job))}
           />
           <Select
             label={t("createAd.salaryType")}
             name="salary_type"
             options={salaryTypes}
-            defaultValue="hourly"
+            defaultValue={getSalaryType(job)}
           />
         </div>
 
@@ -157,6 +191,7 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           placeholder={t("createAd.descriptionPlaceholder")}
           rows={3}
           maxLength={500}
+          defaultValue={job.description ?? ""}
         />
       </div>
 
@@ -173,18 +208,21 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           type="tel"
           placeholder="06 XX XX XX XX"
           required
+          defaultValue={job.contact_phone}
         />
 
         <Input
           label={t("createAd.contactName")}
           name="contact_name"
           placeholder="Jean Dupont"
+          defaultValue={job.contact_name ?? ""}
         />
 
         <label className="flex items-start gap-2 cursor-pointer">
           <input
             type="checkbox"
             name="is_urgent"
+            defaultChecked={job.is_urgent}
             className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary/20 accent-primary"
           />
           <span className="text-sm text-text-secondary">
@@ -193,15 +231,8 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
         </label>
       </div>
 
-      {/* Solidarity message */}
-      <div className="bg-green-50 border border-green-200 rounded-[10px] p-3 text-center">
-        <p className="text-sm text-green-800">
-          {t("solidarity.publishMessage")}
-        </p>
-      </div>
-
       <Button type="submit" fullWidth loading={pending}>
-        {t("createAd.publish")}
+        {t("ad.edit")}
       </Button>
     </form>
   );

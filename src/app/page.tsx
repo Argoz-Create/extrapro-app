@@ -6,6 +6,7 @@ import { HeroSection } from "@/components/layout/hero-section";
 import { JobFilters } from "@/components/job/job-filters";
 import { JobFeed } from "@/components/job/job-feed";
 import { ListingsHeader } from "@/components/job/listings-header";
+import { OurMission } from "@/components/layout/our-mission";
 import { getActiveJobs, getActiveJobCount } from "@/lib/queries/jobs";
 import { getProfessions } from "@/lib/queries/professions";
 import { getCities } from "@/lib/queries/cities";
@@ -57,6 +58,7 @@ export default async function Home({ searchParams }: HomeProps) {
       <TopBar />
       <SolidarityBanner />
       <HeroSection jobCount={totalCount} />
+      <OurMission />
 
       <main className="mx-auto max-w-lg px-4 py-4">
         {/* Filters */}

@@ -1,7 +1,7 @@
 "use client";
 
-import { useTransition, useState } from "react";
-import type { JobAdWithRelations } from "@/lib/types/database";
+import { useTransition, useState, useOptimistic } from "react";
+import type { JobAdWithRelations, JobStatus } from "@/lib/types/database";
 import { formatDate, formatTimeRange, formatSalary } from "@/lib/utils/format";
 import { toggleJobStatus } from "@/lib/actions/jobs";
 import { Card } from "@/components/ui/card";
@@ -18,10 +18,12 @@ export function AdCard({ job }: AdCardProps) {
   const [isPending, startTransition] = useTransition();
   const [showHireModal, setShowHireModal] = useState(false);
   const { t } = useTranslation();
+  const [optimisticStatus, setOptimisticStatus] = useOptimistic(job.status);
 
   function handleToggleStatus() {
-    const newStatus = job.status === "active" ? "inactive" : "active";
+    const newStatus: JobStatus = optimisticStatus === "active" ? "inactive" : "active";
     startTransition(async () => {
+      setOptimisticStatus(newStatus);
       await toggleJobStatus(job.id, newStatus);
     });
   }
@@ -48,8 +50,8 @@ export function AdCard({ job }: AdCardProps) {
               <p className="text-xs text-text-secondary">{job.cities.name}</p>
             </div>
           </div>
-          <Badge variant={job.status as "active" | "inactive" | "filled"}>
-            {statusLabelMap[job.status] || job.status}
+          <Badge variant={optimisticStatus as "active" | "inactive" | "filled"}>
+            {statusLabelMap[optimisticStatus] || optimisticStatus}
           </Badge>
         </div>
 
@@ -67,15 +69,22 @@ export function AdCard({ job }: AdCardProps) {
         </div>
 
         {/* Actions */}
-        {(job.status === "active" || job.status === "inactive") && (
+        {(optimisticStatus === "active" || optimisticStatus === "inactive") && (
           <div className="mt-3 flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              href={`/dashboard/edit/${job.id}`}
+            >
+              {t("ad.edit")}
+            </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={handleToggleStatus}
               loading={isPending}
             >
-              {job.status === "active" ? t("ad.deactivate") : t("ad.activate")}
+              {optimisticStatus === "active" ? t("ad.deactivate") : t("ad.activate")}
             </Button>
             <Button
               variant="primary"

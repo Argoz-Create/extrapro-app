@@ -34,21 +34,22 @@ export async function createJob(
   }
 
   // Extract form data
+  const workEndDate = (formData.get("work_end_date") as string)?.trim();
   const raw = {
-    profession_id: formData.get("profession_id") as string,
-    city_id: formData.get("city_id") as string,
-    new_city_name: (formData.get("new_city_name") as string) || undefined,
-    new_city_postal_code: (formData.get("new_city_postal_code") as string) || undefined,
-    work_date: formData.get("work_date") as string,
-    work_end_date: (formData.get("work_end_date") as string) || undefined,
-    start_time: formData.get("start_time") as string,
-    end_time: formData.get("end_time") as string,
+    profession_id: (formData.get("profession_id") as string) || "",
+    city_id: (formData.get("city_id") as string) || "",
+    new_city_name: (formData.get("new_city_name") as string)?.trim() || undefined,
+    new_city_postal_code: (formData.get("new_city_postal_code") as string)?.trim() || undefined,
+    work_date: (formData.get("work_date") as string) || "",
+    work_end_date: workEndDate || undefined,
+    start_time: (formData.get("start_time") as string) || "",
+    end_time: (formData.get("end_time") as string) || "",
     salary: formData.get("salary") as string,
-    salary_type: formData.get("salary_type") as string,
-    contact_phone: formData.get("contact_phone") as string,
-    contact_name: (formData.get("contact_name") as string) || undefined,
-    required_skill: (formData.get("required_skill") as string) || undefined,
-    description: (formData.get("description") as string) || undefined,
+    salary_type: (formData.get("salary_type") as string) || "hourly",
+    contact_phone: (formData.get("contact_phone") as string) || "",
+    contact_name: (formData.get("contact_name") as string)?.trim() || undefined,
+    required_skill: (formData.get("required_skill") as string)?.trim() || undefined,
+    description: (formData.get("description") as string)?.trim() || undefined,
     is_urgent: formData.get("is_urgent") === "on",
   };
 
@@ -122,6 +123,145 @@ export async function createJob(
 
   if (error) {
     return { error: "Erreur lors de la publication. Veuillez reessayer." };
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/");
+  redirect("/dashboard");
+}
+
+export async function updateJob(
+  prevState: JobActionState,
+  formData: FormData
+): Promise<JobActionState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Non authentifie" };
+  }
+
+  const jobId = formData.get("job_id") as string;
+  if (!jobId) {
+    return { error: "Annonce introuvable" };
+  }
+
+  // Get employer
+  const { data: employer } = await supabase
+    .from("employers")
+    .select("id")
+    .eq("auth_user_id", user.id)
+    .single();
+
+  if (!employer) {
+    return { error: "Profil employeur introuvable" };
+  }
+
+  // Verify ownership
+  const { data: existingJob } = await supabase
+    .from("job_ads")
+    .select("id, employer_id")
+    .eq("id", jobId)
+    .eq("employer_id", employer.id)
+    .single();
+
+  if (!existingJob) {
+    return { error: "Annonce introuvable ou acces non autorise" };
+  }
+
+  // Extract form data
+  const workEndDate = (formData.get("work_end_date") as string)?.trim();
+  const raw = {
+    profession_id: (formData.get("profession_id") as string) || "",
+    city_id: (formData.get("city_id") as string) || "",
+    new_city_name: (formData.get("new_city_name") as string)?.trim() || undefined,
+    new_city_postal_code: (formData.get("new_city_postal_code") as string)?.trim() || undefined,
+    work_date: (formData.get("work_date") as string) || "",
+    work_end_date: workEndDate || undefined,
+    start_time: (formData.get("start_time") as string) || "",
+    end_time: (formData.get("end_time") as string) || "",
+    salary: formData.get("salary") as string,
+    salary_type: (formData.get("salary_type") as string) || "hourly",
+    contact_phone: (formData.get("contact_phone") as string) || "",
+    contact_name: (formData.get("contact_name") as string)?.trim() || undefined,
+    required_skill: (formData.get("required_skill") as string)?.trim() || undefined,
+    description: (formData.get("description") as string)?.trim() || undefined,
+    is_urgent: formData.get("is_urgent") === "on",
+  };
+
+  // Validate
+  const result = createAdSchema.safeParse(raw);
+
+  if (!result.success) {
+    return { error: result.error.issues[0].message };
+  }
+
+  const validated = result.data;
+
+  // Handle "add new city" option
+  let cityId = validated.city_id;
+  if (cityId === "__new__" && validated.new_city_name) {
+    const { data: newCity, error: cityError } = await supabase
+      .from("cities")
+      .insert({
+        name: validated.new_city_name,
+        postal_code: validated.new_city_postal_code || "00000",
+      })
+      .select("id")
+      .single();
+    if (cityError || !newCity) {
+      return { error: "Erreur lors de l'ajout de la nouvelle ville." };
+    }
+    cityId = newCity.id;
+  }
+
+  // Get profession name and city name for auto-generated title
+  const [{ data: profession }, { data: city }] = await Promise.all([
+    supabase
+      .from("professions")
+      .select("name_fr")
+      .eq("id", validated.profession_id)
+      .single(),
+    supabase
+      .from("cities")
+      .select("name")
+      .eq("id", cityId)
+      .single(),
+  ]);
+
+  const title = `${profession?.name_fr ?? "Extra"} - ${city?.name ?? "Ville"}`;
+
+  // Determine rate fields based on salary_type
+  const hourly_rate = validated.salary_type === "hourly" ? validated.salary : null;
+  const daily_rate = validated.salary_type === "daily" ? validated.salary : null;
+  const flat_rate = validated.salary_type === "flat" ? validated.salary : null;
+
+  // Update job ad
+  const { error } = await supabase
+    .from("job_ads")
+    .update({
+      profession_id: validated.profession_id,
+      city_id: cityId,
+      title,
+      description: validated.description || null,
+      work_date: validated.work_date,
+      work_end_date: validated.work_end_date || null,
+      start_time: validated.start_time,
+      end_time: validated.end_time,
+      hourly_rate,
+      daily_rate,
+      flat_rate,
+      contact_phone: validated.contact_phone,
+      contact_name: validated.contact_name || null,
+      required_skill: validated.required_skill || null,
+      is_urgent: validated.is_urgent,
+    })
+    .eq("id", jobId);
+
+  if (error) {
+    return { error: "Erreur lors de la mise a jour. Veuillez reessayer." };
   }
 
   revalidatePath("/dashboard");

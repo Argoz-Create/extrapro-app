@@ -58,6 +58,18 @@ export async function getActiveJobCount(): Promise<number> {
   return count ?? 0;
 }
 
+export async function getJobForEdit(id: string, employerId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("job_ads")
+    .select("*")
+    .eq("id", id)
+    .eq("employer_id", employerId)
+    .single();
+  if (error) return null;
+  return data;
+}
+
 export async function getJobById(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase

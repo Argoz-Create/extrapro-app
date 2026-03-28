@@ -7,7 +7,7 @@ export async function getProfessions(): Promise<Profession[]> {
     .from("professions")
     .select("*")
     .eq("is_active", true)
-    .order("display_order", { ascending: true });
+    .order("name_fr", { ascending: true });
   if (error) throw error;
   return (data ?? []) as Profession[];
 }
