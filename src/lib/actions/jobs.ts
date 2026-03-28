@@ -130,7 +130,8 @@ export async function createJob(
   });
 
   if (error) {
-    return { error: "Erreur lors de la publication. Veuillez reessayer." };
+    console.error("createJob insert error:", error);
+    return { error: `Erreur: ${error.message}` };
   }
 
   revalidatePath("/dashboard");
@@ -207,7 +208,8 @@ export async function saveJobDraft(
   });
 
   if (error) {
-    return { error: "Erreur lors de la sauvegarde du brouillon." };
+    console.error("saveJobDraft insert error:", error);
+    return { error: `Erreur: ${error.message}` };
   }
 
   revalidatePath("/dashboard");
@@ -352,7 +354,8 @@ export async function updateJob(
     .eq("id", jobId);
 
   if (error) {
-    return { error: "Erreur lors de la mise a jour. Veuillez reessayer." };
+    console.error("updateJob error:", error);
+    return { error: `Erreur: ${error.message}` };
   }
 
   revalidatePath("/dashboard");
