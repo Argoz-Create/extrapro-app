@@ -37,11 +37,50 @@ type FormValues = {
 };
 
 const DRAFT_KEY = "extrapro-draft-ad";
+const DRAFT_ERROR_KEY = "extrapro-draft-error";
 
-function loadDraft(): Partial<FormValues> | null {
+const emptyForm: FormValues = {
+  profession_id: "",
+  city_id: "",
+  new_city_name: "",
+  new_city_postal_code: "",
+  required_skill: "",
+  work_date: "",
+  work_end_date: "",
+  start_time: "",
+  end_time: "",
+  salary: "",
+  salary_type: "hourly",
+  description: "",
+  contact_phone: "",
+  contact_name: "",
+  is_urgent: false,
+};
+
+// Read from localStorage synchronously on init so values survive component remounts
+function getInitialValues(): FormValues {
+  if (typeof window === "undefined") return emptyForm;
   try {
     const saved = localStorage.getItem(DRAFT_KEY);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return { ...emptyForm, ...parsed };
+    }
+  } catch {
+    // ignore
+  }
+  return emptyForm;
+}
+
+function getInitialError(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const err = localStorage.getItem(DRAFT_ERROR_KEY);
+    if (err) {
+      // Clear it after reading so it doesn't persist across reloads
+      localStorage.removeItem(DRAFT_ERROR_KEY);
+      return err;
+    }
   } catch {
     // ignore
   }
@@ -59,6 +98,15 @@ function saveDraftToStorage(values: FormValues) {
 function clearDraftFromStorage() {
   try {
     localStorage.removeItem(DRAFT_KEY);
+    localStorage.removeItem(DRAFT_ERROR_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+function saveErrorToStorage(error: string) {
+  try {
+    localStorage.setItem(DRAFT_ERROR_KEY, error);
   } catch {
     // ignore
   }
@@ -67,17 +115,17 @@ function clearDraftFromStorage() {
 const frenchPhoneRegex =
   /^(?:(?:\+|00)33[\s.-]?|0)[1-9](?:[\s.-]?\d{2}){4}$/;
 
-function validateForm(values: FormValues, t: (key: string) => string): Record<string, string> {
+function validateForm(values: FormValues): Record<string, string> {
   const errors: Record<string, string> = {};
 
   if (!values.profession_id) {
-    errors.profession_id = t("createAd.selectProfession");
+    errors.profession_id = "Veuillez choisir une profession";
   }
   if (!values.city_id) {
-    errors.city_id = t("createAd.selectCity");
+    errors.city_id = "Veuillez choisir une ville";
   }
   if (values.city_id === "__new__" && !values.new_city_name.trim()) {
-    errors.new_city_name = t("createAd.newCityName");
+    errors.new_city_name = "Nom de la ville requis";
   }
   if (!values.work_date) {
     errors.work_date = "La date de travail est requise";
@@ -117,63 +165,50 @@ function validateForm(values: FormValues, t: (key: string) => string): Record<st
   return errors;
 }
 
+function buildFormData(values: FormValues): FormData {
+  const formData = new FormData();
+  formData.set("profession_id", values.profession_id);
+  formData.set("city_id", values.city_id);
+  if (values.new_city_name) formData.set("new_city_name", values.new_city_name);
+  if (values.new_city_postal_code) formData.set("new_city_postal_code", values.new_city_postal_code);
+  formData.set("work_date", values.work_date);
+  if (values.work_end_date) formData.set("work_end_date", values.work_end_date);
+  formData.set("start_time", values.start_time);
+  formData.set("end_time", values.end_time);
+  formData.set("salary", values.salary);
+  formData.set("salary_type", values.salary_type);
+  if (values.description) formData.set("description", values.description);
+  formData.set("contact_phone", values.contact_phone);
+  if (values.contact_name) formData.set("contact_name", values.contact_name);
+  if (values.required_skill) formData.set("required_skill", values.required_skill);
+  if (values.is_urgent) formData.set("is_urgent", "on");
+  return formData;
+}
+
 export function CreateAdForm({ professions, cities: initialCities }: CreateAdFormProps) {
   const { t } = useTranslation();
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
   const [isDraftPending, startDraftTransition] = useTransition();
-  const [serverError, setServerError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(getInitialError);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [cities] = useState(initialCities);
 
-  // Form values - controlled inputs to preserve data on validation
-  const [values, setValues] = useState<FormValues>(() => {
-    const defaults: FormValues = {
-      profession_id: "",
-      city_id: "",
-      new_city_name: "",
-      new_city_postal_code: "",
-      required_skill: "",
-      work_date: "",
-      work_end_date: "",
-      start_time: "",
-      end_time: "",
-      salary: "",
-      salary_type: "hourly",
-      description: "",
-      contact_phone: "",
-      contact_name: "",
-      is_urgent: false,
-    };
-    return defaults;
-  });
+  // Initialize values from localStorage synchronously to survive remounts
+  const [values, setValues] = useState<FormValues>(getInitialValues);
 
-  // Load draft from localStorage on mount
+  // Save to localStorage whenever values change
   useEffect(() => {
-    const draft = loadDraft();
-    if (draft) {
-      setValues((prev) => ({ ...prev, ...draft }));
+    const hasAnyValue = Object.entries(values).some(
+      ([key, val]) => key !== "salary_type" && key !== "is_urgent" && val !== "" && val !== false
+    );
+    if (hasAnyValue) {
+      saveDraftToStorage(values);
     }
-  }, []);
-
-  // Auto-save draft on value changes (debounced)
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
-  useEffect(() => {
-    clearTimeout(saveTimeoutRef.current);
-    saveTimeoutRef.current = setTimeout(() => {
-      const hasAnyValue = Object.entries(values).some(
-        ([key, val]) => key !== "salary_type" && key !== "is_urgent" && val !== "" && val !== false
-      );
-      if (hasAnyValue) {
-        saveDraftToStorage(values);
-      }
-    }, 500);
-    return () => clearTimeout(saveTimeoutRef.current);
   }, [values]);
 
   const updateField = useCallback((field: keyof FormValues, value: string | boolean) => {
     setValues((prev) => ({ ...prev, [field]: value }));
-    // Clear field error when user starts typing
     setFieldErrors((prev) => {
       if (prev[field]) {
         const next = { ...prev };
@@ -201,7 +236,7 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
     e.preventDefault();
 
     // Client-side validation
-    const errors = validateForm(values, t);
+    const errors = validateForm(values);
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       setServerError(null);
@@ -215,68 +250,54 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
     setFieldErrors({});
     setServerError(null);
 
-    // Build FormData and submit to server action
-    const formData = new FormData();
-    formData.set("profession_id", values.profession_id);
-    formData.set("city_id", values.city_id);
-    if (values.new_city_name) formData.set("new_city_name", values.new_city_name);
-    if (values.new_city_postal_code) formData.set("new_city_postal_code", values.new_city_postal_code);
-    formData.set("work_date", values.work_date);
-    if (values.work_end_date) formData.set("work_end_date", values.work_end_date);
-    formData.set("start_time", values.start_time);
-    formData.set("end_time", values.end_time);
-    formData.set("salary", values.salary);
-    formData.set("salary_type", values.salary_type);
-    if (values.description) formData.set("description", values.description);
-    formData.set("contact_phone", values.contact_phone);
-    if (values.contact_name) formData.set("contact_name", values.contact_name);
-    if (values.required_skill) formData.set("required_skill", values.required_skill);
-    if (values.is_urgent) formData.set("is_urgent", "on");
+    // Save values to localStorage before server call (in case of remount)
+    saveDraftToStorage(values);
+
+    const formData = buildFormData(values);
 
     startTransition(async () => {
-      const result = await createJob({ error: null }, formData);
-      if (result?.error) {
-        setServerError(result.error);
-        if (result.fieldErrors) {
-          setFieldErrors(result.fieldErrors);
+      try {
+        const result = await createJob({ error: null }, formData);
+        if (result?.error) {
+          // Save error to localStorage too so it survives remount
+          saveErrorToStorage(result.error);
+          setServerError(result.error);
+          if (result.fieldErrors) {
+            setFieldErrors(result.fieldErrors);
+          }
+        } else {
+          // Success - clear draft
+          clearDraftFromStorage();
         }
-      } else {
-        // Success - clear draft
-        clearDraftFromStorage();
+      } catch {
+        // redirect() throws — this is expected on success
       }
     });
   }
 
   function handleSaveDraft() {
-    const formData = new FormData();
-    formData.set("profession_id", values.profession_id);
-    formData.set("city_id", values.city_id);
-    if (values.new_city_name) formData.set("new_city_name", values.new_city_name);
-    if (values.new_city_postal_code) formData.set("new_city_postal_code", values.new_city_postal_code);
-    formData.set("work_date", values.work_date);
-    if (values.work_end_date) formData.set("work_end_date", values.work_end_date);
-    formData.set("start_time", values.start_time);
-    formData.set("end_time", values.end_time);
-    formData.set("salary", values.salary);
-    formData.set("salary_type", values.salary_type);
-    if (values.description) formData.set("description", values.description);
-    formData.set("contact_phone", values.contact_phone);
-    if (values.contact_name) formData.set("contact_name", values.contact_name);
-    if (values.required_skill) formData.set("required_skill", values.required_skill);
-    if (values.is_urgent) formData.set("is_urgent", "on");
+    // Save values to localStorage before server call
+    saveDraftToStorage(values);
+
+    const formData = buildFormData(values);
 
     startDraftTransition(async () => {
-      const result = await saveJobDraft({ error: null }, formData);
-      if (result?.error) {
-        setServerError(result.error);
-      } else {
+      try {
+        const result = await saveJobDraft({ error: null }, formData);
+        if (result?.error) {
+          setServerError(result.error);
+        } else {
+          clearDraftFromStorage();
+        }
+      } catch {
+        // redirect() throws — this is expected on success
         clearDraftFromStorage();
       }
     });
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6" noValidate>
       {serverError && (
         <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[10px]">
           {serverError}
@@ -295,7 +316,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           name="profession_id"
           options={professions}
           placeholder={t("createAd.selectProfession")}
-          required
           value={values.profession_id}
           onChange={(e) => updateField("profession_id", e.target.value)}
           error={fieldErrors.profession_id}
@@ -307,7 +327,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             name="city_id"
             options={cityOptionsWithNew}
             placeholder={t("createAd.selectCity")}
-            required
             value={values.city_id}
             onChange={(e) => updateField("city_id", e.target.value)}
             error={fieldErrors.city_id}
@@ -318,7 +337,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
                 label={t("createAd.newCityName")}
                 name="new_city_name"
                 placeholder="Ex: Biarritz"
-                required
                 value={values.new_city_name}
                 onChange={(e) => updateField("new_city_name", e.target.value)}
                 error={fieldErrors.new_city_name}
@@ -349,7 +367,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             label={t("createAd.startDate")}
             name="work_date"
             type="date"
-            required
             value={values.work_date}
             onChange={(e) => updateField("work_date", e.target.value)}
             error={fieldErrors.work_date}
@@ -369,7 +386,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             label={t("createAd.startTime")}
             name="start_time"
             type="time"
-            required
             value={values.start_time}
             onChange={(e) => updateField("start_time", e.target.value)}
             error={fieldErrors.start_time}
@@ -378,7 +394,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             label={t("createAd.endTime")}
             name="end_time"
             type="time"
-            required
             value={values.end_time}
             onChange={(e) => updateField("end_time", e.target.value)}
             error={fieldErrors.end_time}
@@ -393,7 +408,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
             placeholder="14"
             min="1"
             step="0.5"
-            required
             value={values.salary}
             onChange={(e) => updateField("salary", e.target.value)}
             error={fieldErrors.salary}
@@ -431,7 +445,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           name="contact_phone"
           type="tel"
           placeholder="06 XX XX XX XX"
-          required
           value={values.contact_phone}
           onChange={(e) => updateField("contact_phone", e.target.value)}
           error={fieldErrors.contact_phone}
@@ -466,7 +479,7 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
         </p>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <Button type="submit" fullWidth loading={isPending}>
           {t("createAd.publish")}
         </Button>
