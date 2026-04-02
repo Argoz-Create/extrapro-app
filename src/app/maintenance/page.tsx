@@ -131,18 +131,6 @@ export default function MaintenancePage() {
         </button>
       </form>
 
-      {/* Solidarity note */}
-      <p style={{
-        marginTop: 40,
-        fontSize: 12,
-        color: '#9ca3af',
-        textAlign: 'center',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 4,
-      }}>
-        ♥ Chaque recrutement soutient Les Restos du Coeur
-      </p>
     </div>
   )
 }
