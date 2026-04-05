@@ -3,7 +3,7 @@
 import { useTransition, useState, useOptimistic } from "react";
 import type { JobAdWithRelations, JobStatus } from "@/lib/types/database";
 import { formatDate, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
-import { toggleJobStatus } from "@/lib/actions/jobs";
+import { toggleJobStatus, relistJob } from "@/lib/actions/jobs";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,9 +16,20 @@ type AdCardProps = {
 
 export function AdCard({ job }: AdCardProps) {
   const [isPending, startTransition] = useTransition();
+  const [isRelistPending, startRelistTransition] = useTransition();
   const [showHireModal, setShowHireModal] = useState(false);
   const { t } = useTranslation();
   const [optimisticStatus, setOptimisticStatus] = useOptimistic(job.status);
+
+  function handleRelist() {
+    startRelistTransition(async () => {
+      try {
+        await relistJob(job.id);
+      } catch {
+        // redirect() throws on success
+      }
+    });
+  }
 
   function handleToggleStatus() {
     const newStatus: JobStatus = optimisticStatus === "active" ? "inactive" : "active";
@@ -124,6 +135,14 @@ export function AdCard({ job }: AdCardProps) {
               href={`/annonces/${job.id}`}
             >
               {t("ad.view")}
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleRelist}
+              loading={isRelistPending}
+            >
+              {t("ad.relist")}
             </Button>
           </div>
         )}

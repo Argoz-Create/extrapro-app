@@ -553,13 +553,6 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
         </label>
       </div>
 
-      {/* Solidarity message */}
-      <div className="bg-green-50 border border-green-200 rounded-[10px] p-3 text-center">
-        <p className="text-sm text-green-800">
-          {t("solidarity.publishMessage")}
-        </p>
-      </div>
-
       <div className="flex flex-col gap-2">
         <Button type="submit" fullWidth loading={isPending}>
           {t("createAd.publish")}

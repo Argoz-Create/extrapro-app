@@ -11,9 +11,10 @@ type DashboardContentProps = {
   companyName: string;
   stats: EmployerStats;
   jobs: JobAdWithRelations[];
+  newlyExpiredCount: number;
 };
 
-export function DashboardContent({ companyName, stats, jobs }: DashboardContentProps) {
+export function DashboardContent({ companyName, stats, jobs, newlyExpiredCount }: DashboardContentProps) {
   const { t } = useTranslation();
 
   const drafts = jobs.filter((j) => j.status === "draft");
@@ -28,6 +29,13 @@ export function DashboardContent({ companyName, stats, jobs }: DashboardContentP
         </h1>
         <p className="text-sm text-text-secondary">{companyName}</p>
       </div>
+
+      {/* Expired notice */}
+      {newlyExpiredCount > 0 && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm p-3 rounded-[10px]">
+          {t("ad.expiredNotice")}
+        </div>
+      )}
 
       {/* Stats */}
       <StatsGrid stats={stats} />

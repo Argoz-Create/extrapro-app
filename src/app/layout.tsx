@@ -4,13 +4,13 @@ import { LanguageProvider } from "@/lib/i18n/context";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "EXTRAPRO — Recrutement solidaire en restauration",
+  title: "EXTRAPRO — Recrutement en restauration",
   description:
-    "Trouvez des extras en restauration. Chaque recrutement soutient Les Restos du Coeur.",
+    "Trouvez des extras en restauration et hotellerie. Publiez et consultez des annonces gratuitement.",
   openGraph: {
-    title: "EXTRAPRO — Recrutement solidaire en restauration",
+    title: "EXTRAPRO — Recrutement en restauration",
     description:
-      "Trouvez des extras en restauration. Chaque recrutement soutient Les Restos du Coeur.",
+      "Trouvez des extras en restauration et hotellerie. Publiez et consultez des annonces gratuitement.",
     locale: "fr_FR",
     type: "website",
   },

@@ -13,9 +13,6 @@ export const JOB_STATUSES = {
   expired: { label: "Expire", color: "red" },
 } as const;
 
-export const DONATION_AMOUNT = 1.0;
-export const DONATION_CURRENCY = "EUR";
-export const CHARITY_NAME = "Les Restos du Coeur";
 
 export const SALARY_TYPES = [
   { value: "hourly", label: "Par heure" },

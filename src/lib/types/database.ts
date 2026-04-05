@@ -129,7 +129,6 @@ export interface PlatformStats {
 
 export interface EmployerStats {
   total_hires: number;
-  total_donations: number;
   active_ads: number;
   total_views: number;
 }

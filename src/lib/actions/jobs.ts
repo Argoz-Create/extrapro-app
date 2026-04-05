@@ -428,6 +428,78 @@ export async function toggleJobStatus(
   revalidatePath("/", "layout");
 }
 
+export async function relistJob(jobAdId: string): Promise<{ error: string | null; newJobId?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Non authentifie" };
+  }
+
+  const { data: employer } = await supabase
+    .from("employers")
+    .select("id")
+    .eq("auth_user_id", user.id)
+    .single();
+
+  if (!employer) {
+    return { error: "Profil employeur introuvable" };
+  }
+
+  // Fetch the expired job
+  const { data: oldJob } = await supabase
+    .from("job_ads")
+    .select("*")
+    .eq("id", jobAdId)
+    .eq("employer_id", employer.id)
+    .single();
+
+  if (!oldJob) {
+    return { error: "Annonce introuvable ou acces non autorise" };
+  }
+
+  // Create a new draft copy with cleared dates and reset stats
+  const { data: newJob, error } = await supabase
+    .from("job_ads")
+    .insert({
+      employer_id: employer.id,
+      profession_id: oldJob.profession_id,
+      city_id: oldJob.city_id,
+      title: oldJob.title,
+      description: oldJob.description,
+      work_date: null,
+      work_end_date: null,
+      start_time: oldJob.start_time,
+      end_time: oldJob.end_time,
+      hourly_rate: oldJob.hourly_rate,
+      daily_rate: oldJob.daily_rate,
+      flat_rate: oldJob.flat_rate,
+      contact_phone: oldJob.contact_phone,
+      contact_name: oldJob.contact_name,
+      contact_email: oldJob.contact_email,
+      contact_whatsapp: oldJob.contact_whatsapp,
+      required_skill: oldJob.required_skill,
+      is_urgent: oldJob.is_urgent,
+      status: "draft",
+      view_count: 0,
+      call_click_count: 0,
+      hire_confirmed: false,
+      donation_generated: false,
+    })
+    .select("id")
+    .single();
+
+  if (error || !newJob) {
+    console.error("relistJob error:", error);
+    return { error: "Erreur lors de la re-publication." };
+  }
+
+  revalidatePath("/dashboard", "layout");
+  redirect(`/dashboard/edit/${newJob.id}`);
+}
+
 export async function confirmHire(jobAdId: string): Promise<{ error: string | null }> {
   const supabase = await createClient();
   const { error } = await supabase
@@ -439,7 +511,6 @@ export async function confirmHire(jobAdId: string): Promise<{ error: string | nu
     return { error: "Erreur lors de la confirmation. Veuillez reessayer." };
   }
 
-  // The DB trigger generate_donation_on_hire handles donation creation
   revalidatePath("/dashboard", "layout");
   revalidatePath("/", "layout");
   return { error: null };

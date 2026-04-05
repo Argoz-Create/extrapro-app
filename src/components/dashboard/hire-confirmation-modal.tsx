@@ -4,7 +4,6 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import type { JobAdWithRelations } from "@/lib/types/database";
 import { formatDate } from "@/lib/utils/format";
-import { CHARITY_NAME, DONATION_AMOUNT } from "@/lib/utils/constants";
 import { confirmHire } from "@/lib/actions/jobs";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -34,12 +33,7 @@ export function HireConfirmationModal({
           toast.error(result.error);
           return;
         }
-        toast.success(
-          t("hire.success", {
-            amount: String(DONATION_AMOUNT),
-            charity: CHARITY_NAME,
-          })
-        );
+        toast.success(t("hire.success"));
         onClose();
       } catch {
         toast.error(t("common.error"));
@@ -49,16 +43,10 @@ export function HireConfirmationModal({
 
   return (
     <Modal open={open} onClose={onClose} title={t("hire.confirmTitle")}>
-      <p className="text-sm text-text-secondary mb-1">
+      <p className="text-sm text-text-secondary mb-5">
         {t("hire.confirmMessage", {
           profession: job.professions?.name_fr ?? "",
           date: job.work_date ? formatDate(job.work_date) : "",
-        })}
-      </p>
-      <p className="text-xs text-text-tertiary mb-5">
-        {t("hire.donationNote", {
-          amount: String(DONATION_AMOUNT),
-          charity: CHARITY_NAME,
         })}
       </p>
 

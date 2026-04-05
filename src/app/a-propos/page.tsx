@@ -8,7 +8,7 @@ import type { PlatformStats } from "@/lib/types/database";
 export const metadata: Metadata = {
   title: "A propos — EXTRAPRO",
   description:
-    "EXTRAPRO est la plateforme solidaire de recrutement en restauration. Chaque embauche soutient Les Restos du Coeur.",
+    "EXTRAPRO est la plateforme de recrutement en restauration et hotellerie.",
 };
 
 export default async function AboutPage() {

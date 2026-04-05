@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/context";
-import { formatNumber, formatCurrency } from "@/lib/utils/format";
+import { formatNumber } from "@/lib/utils/format";
 import type { PlatformStats } from "@/lib/types/database";
 
 type AboutContentProps = {
@@ -56,21 +56,17 @@ export function AboutContent({ stats }: AboutContentProps) {
         </div>
       </section>
 
-      {/* Impact solidaire */}
+      {/* Impact */}
       <section className="mb-8">
         <h2 className="text-xl font-bold text-text-primary mb-4">
           {t("about.impactTitle")}
         </h2>
         <div className="rounded-[14px] border border-border-light bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_1px_3px_rgba(0,0,0,0.06)]">
           {stats ? (
-            <div className="grid grid-cols-2 gap-4 text-center">
+            <div className="grid grid-cols-3 gap-4 text-center">
               <StatBlock
                 value={formatNumber(stats.total_hires)}
                 label={t("about.totalHires")}
-              />
-              <StatBlock
-                value={formatCurrency(stats.total_donation_amount)}
-                label={t("about.totalDonations")}
               />
               <StatBlock
                 value={formatNumber(stats.total_employers)}
@@ -86,21 +82,6 @@ export function AboutContent({ stats }: AboutContentProps) {
               {t("about.statsUnavailable")}
             </p>
           )}
-        </div>
-      </section>
-
-      {/* Partenaire */}
-      <section className="mb-8">
-        <h2 className="text-xl font-bold text-text-primary mb-3">
-          {t("about.partnerTitle")}
-        </h2>
-        <div className="rounded-[14px] border border-border-light bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_1px_3px_rgba(0,0,0,0.06)]">
-          <p className="text-lg font-semibold text-text-primary mb-2">
-            {"\u{1F495}"} {t("about.partnerName")}
-          </p>
-          <p className="text-sm text-text-secondary leading-relaxed">
-            {t("about.partnerText")}
-          </p>
         </div>
       </section>
     </main>
