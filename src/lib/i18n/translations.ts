@@ -93,11 +93,13 @@ export const translations = {
     "ad.deactivate": "Desactiver",
     "ad.activate": "Activer",
     "ad.markFilled": "Poste pourvu",
+    "ad.relist": "Re-publier",
     "ad.noAds": "Aucune annonce dans cette categorie",
     "ad.continueDraft": "Continuer le brouillon",
     "ad.saveDraft": "Sauvegarder brouillon",
     "ad.draftSaved": "Brouillon sauvegarde !",
     "ad.draftLoaded": "Brouillon charge",
+    "ad.expiredNotice": "Certaines annonces ont expire car la date de travail est passee. Vous pouvez les re-publier avec de nouvelles dates.",
 
     // Ad status
     "status.active": "Actif",
@@ -293,11 +295,13 @@ export const translations = {
     "ad.deactivate": "Deactivate",
     "ad.activate": "Activate",
     "ad.markFilled": "Position filled",
+    "ad.relist": "Re-list",
     "ad.noAds": "No listings in this category",
     "ad.continueDraft": "Continue draft",
     "ad.saveDraft": "Save draft",
     "ad.draftSaved": "Draft saved!",
     "ad.draftLoaded": "Draft loaded",
+    "ad.expiredNotice": "Some listings have expired because the work date has passed. You can re-list them with new dates.",
 
     // Ad status
     "status.active": "Active",

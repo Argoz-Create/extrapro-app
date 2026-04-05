@@ -55,18 +55,21 @@ export async function getEmployerStats(
 
 export async function getEmployerJobs(
   employerId: string
-): Promise<JobAdWithRelations[]> {
+): Promise<{ jobs: JobAdWithRelations[]; newlyExpiredCount: number }> {
   const supabase = await createClient();
 
   // Auto-expire active jobs where work_date has passed and no hire was confirmed
   const today = new Date().toISOString().split("T")[0];
-  await supabase
+  const { data: expiredRows } = await supabase
     .from("job_ads")
     .update({ status: "expired" })
     .eq("employer_id", employerId)
     .eq("status", "active")
     .eq("hire_confirmed", false)
-    .lt("work_date", today);
+    .lt("work_date", today)
+    .select("id");
+
+  const newlyExpiredCount = expiredRows?.length ?? 0;
 
   const { data } = await supabase
     .from("job_ads")
@@ -74,7 +77,10 @@ export async function getEmployerJobs(
     .eq("employer_id", employerId)
     .order("created_at", { ascending: false });
 
-  return (data ?? []) as unknown as JobAdWithRelations[];
+  return {
+    jobs: (data ?? []) as unknown as JobAdWithRelations[],
+    newlyExpiredCount,
+  };
 }
 
 export async function getEmployerDonations(employerId: string) {

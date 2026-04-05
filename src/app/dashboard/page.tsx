@@ -19,7 +19,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const [stats, jobs] = await Promise.all([
+  const [stats, { jobs, newlyExpiredCount }] = await Promise.all([
     getEmployerStats(employer.id),
     getEmployerJobs(employer.id),
   ]);
@@ -29,6 +29,7 @@ export default async function DashboardPage() {
       companyName={employer.company_name}
       stats={stats}
       jobs={jobs}
+      newlyExpiredCount={newlyExpiredCount}
     />
   );
 }
