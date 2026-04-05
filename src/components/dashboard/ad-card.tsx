@@ -2,7 +2,7 @@
 
 import { useTransition, useState, useOptimistic } from "react";
 import type { JobAdWithRelations, JobStatus } from "@/lib/types/database";
-import { formatDate, formatTimeRange, formatSalary } from "@/lib/utils/format";
+import { formatDate, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
 import { toggleJobStatus } from "@/lib/actions/jobs";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,24 +36,33 @@ export function AdCard({ job }: AdCardProps) {
     draft: t("status.draft"),
   };
   const salary = formatSalary(job.hourly_rate, job.daily_rate, job.flat_rate);
+  const shortId = job.id.slice(0, 8).toUpperCase();
 
   return (
     <>
       <Card className="p-4">
-        {/* Header: profession + status */}
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xl flex-shrink-0">{job.professions?.icon ?? "\u{1F4DD}"}</span>
-            <div className="min-w-0">
-              <p className="font-semibold text-sm text-text-primary truncate">
-                {job.professions?.name_fr ?? t("status.draft")}
-              </p>
-              <p className="text-xs text-text-secondary">{job.cities?.name ?? ""}</p>
-            </div>
+        {/* Header: publication number + date + status */}
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="flex items-center gap-2 text-xs text-text-tertiary">
+            <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">#{shortId}</span>
+            {job.published_at && (
+              <span>{formatDateTime(job.published_at)}</span>
+            )}
           </div>
           <Badge variant={optimisticStatus as "active" | "inactive" | "filled" | "draft"}>
             {statusLabelMap[optimisticStatus] || optimisticStatus}
           </Badge>
+        </div>
+
+        {/* Profession + city */}
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-xl flex-shrink-0">{job.professions?.icon ?? "\u{1F4DD}"}</span>
+          <div className="min-w-0">
+            <p className="font-semibold text-sm text-text-primary truncate">
+              {job.professions?.name_fr ?? t("status.draft")}
+            </p>
+            <p className="text-xs text-text-secondary">{job.cities?.name ?? ""}</p>
+          </div>
         </div>
 
         {/* Details */}
@@ -104,6 +113,17 @@ export function AdCard({ job }: AdCardProps) {
               onClick={() => setShowHireModal(true)}
             >
               {t("ad.markFilled")}
+            </Button>
+          </div>
+        )}
+        {(optimisticStatus === "filled" || optimisticStatus === "expired") && (
+          <div className="mt-3 flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              href={`/annonces/${job.id}`}
+            >
+              {t("ad.view")}
             </Button>
           </div>
         )}

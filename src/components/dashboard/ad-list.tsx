@@ -19,6 +19,7 @@ export function AdList({ jobs }: AdListProps) {
     { value: "active", label: t("tabs.active") },
     { value: "inactive", label: t("tabs.inactive") },
     { value: "filled", label: t("tabs.filled") },
+    { value: "expired", label: t("status.expired") },
   ];
 
   const filteredJobs =

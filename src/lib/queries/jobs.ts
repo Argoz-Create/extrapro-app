@@ -8,11 +8,27 @@ export type JobFilters = {
   region_id?: string;
 };
 
+export async function expireOldJobs(): Promise<void> {
+  const supabase = await createClient();
+  const today = new Date().toISOString().split("T")[0];
+
+  // Auto-expire active jobs where work_date has passed and no hire was confirmed
+  await supabase
+    .from("job_ads")
+    .update({ status: "expired" })
+    .eq("status", "active")
+    .eq("hire_confirmed", false)
+    .lt("work_date", today);
+}
+
 export async function getActiveJobs(
   filters?: JobFilters,
   cursor?: string,
   limit = 20
 ): Promise<JobAdWithRelations[]> {
+  // Auto-expire old jobs before fetching
+  await expireOldJobs();
+
   const supabase = await createClient();
   let query = supabase
     .from("job_ads")

@@ -75,18 +75,29 @@ export async function createJob(
   // Handle "add new city" option
   let cityId = validated.city_id;
   if (cityId === "__new__" && validated.new_city_name) {
-    const { data: newCity, error: cityError } = await supabase
+    // Check if city with this name already exists
+    const { data: existingCity } = await supabase
       .from("cities")
-      .insert({
-        name: validated.new_city_name,
-        postal_code: validated.new_city_postal_code || "00000",
-      })
       .select("id")
-      .single();
-    if (cityError || !newCity) {
-      return { error: "Erreur lors de l'ajout de la nouvelle ville." };
+      .ilike("name", validated.new_city_name.trim())
+      .maybeSingle();
+
+    if (existingCity) {
+      cityId = existingCity.id;
+    } else {
+      const { data: newCity, error: cityError } = await supabase
+        .from("cities")
+        .insert({
+          name: validated.new_city_name.trim(),
+          postal_code: validated.new_city_postal_code || "00000",
+        })
+        .select("id")
+        .single();
+      if (cityError || !newCity) {
+        return { error: "Erreur lors de l'ajout de la nouvelle ville." };
+      }
+      cityId = newCity.id;
     }
-    cityId = newCity.id;
   }
 
   // Get profession name and city name for auto-generated title
@@ -131,6 +142,7 @@ export async function createJob(
     required_skill: validated.required_skill || null,
     status: "active",
     is_urgent: validated.is_urgent,
+    published_at: new Date().toISOString(),
   });
 
   if (error) {
@@ -138,8 +150,9 @@ export async function createJob(
     return { error: `Erreur: ${error.message}` };
   }
 
-  revalidatePath("/dashboard");
-  revalidatePath("/");
+  revalidatePath("/dashboard", "layout");
+  revalidatePath("/dashboard/new", "layout");
+  revalidatePath("/", "layout");
   redirect("/dashboard");
 }
 
@@ -218,7 +231,7 @@ export async function saveJobDraft(
     return { error: `Erreur: ${error.message}` };
   }
 
-  revalidatePath("/dashboard");
+  revalidatePath("/dashboard", "layout");
   redirect("/dashboard");
 }
 
@@ -304,18 +317,29 @@ export async function updateJob(
   // Handle "add new city" option
   let cityId = validated.city_id;
   if (cityId === "__new__" && validated.new_city_name) {
-    const { data: newCity, error: cityError } = await supabase
+    // Check if city with this name already exists
+    const { data: existingCity } = await supabase
       .from("cities")
-      .insert({
-        name: validated.new_city_name,
-        postal_code: validated.new_city_postal_code || "00000",
-      })
       .select("id")
-      .single();
-    if (cityError || !newCity) {
-      return { error: "Erreur lors de l'ajout de la nouvelle ville." };
+      .ilike("name", validated.new_city_name.trim())
+      .maybeSingle();
+
+    if (existingCity) {
+      cityId = existingCity.id;
+    } else {
+      const { data: newCity, error: cityError } = await supabase
+        .from("cities")
+        .insert({
+          name: validated.new_city_name.trim(),
+          postal_code: validated.new_city_postal_code || "00000",
+        })
+        .select("id")
+        .single();
+      if (cityError || !newCity) {
+        return { error: "Erreur lors de l'ajout de la nouvelle ville." };
+      }
+      cityId = newCity.id;
     }
-    cityId = newCity.id;
   }
 
   // Get profession name and city name for auto-generated title
@@ -368,8 +392,9 @@ export async function updateJob(
     return { error: `Erreur: ${error.message}` };
   }
 
-  revalidatePath("/dashboard");
-  revalidatePath("/");
+  revalidatePath("/dashboard", "layout");
+  revalidatePath("/dashboard/new", "layout");
+  revalidatePath("/", "layout");
   redirect("/dashboard");
 }
 
@@ -378,15 +403,29 @@ export async function toggleJobStatus(
   newStatus: "active" | "inactive"
 ) {
   const supabase = await createClient();
+
+  const updateData: Record<string, unknown> = { status: newStatus };
+  // Set published_at when activating for the first time
+  if (newStatus === "active") {
+    const { data: job } = await supabase
+      .from("job_ads")
+      .select("published_at")
+      .eq("id", jobAdId)
+      .single();
+    if (job && !job.published_at) {
+      updateData.published_at = new Date().toISOString();
+    }
+  }
+
   const { error } = await supabase
     .from("job_ads")
-    .update({ status: newStatus })
+    .update(updateData)
     .eq("id", jobAdId);
 
   if (error) throw error;
 
-  revalidatePath("/dashboard");
-  revalidatePath("/");
+  revalidatePath("/dashboard", "layout");
+  revalidatePath("/", "layout");
 }
 
 export async function confirmHire(jobAdId: string): Promise<{ error: string | null }> {
@@ -401,7 +440,7 @@ export async function confirmHire(jobAdId: string): Promise<{ error: string | nu
   }
 
   // The DB trigger generate_donation_on_hire handles donation creation
-  revalidatePath("/dashboard");
-  revalidatePath("/");
+  revalidatePath("/dashboard", "layout");
+  revalidatePath("/", "layout");
   return { error: null };
 }

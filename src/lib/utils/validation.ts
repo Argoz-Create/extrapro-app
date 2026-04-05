@@ -39,7 +39,11 @@ export const createAdSchema = z
     salary_type: z.enum(["hourly", "daily", "flat"]),
     contact_phone: z
       .string()
-      .regex(frenchPhoneRegex, "Numero de telephone francais invalide"),
+      .min(1, "Le telephone est requis")
+      .refine(
+        (val) => val.split(",").every((p) => frenchPhoneRegex.test(p.trim())),
+        "Numero de telephone francais invalide"
+      ),
     contact_name: z.string().optional(),
     contact_email: z.string().email("Adresse email invalide").optional().or(z.literal("")),
     contact_whatsapp: z.string().optional(),
@@ -61,8 +65,8 @@ export const createAdSchema = z
     },
     { message: "La date de fin doit etre apres la date de debut", path: ["work_end_date"] }
   )
-  .refine((data) => data.end_time > data.start_time, {
-    message: "L'heure de fin doit etre apres l'heure de debut",
+  .refine((data) => data.end_time !== data.start_time, {
+    message: "L'heure de fin ne peut pas etre identique a l'heure de debut",
     path: ["end_time"],
   });
 
