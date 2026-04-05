@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ContactDetails } from "@/components/job/contact-details";
-import { formatDateRange, formatTimeRange, formatSalary } from "@/lib/utils/format";
+import { formatDateRange, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
 import { useTranslation } from "@/lib/i18n/context";
 import type { JobAdWithRelations } from "@/lib/types/database";
 
@@ -20,14 +20,19 @@ export function JobCard({ job }: JobCardProps) {
   return (
     <Card clickable className="overflow-hidden">
       <Link href={`/annonces/${job.id}`} className="block p-4 pb-2">
-        {/* Header: listing ID + urgent badge */}
+        {/* Header: listing ID + publication date + urgent badge */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-xs font-mono bg-gray-100 text-text-tertiary px-2 py-0.5 rounded">
               #{shortId}
             </span>
-            {job.is_urgent && <Badge variant="urgent">{t("job.urgent")}</Badge>}
+            {job.published_at && (
+              <span className="text-xs text-text-tertiary">
+                {formatDateTime(job.published_at)}
+              </span>
+            )}
           </div>
+          {job.is_urgent && <Badge variant="urgent">{t("job.urgent")}</Badge>}
         </div>
 
         <div className="mt-3 space-y-1.5">

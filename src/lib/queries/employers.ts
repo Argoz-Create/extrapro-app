@@ -57,6 +57,17 @@ export async function getEmployerJobs(
   employerId: string
 ): Promise<JobAdWithRelations[]> {
   const supabase = await createClient();
+
+  // Auto-expire active jobs where work_date has passed and no hire was confirmed
+  const today = new Date().toISOString().split("T")[0];
+  await supabase
+    .from("job_ads")
+    .update({ status: "expired" })
+    .eq("employer_id", employerId)
+    .eq("status", "active")
+    .eq("hire_confirmed", false)
+    .lt("work_date", today);
+
   const { data } = await supabase
     .from("job_ads")
     .select("*, professions(name_fr, icon), cities(name)")

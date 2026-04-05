@@ -31,7 +31,7 @@ type FormValues = {
   salary: string;
   salary_type: string;
   description: string;
-  contact_phone: string;
+  contact_phones: string[];
   contact_name: string;
   contact_email: string;
   contact_whatsapp: string;
@@ -54,7 +54,7 @@ const emptyForm: FormValues = {
   salary: "",
   salary_type: "hourly",
   description: "",
-  contact_phone: "",
+  contact_phones: [""],
   contact_name: "",
   contact_email: "",
   contact_whatsapp: "",
@@ -68,6 +68,12 @@ function getInitialValues(): FormValues {
     const saved = localStorage.getItem(DRAFT_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
+      // Migrate old contact_phone string to contact_phones array
+      if (parsed.contact_phone && !parsed.contact_phones) {
+        parsed.contact_phones = parsed.contact_phone.split(",").map((p: string) => p.trim()).filter(Boolean);
+        if (parsed.contact_phones.length === 0) parsed.contact_phones = [""];
+        delete parsed.contact_phone;
+      }
       return { ...emptyForm, ...parsed };
     }
   } catch {
@@ -148,16 +154,22 @@ function validateForm(values: FormValues): Record<string, string> {
   if (!values.end_time) {
     errors.end_time = "L'heure de fin est requise";
   }
-  if (values.start_time && values.end_time && values.end_time <= values.start_time) {
-    errors.end_time = "L'heure de fin doit etre apres l'heure de debut";
+  if (values.start_time && values.end_time && values.end_time === values.start_time) {
+    errors.end_time = "L'heure de fin ne peut pas etre identique a l'heure de debut";
   }
   if (!values.salary || parseFloat(values.salary) <= 0) {
     errors.salary = "Le salaire doit etre positif";
   }
-  if (!values.contact_phone) {
-    errors.contact_phone = "Le telephone est requis";
-  } else if (!frenchPhoneRegex.test(values.contact_phone)) {
-    errors.contact_phone = "Numero de telephone francais invalide";
+  const validPhones = values.contact_phones.filter((p) => p.trim() !== "");
+  if (validPhones.length === 0) {
+    errors.contact_phones = "Le telephone est requis";
+  } else {
+    for (const phone of validPhones) {
+      if (!frenchPhoneRegex.test(phone.trim())) {
+        errors.contact_phones = "Numero de telephone francais invalide";
+        break;
+      }
+    }
   }
   if (values.required_skill && values.required_skill.length > 200) {
     errors.required_skill = "Maximum 200 caracteres";
@@ -182,7 +194,8 @@ function buildFormData(values: FormValues): FormData {
   formData.set("salary", values.salary);
   formData.set("salary_type", values.salary_type);
   if (values.description) formData.set("description", values.description);
-  formData.set("contact_phone", values.contact_phone);
+  const phones = values.contact_phones.filter((p) => p.trim() !== "").join(",");
+  formData.set("contact_phone", phones);
   if (values.contact_name) formData.set("contact_name", values.contact_name);
   if (values.contact_email) formData.set("contact_email", values.contact_email);
   if (values.contact_whatsapp) formData.set("contact_whatsapp", values.contact_whatsapp);
@@ -206,8 +219,8 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
   // Save to localStorage whenever values change
   useEffect(() => {
     const hasAnyValue = Object.entries(values).some(
-      ([key, val]) => key !== "salary_type" && key !== "is_urgent" && val !== "" && val !== false
-    );
+      ([key, val]) => key !== "salary_type" && key !== "is_urgent" && key !== "contact_phones" && val !== "" && val !== false
+    ) || values.contact_phones.some((p) => p.trim() !== "");
     if (hasAnyValue) {
       saveDraftToStorage(values);
     }
@@ -446,15 +459,58 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           <span className="text-xs text-text-tertiary">{t("createAd.privateSectionHint")}</span>
         </div>
 
-        <Input
-          label={t("createAd.contactPhone")}
-          name="contact_phone"
-          type="tel"
-          placeholder="06 XX XX XX XX"
-          value={values.contact_phone}
-          onChange={(e) => updateField("contact_phone", e.target.value)}
-          error={fieldErrors.contact_phone}
-        />
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-text-primary">
+            {t("createAd.contactPhone")}
+          </label>
+          {values.contact_phones.map((phone, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <Input
+                name={`contact_phone_${index}`}
+                type="tel"
+                placeholder="06 XX XX XX XX"
+                value={phone}
+                onChange={(e) => {
+                  const newPhones = [...values.contact_phones];
+                  newPhones[index] = e.target.value;
+                  setValues((prev) => ({ ...prev, contact_phones: newPhones }));
+                  setFieldErrors((prev) => {
+                    if (prev.contact_phones) {
+                      const next = { ...prev };
+                      delete next.contact_phones;
+                      return next;
+                    }
+                    return prev;
+                  });
+                }}
+              />
+              {values.contact_phones.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newPhones = values.contact_phones.filter((_, i) => i !== index);
+                    setValues((prev) => ({ ...prev, contact_phones: newPhones }));
+                  }}
+                  className="text-xs text-red-500 hover:text-red-700 whitespace-nowrap"
+                >
+                  {t("createAd.removePhone")}
+                </button>
+              )}
+            </div>
+          ))}
+          {fieldErrors.contact_phones && (
+            <p className="text-xs text-red-500">{fieldErrors.contact_phones}</p>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              setValues((prev) => ({ ...prev, contact_phones: [...prev.contact_phones, ""] }));
+            }}
+            className="text-xs text-primary hover:text-primary-dark font-medium"
+          >
+            + {t("createAd.addPhone")}
+          </button>
+        </div>
 
         <Input
           label={t("createAd.contactName")}

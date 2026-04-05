@@ -5,7 +5,7 @@ import { ContactDetails } from "@/components/job/contact-details";
 import { ShareButton } from "@/components/job/share-button";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/lib/i18n/context";
-import { formatDate, formatTimeRange, formatSalary } from "@/lib/utils/format";
+import { formatDate, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
 import type { JobAdWithRelations } from "@/lib/types/database";
 
 type JobDetailJob = JobAdWithRelations & {
@@ -32,22 +32,32 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
 
       {/* Card */}
       <div className="rounded-[14px] border border-border-light bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_1px_3px_rgba(0,0,0,0.06)]">
-        {/* Header */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">{job.professions?.icon}</span>
-            <div>
-              <h1 className="text-xl font-bold text-text-primary">
-                {job.professions?.name_fr}
-              </h1>
-              {job.employers?.company_name && (
-                <p className="text-sm text-text-secondary">
-                  {job.employers.company_name}
-                </p>
-              )}
-            </div>
+        {/* Publication info: ID + date */}
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <div className="flex items-center gap-2 text-xs text-text-tertiary">
+            <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">
+              #{job.id.slice(0, 8).toUpperCase()}
+            </span>
+            {job.published_at && (
+              <span>{formatDateTime(job.published_at)}</span>
+            )}
           </div>
           {job.is_urgent && <Badge variant="urgent">{t("job.urgent")}</Badge>}
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <span className="text-3xl">{job.professions?.icon}</span>
+          <div>
+            <h1 className="text-xl font-bold text-text-primary">
+              {job.professions?.name_fr}
+            </h1>
+            {job.employers?.company_name && (
+              <p className="text-sm text-text-secondary">
+                {job.employers.company_name}
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Meta */}

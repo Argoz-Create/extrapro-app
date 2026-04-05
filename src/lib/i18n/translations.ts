@@ -88,6 +88,8 @@ export const translations = {
 
     // Ad actions
     "ad.edit": "Modifier",
+    "ad.save": "Sauvegarder",
+    "ad.view": "Voir",
     "ad.deactivate": "Desactiver",
     "ad.activate": "Activer",
     "ad.markFilled": "Poste pourvu",
@@ -133,6 +135,8 @@ export const translations = {
     "createAd.salary": "Salaire",
     "createAd.salaryType": "Type",
     "createAd.contactPhone": "Telephone de contact",
+    "createAd.addPhone": "Ajouter un numero",
+    "createAd.removePhone": "Retirer",
     "createAd.contactName": "Nom du contact (optionnel)",
     "createAd.contactEmail": "Email (optionnel)",
     "createAd.contactWhatsapp": "WhatsApp (optionnel)",
@@ -284,6 +288,8 @@ export const translations = {
 
     // Ad actions
     "ad.edit": "Edit",
+    "ad.save": "Save",
+    "ad.view": "View",
     "ad.deactivate": "Deactivate",
     "ad.activate": "Activate",
     "ad.markFilled": "Position filled",
@@ -329,6 +335,8 @@ export const translations = {
     "createAd.salary": "Salary",
     "createAd.salaryType": "Type",
     "createAd.contactPhone": "Contact phone",
+    "createAd.addPhone": "Add phone number",
+    "createAd.removePhone": "Remove",
     "createAd.contactName": "Contact name (optional)",
     "createAd.contactEmail": "Email (optional)",
     "createAd.contactWhatsapp": "WhatsApp (optional)",

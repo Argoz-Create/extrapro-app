@@ -61,16 +61,17 @@ export function ContactDetails({
             </div>
           )}
 
-          {/* Phone */}
-          {phone && (
+          {/* Phone(s) */}
+          {phone && phone.split(",").map((p) => p.trim()).filter(Boolean).map((singlePhone, idx) => (
             <a
-              href={`tel:${phone}`}
+              key={idx}
+              href={`tel:${singlePhone}`}
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
               <span className="flex-shrink-0">{"\u{1F4DE}"}</span>
-              <span>{phone}</span>
+              <span>{singlePhone}</span>
             </a>
-          )}
+          ))}
 
           {/* WhatsApp */}
           {whatsappLink && (

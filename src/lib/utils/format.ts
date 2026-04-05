@@ -11,7 +11,8 @@ export function formatTime(timeStr: string): string {
 }
 
 export function formatTimeRange(start: string, end: string): string {
-  return `${formatTime(start)}–${formatTime(end)}`;
+  const suffix = end <= start ? " (+1)" : "";
+  return `${formatTime(start)}–${formatTime(end)}${suffix}`;
 }
 
 export function formatSalary(
@@ -46,4 +47,14 @@ export function formatNumber(num: number): string {
     return (num / 1000).toFixed(1).replace(".", ",") + "K";
   }
   return num.toString();
+}
+
+export function formatDateTime(isoString: string): string {
+  const date = new Date(isoString);
+  return date.toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
