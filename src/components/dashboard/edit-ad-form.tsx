@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { CityAutocomplete } from "@/components/ui/city-autocomplete";
+import type { CityResult } from "@/components/ui/city-autocomplete";
 import { useTranslation } from "@/lib/i18n/context";
 
 type SelectOption = {
@@ -17,6 +19,7 @@ type JobData = {
   id: string;
   profession_id: string | null;
   city_id: string | null;
+  city_name?: string | null;
   work_date: string | null;
   work_end_date: string | null;
   start_time: string | null;
@@ -42,6 +45,7 @@ type EditAdFormProps = {
 type FormValues = {
   profession_id: string;
   city_id: string;
+  city_display_name: string;
   new_city_name: string;
   new_city_postal_code: string;
   required_skill: string;
@@ -101,6 +105,7 @@ function getInitialEditValues(job: JobData): FormValues {
   return {
     profession_id: job.profession_id ?? "",
     city_id: job.city_id ?? "",
+    city_display_name: job.city_name ?? "",
     new_city_name: "",
     new_city_postal_code: "",
     required_skill: job.required_skill ?? "",
@@ -208,18 +213,58 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
     });
   }, []);
 
-  const showNewCity = values.city_id === "__new__";
-
   const salaryTypes = [
     { value: "hourly", label: t("job.perHour") },
     { value: "daily", label: t("job.perDay") },
     { value: "flat", label: t("job.perJob") },
   ];
 
-  const cityOptionsWithNew = [
-    ...initialCities,
-    { value: "__new__", label: `+ ${t("createAd.addNewCity")}` },
-  ];
+  function handleCitySelect(city: CityResult) {
+    setValues((prev) => ({
+      ...prev,
+      city_id: "__new__",
+      city_display_name: city.nom,
+      new_city_name: city.nom,
+      new_city_postal_code: city.codesPostaux[0] || "",
+    }));
+    setFieldErrors((prev) => {
+      if (prev.city_id) {
+        const next = { ...prev };
+        delete next.city_id;
+        return next;
+      }
+      return prev;
+    });
+  }
+
+  function handleExistingCitySelect(cityId: string) {
+    const cityLabel = initialCities.find((c) => c.value === cityId)?.label || "";
+    setValues((prev) => ({
+      ...prev,
+      city_id: cityId,
+      city_display_name: cityLabel,
+      new_city_name: "",
+      new_city_postal_code: "",
+    }));
+    setFieldErrors((prev) => {
+      if (prev.city_id) {
+        const next = { ...prev };
+        delete next.city_id;
+        return next;
+      }
+      return prev;
+    });
+  }
+
+  function handleCityClear() {
+    setValues((prev) => ({
+      ...prev,
+      city_id: "",
+      city_display_name: "",
+      new_city_name: "",
+      new_city_postal_code: "",
+    }));
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -302,36 +347,16 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
           error={fieldErrors.profession_id}
         />
 
-        <div>
-          <Select
-            label={t("createAd.city")}
-            name="city_id"
-            options={cityOptionsWithNew}
-            placeholder={t("createAd.selectCity")}
-            value={values.city_id}
-            onChange={(e) => updateField("city_id", e.target.value)}
-            error={fieldErrors.city_id}
-          />
-          {showNewCity && (
-            <div className="mt-2 space-y-2 pl-3 border-l-2 border-primary/30">
-              <Input
-                label={t("createAd.newCityName")}
-                name="new_city_name"
-                placeholder="Ex: Biarritz"
-                value={values.new_city_name}
-                onChange={(e) => updateField("new_city_name", e.target.value)}
-                error={fieldErrors.new_city_name}
-              />
-              <Input
-                label={t("createAd.newCityPostalCode")}
-                name="new_city_postal_code"
-                placeholder="64200"
-                value={values.new_city_postal_code}
-                onChange={(e) => updateField("new_city_postal_code", e.target.value)}
-              />
-            </div>
-          )}
-        </div>
+        <CityAutocomplete
+          label={t("createAd.city")}
+          placeholder={t("createAd.searchCity")}
+          value={values.city_display_name}
+          onSelect={handleCitySelect}
+          onClear={handleCityClear}
+          existingCities={initialCities}
+          onSelectExisting={handleExistingCitySelect}
+          error={fieldErrors.city_id}
+        />
 
         <Input
           label={t("createAd.requiredSkill")}
