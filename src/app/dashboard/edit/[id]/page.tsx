@@ -44,10 +44,16 @@ export default async function EditAdPage({ params }: EditAdPageProps) {
     label: c.name,
   }));
 
+  // Resolve city name for autocomplete display
+  const cityName = job.city_id
+    ? cities.find((c) => c.id === job.city_id)?.name ?? null
+    : null;
+  const jobWithCityName = { ...job, city_name: cityName };
+
   return (
     <div className="space-y-6">
       <EditAdHeader />
-      <EditAdForm professions={professionOptions} cities={cityOptions} job={job} />
+      <EditAdForm professions={professionOptions} cities={cityOptions} job={jobWithCityName} />
     </div>
   );
 }
