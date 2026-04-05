@@ -5,13 +5,8 @@ export const translations = {
     "nav.logout": "Deconnexion",
     "nav.home": "Accueil",
 
-    // Solidarity banner
-    "solidarity.banner": "Chaque recrutement soutient Les Restos du Coeur \u{1F495}",
-    "solidarity.message": "Ce recrutement soutient Les Restos du Coeur \u{1F495}",
-    "solidarity.publishMessage": "En publiant cette annonce, vous contribuez au soutien des Restos du Coeur \u{1F495}",
-
     // Footer
-    "footer.impact": "recrutements solidaires ce mois",
+    "footer.impact": "recrutements ce mois",
     "footer.about": "A propos",
     "footer.terms": "Conditions",
     "footer.privacy": "Confidentialite",
@@ -73,7 +68,6 @@ export const translations = {
     "dashboard.newAd": "Nouvelle annonce",
     "dashboard.myAds": "Mes annonces",
     "dashboard.hires": "Recrutements",
-    "dashboard.donations": "Dons generes",
     "dashboard.activeAds": "Annonces actives",
     "dashboard.drafts": "Brouillons",
     "dashboard.views": "Vues",
@@ -111,10 +105,9 @@ export const translations = {
     // Hire modal
     "hire.confirmTitle": "Confirmer le recrutement ?",
     "hire.confirmMessage": "Le poste de {profession} du {date} a ete pourvu ?",
-    "hire.donationNote": "{amount}\u20AC seront reverses a {charity} pour celebrer ce recrutement solidaire.",
     "hire.confirm": "Oui, confirmer",
     "hire.cancel": "Annuler",
-    "hire.success": "Recrutement confirme ! {amount}\u20AC reverse a {charity}",
+    "hire.success": "Recrutement confirme !",
 
     // Create ad
     "createAd.title": "Nouvelle annonce",
@@ -155,7 +148,7 @@ export const translations = {
     "about.title": "A propos",
     "about.back": "Retour",
     "about.missionTitle": "Notre Mission",
-    "about.missionText": "EXTRAPRO est la premiere plateforme de recrutement solidaire dediee a la restauration et l'hotellerie. Notre mission est simple : connecter les employeurs avec des extras qualifies, tout en soutenant une cause solidaire. A chaque recrutement, une contribution est versee aux Restos du Coeur.",
+    "about.missionText": "EXTRAPRO est la premiere plateforme de recrutement dediee a la restauration et l'hotellerie. Notre mission est simple : connecter les employeurs avec des extras qualifies, rapidement et gratuitement.",
     "about.howTitle": "Comment ca marche",
     "about.step1Title": "Publiez",
     "about.step1Text": "Les employeurs publient leurs annonces en quelques secondes. C'est gratuit et rapide.",
@@ -163,15 +156,11 @@ export const translations = {
     "about.step2Text": "Les extras parcourent les annonces et trouvent la mission qui leur correspond.",
     "about.step3Title": "Appelez",
     "about.step3Text": "Un simple appel suffit pour confirmer le recrutement. Pas d'inscription requise pour les extras.",
-    "about.impactTitle": "Impact solidaire",
+    "about.impactTitle": "Notre impact",
     "about.statsUnavailable": "Les statistiques seront bientot disponibles.",
     "about.totalHires": "Recrutements",
-    "about.totalDonations": "Dons generes",
     "about.totalEmployers": "Employeurs",
     "about.totalAds": "Annonces publiees",
-    "about.partnerTitle": "Partenaire",
-    "about.partnerName": "Les Restos du Coeur",
-    "about.partnerText": "Fondes par Coluche en 1985, Les Restos du Coeur aident les personnes demunies en leur distribuant des repas et en leur offrant un accompagnement social. Grace a EXTRAPRO, chaque recrutement contribue a cette belle mission.",
 
     // Landing page
     "landing.headline": "Trouvez votre prochain extra en restauration",
@@ -186,8 +175,8 @@ export const translations = {
 
     // Mission section (homepage)
     "mission.title": "Notre Mission",
-    "mission.text": "EXTRAPRO est la premiere plateforme de recrutement solidaire dediee a la restauration et l'hotellerie. Notre mission : connecter employeurs et extras qualifies, tout en soutenant Les Restos du Coeur. A chaque recrutement, une contribution est versee.",
-    "mission.solidarity": "Recrutement solidaire",
+    "mission.text": "EXTRAPRO est la premiere plateforme de recrutement dediee a la restauration et l'hotellerie. Notre mission : connecter employeurs et extras qualifies, simplement et gratuitement.",
+    "mission.solidarity": "Recrutement rapide",
     "mission.free": "100% gratuit",
     "mission.fast": "Simple et rapide",
 
@@ -207,13 +196,8 @@ export const translations = {
     "nav.logout": "Log out",
     "nav.home": "Home",
 
-    // Solidarity banner
-    "solidarity.banner": "Every hire supports Les Restos du Coeur \u{1F495}",
-    "solidarity.message": "This hire supports Les Restos du Coeur \u{1F495}",
-    "solidarity.publishMessage": "By publishing this ad, you contribute to supporting Les Restos du Coeur \u{1F495}",
-
     // Footer
-    "footer.impact": "solidarity hires this month",
+    "footer.impact": "hires this month",
     "footer.about": "About",
     "footer.terms": "Terms",
     "footer.privacy": "Privacy",
@@ -275,7 +259,6 @@ export const translations = {
     "dashboard.newAd": "New listing",
     "dashboard.myAds": "My listings",
     "dashboard.hires": "Hires",
-    "dashboard.donations": "Donations generated",
     "dashboard.activeAds": "Active listings",
     "dashboard.drafts": "Drafts",
     "dashboard.views": "Views",
@@ -313,10 +296,9 @@ export const translations = {
     // Hire modal
     "hire.confirmTitle": "Confirm hire?",
     "hire.confirmMessage": "Has the {profession} position on {date} been filled?",
-    "hire.donationNote": "{amount}\u20AC will be donated to {charity} to celebrate this solidarity hire.",
     "hire.confirm": "Yes, confirm",
     "hire.cancel": "Cancel",
-    "hire.success": "Hire confirmed! {amount}\u20AC donated to {charity}",
+    "hire.success": "Hire confirmed!",
 
     // Create ad
     "createAd.title": "New listing",
@@ -357,7 +339,7 @@ export const translations = {
     "about.title": "About",
     "about.back": "Back",
     "about.missionTitle": "Our Mission",
-    "about.missionText": "EXTRAPRO is the first solidarity recruitment platform dedicated to the restaurant and hospitality industry. Our mission is simple: connect employers with qualified temporary staff, while supporting a charitable cause. With each hire, a contribution is made to Les Restos du Coeur.",
+    "about.missionText": "EXTRAPRO is the first recruitment platform dedicated to the restaurant and hospitality industry. Our mission is simple: connect employers with qualified temporary staff, quickly and for free.",
     "about.howTitle": "How it works",
     "about.step1Title": "Post",
     "about.step1Text": "Employers post their listings in seconds. It's free and fast.",
@@ -365,15 +347,11 @@ export const translations = {
     "about.step2Text": "Temporary workers browse listings and find the assignment that suits them.",
     "about.step3Title": "Call",
     "about.step3Text": "A simple call is enough to confirm the hire. No sign-up required for workers.",
-    "about.impactTitle": "Social impact",
+    "about.impactTitle": "Our impact",
     "about.statsUnavailable": "Statistics will be available soon.",
     "about.totalHires": "Hires",
-    "about.totalDonations": "Donations generated",
     "about.totalEmployers": "Employers",
     "about.totalAds": "Listings posted",
-    "about.partnerTitle": "Partner",
-    "about.partnerName": "Les Restos du Coeur",
-    "about.partnerText": "Founded by Coluche in 1985, Les Restos du Coeur help those in need by distributing meals and providing social support. Thanks to EXTRAPRO, every hire contributes to this wonderful mission.",
 
     // Landing page
     "landing.headline": "Find your next restaurant & hospitality gig",
@@ -388,8 +366,8 @@ export const translations = {
 
     // Mission section (homepage)
     "mission.title": "Our Mission",
-    "mission.text": "EXTRAPRO is the first solidarity recruitment platform dedicated to the restaurant and hospitality industry. Our mission: connect employers with qualified temporary staff, while supporting Les Restos du Coeur. With each hire, a contribution is made.",
-    "mission.solidarity": "Solidarity hiring",
+    "mission.text": "EXTRAPRO is the first recruitment platform dedicated to the restaurant and hospitality industry. Our mission: connect employers with qualified temporary staff, simply and for free.",
+    "mission.solidarity": "Fast hiring",
     "mission.free": "100% free",
     "mission.fast": "Simple and fast",
 

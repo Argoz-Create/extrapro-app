@@ -111,13 +111,6 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
           />
         </div>
       </div>
-
-      {/* Solidarity banner inline */}
-      <div className="mt-4 rounded-[14px] overflow-hidden bg-gradient-to-r from-primary to-primary-dark py-2 px-4">
-        <p className="text-white text-sm text-center">
-          {t("solidarity.banner")}
-        </p>
-      </div>
     </main>
   );
 }

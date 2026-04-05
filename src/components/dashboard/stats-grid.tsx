@@ -1,7 +1,7 @@
 "use client";
 
 import type { EmployerStats } from "@/lib/types/database";
-import { formatCurrency, formatNumber } from "@/lib/utils/format";
+import { formatNumber } from "@/lib/utils/format";
 import { StatCard } from "./stat-card";
 import { useTranslation } from "@/lib/i18n/context";
 
@@ -13,16 +13,11 @@ export function StatsGrid({ stats }: StatsGridProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-3 gap-3">
       <StatCard
         icon={"\u{1F4DE}"}
         value={String(stats.total_hires)}
         label={t("dashboard.hires")}
-      />
-      <StatCard
-        icon={"\u{1F4B0}"}
-        value={formatCurrency(stats.total_donations)}
-        label={t("dashboard.donations")}
       />
       <StatCard
         icon={"\u{1F4CB}"}

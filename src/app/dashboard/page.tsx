@@ -9,7 +9,7 @@ import { DashboardContent } from "@/components/dashboard/dashboard-content";
 
 export const metadata: Metadata = {
   title: "Tableau de bord — EXTRAPRO",
-  description: "Gerez vos annonces et suivez vos recrutements solidaires.",
+  description: "Gerez vos annonces et suivez vos recrutements.",
 };
 
 export default async function DashboardPage() {

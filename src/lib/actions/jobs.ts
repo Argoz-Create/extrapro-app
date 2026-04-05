@@ -511,7 +511,6 @@ export async function confirmHire(jobAdId: string): Promise<{ error: string | nu
     return { error: "Erreur lors de la confirmation. Veuillez reessayer." };
   }
 
-  // The DB trigger generate_donation_on_hire handles donation creation
   revalidatePath("/dashboard", "layout");
   revalidatePath("/", "layout");
   return { error: null };

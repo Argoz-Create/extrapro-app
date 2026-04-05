@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { TopBar } from "@/components/layout/top-bar";
 import { Footer } from "@/components/layout/footer";
-import { SolidarityBanner } from "@/components/layout/solidarity-banner";
 import { HeroSection } from "@/components/layout/hero-section";
 import { JobFilters } from "@/components/job/job-filters";
 import { JobFeed } from "@/components/job/job-feed";
@@ -56,7 +55,6 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <div className="min-h-screen bg-background">
       <TopBar />
-      <SolidarityBanner />
       <HeroSection jobCount={totalCount} />
       <OurMission />
 

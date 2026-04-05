@@ -17,7 +17,7 @@ export function OurMission() {
 
         <div className="mt-5 grid grid-cols-3 gap-3 text-center">
           <div className="rounded-[10px] bg-primary/5 p-3">
-            <span className="text-xl">{"\u{1F91D}"}</span>
+            <span className="text-xl">{"\u{1F680}"}</span>
             <p className="mt-1 text-xs font-medium text-primary-dark">
               {t("mission.solidarity")}
             </p>

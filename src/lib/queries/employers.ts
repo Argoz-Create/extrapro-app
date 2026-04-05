@@ -22,10 +22,10 @@ export async function getEmployerStats(
 ): Promise<EmployerStats> {
   const supabase = await createClient();
 
-  // Get employer's total_hires and total_donations from the employer record
+  // Get employer's total_hires from the employer record
   const { data: employer } = await supabase
     .from("employers")
-    .select("total_hires, total_donations")
+    .select("total_hires")
     .eq("id", employerId)
     .single();
 
@@ -47,7 +47,6 @@ export async function getEmployerStats(
 
   return {
     total_hires: employer?.total_hires ?? 0,
-    total_donations: employer?.total_donations ?? 0,
     active_ads: activeAds ?? 0,
     total_views: totalViews,
   };
@@ -83,14 +82,3 @@ export async function getEmployerJobs(
   };
 }
 
-export async function getEmployerDonations(employerId: string) {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("donations")
-    .select("*, job_ads(title)")
-    .eq("employer_id", employerId)
-    .order("created_at", { ascending: false })
-    .limit(10);
-
-  return data ?? [];
-}
