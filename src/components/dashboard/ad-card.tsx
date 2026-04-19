@@ -2,7 +2,7 @@
 
 import { useTransition, useState, useOptimistic } from "react";
 import type { JobAdWithRelations, JobStatus } from "@/lib/types/database";
-import { formatDate, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
+import { formatDateRange, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
 import { toggleJobStatus, relistJob } from "@/lib/actions/jobs";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -78,7 +78,7 @@ export function AdCard({ job }: AdCardProps) {
 
         {/* Details */}
         <div className="mt-3 flex items-center gap-3 text-xs text-text-secondary">
-          {job.work_date && <span>{"\u{1F4C5}"} {formatDate(job.work_date)}</span>}
+          {job.work_date && <span>{"\u{1F4C5}"} {formatDateRange(job.work_date, job.work_end_date)}</span>}
           {job.start_time && job.end_time && <span>{"\u{1F550}"} {formatTimeRange(job.start_time, job.end_time)}</span>}
           {salary && <span>{"\u{1F4B6}"} {salary}</span>}
         </div>

@@ -398,6 +398,170 @@ export async function updateJob(
   redirect("/dashboard");
 }
 
+/**
+ * Publish a draft listing: runs the same validation as createJob/updateJob,
+ * writes all fields, and flips status from 'draft' to 'active'. The
+ * `set_published_at_on_activate` trigger fills `published_at` automatically.
+ */
+export async function publishJobDraft(
+  prevState: JobActionState,
+  formData: FormData
+): Promise<JobActionState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Non authentifie" };
+  }
+
+  const jobId = formData.get("job_id") as string;
+  if (!jobId) {
+    return { error: "Annonce introuvable" };
+  }
+
+  const { data: employer } = await supabase
+    .from("employers")
+    .select("id")
+    .eq("auth_user_id", user.id)
+    .single();
+
+  if (!employer) {
+    return { error: "Profil employeur introuvable" };
+  }
+
+  const { data: existingJob } = await supabase
+    .from("job_ads")
+    .select("id, employer_id, status")
+    .eq("id", jobId)
+    .eq("employer_id", employer.id)
+    .single();
+
+  if (!existingJob) {
+    return { error: "Annonce introuvable ou acces non autorise" };
+  }
+
+  // Only drafts can be published via this action.
+  if (existingJob.status !== "draft") {
+    return { error: "Seuls les brouillons peuvent etre publies" };
+  }
+
+  const workEndDate = (formData.get("work_end_date") as string)?.trim();
+  const raw = {
+    profession_id: (formData.get("profession_id") as string) || "",
+    city_id: (formData.get("city_id") as string) || "",
+    new_city_name: (formData.get("new_city_name") as string)?.trim() || undefined,
+    new_city_postal_code: (formData.get("new_city_postal_code") as string)?.trim() || undefined,
+    work_date: (formData.get("work_date") as string) || "",
+    work_end_date: workEndDate || undefined,
+    start_time: (formData.get("start_time") as string) || "",
+    end_time: (formData.get("end_time") as string) || "",
+    salary: formData.get("salary") as string,
+    salary_type: (formData.get("salary_type") as string) || "hourly",
+    contact_phone: (formData.get("contact_phone") as string) || "",
+    contact_name: (formData.get("contact_name") as string)?.trim() || undefined,
+    contact_email: (formData.get("contact_email") as string)?.trim() || undefined,
+    contact_whatsapp: (formData.get("contact_whatsapp") as string)?.trim() || undefined,
+    required_skill: (formData.get("required_skill") as string)?.trim() || undefined,
+    description: (formData.get("description") as string)?.trim() || undefined,
+    is_urgent: formData.get("is_urgent") === "on",
+  };
+
+  const result = createAdSchema.safeParse(raw);
+  if (!result.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of result.error.issues) {
+      const field = issue.path[0]?.toString();
+      if (field && !fieldErrors[field]) {
+        fieldErrors[field] = issue.message;
+      }
+    }
+    return { error: result.error.issues[0].message, fieldErrors };
+  }
+
+  const validated = result.data;
+
+  // Handle "add new city" option (same flow as createJob)
+  let cityId = validated.city_id;
+  if (cityId === "__new__" && validated.new_city_name) {
+    const { data: existingCity } = await supabase
+      .from("cities")
+      .select("id")
+      .ilike("name", validated.new_city_name.trim())
+      .maybeSingle();
+
+    if (existingCity) {
+      cityId = existingCity.id;
+    } else {
+      const { data: newCity, error: cityError } = await supabase
+        .from("cities")
+        .insert({
+          name: validated.new_city_name.trim(),
+          postal_code: validated.new_city_postal_code || "00000",
+        })
+        .select("id")
+        .single();
+      if (cityError || !newCity) {
+        return { error: "Erreur lors de l'ajout de la nouvelle ville." };
+      }
+      cityId = newCity.id;
+    }
+  }
+
+  const [{ data: profession }, { data: city }] = await Promise.all([
+    supabase
+      .from("professions")
+      .select("name_fr")
+      .eq("id", validated.profession_id)
+      .single(),
+    supabase
+      .from("cities")
+      .select("name")
+      .eq("id", cityId)
+      .single(),
+  ]);
+
+  const title = `${profession?.name_fr ?? "Extra"} - ${city?.name ?? "Ville"}`;
+
+  const hourly_rate = validated.salary_type === "hourly" ? validated.salary : null;
+  const daily_rate = validated.salary_type === "daily" ? validated.salary : null;
+  const flat_rate = validated.salary_type === "flat" ? validated.salary : null;
+
+  const { error } = await supabase
+    .from("job_ads")
+    .update({
+      profession_id: validated.profession_id,
+      city_id: cityId,
+      title,
+      description: validated.description || null,
+      work_date: validated.work_date,
+      work_end_date: validated.work_end_date || null,
+      start_time: validated.start_time,
+      end_time: validated.end_time,
+      hourly_rate,
+      daily_rate,
+      flat_rate,
+      contact_phone: validated.contact_phone,
+      contact_name: validated.contact_name || null,
+      contact_email: validated.contact_email || null,
+      contact_whatsapp: validated.contact_whatsapp || null,
+      required_skill: validated.required_skill || null,
+      is_urgent: validated.is_urgent,
+      status: "active",
+    })
+    .eq("id", jobId);
+
+  if (error) {
+    console.error("publishJobDraft error:", error);
+    return { error: `Erreur: ${error.message}` };
+  }
+
+  revalidatePath("/dashboard", "layout");
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
 export async function toggleJobStatus(
   jobAdId: string,
   newStatus: "active" | "inactive"

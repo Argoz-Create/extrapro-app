@@ -12,12 +12,26 @@ export async function expireOldJobs(): Promise<void> {
   const supabase = await createClient();
   const today = new Date().toISOString().split("T")[0];
 
-  // Auto-expire active jobs where work_date has passed and no hire was confirmed
+  // Auto-expire active jobs where the LAST relevant day (end date, else start date)
+  // has passed and no hire was confirmed. Single-day ads use work_date as the floor;
+  // multi-day ads use work_end_date so they aren't expired mid-assignment.
+  // Two passes since Supabase .or() + .update() doesn't compose cleanly.
+  // 1) Multi-day ads: expire when work_end_date < today
   await supabase
     .from("job_ads")
     .update({ status: "expired" })
     .eq("status", "active")
     .eq("hire_confirmed", false)
+    .not("work_end_date", "is", null)
+    .lt("work_end_date", today);
+
+  // 2) Single-day ads: expire when work_date < today AND work_end_date is null
+  await supabase
+    .from("job_ads")
+    .update({ status: "expired" })
+    .eq("status", "active")
+    .eq("hire_confirmed", false)
+    .is("work_end_date", null)
     .lt("work_date", today);
 }
 
@@ -26,14 +40,18 @@ export async function getActiveJobs(
   cursor?: string,
   limit = 20
 ): Promise<JobAdWithRelations[]> {
-  // Auto-expire old jobs before fetching
+  // Auto-expire old jobs before fetching (belt-and-braces alongside daily cron)
   await expireOldJobs();
 
   const supabase = await createClient();
+  const today = new Date().toISOString().split("T")[0];
   let query = supabase
     .from("job_ads")
     .select("*, professions(name_fr, icon), cities(name, department_id, region_id), employers(company_name, contact_name)")
     .eq("status", "active")
+    // Defensive filter in case cron lags: only show ads whose last relevant day
+    // is today or later. Multi-day ads use end date; single-day use work_date.
+    .or(`work_end_date.gte.${today},and(work_end_date.is.null,work_date.gte.${today})`)
     .order("published_at", { ascending: false })
     .limit(limit);
 
@@ -66,10 +84,12 @@ export async function getActiveJobs(
 
 export async function getActiveJobCount(): Promise<number> {
   const supabase = await createClient();
+  const today = new Date().toISOString().split("T")[0];
   const { count, error } = await supabase
     .from("job_ads")
     .select("*", { count: "exact", head: true })
-    .eq("status", "active");
+    .eq("status", "active")
+    .or(`work_end_date.gte.${today},and(work_end_date.is.null,work_date.gte.${today})`);
   if (error) throw error;
   return count ?? 0;
 }

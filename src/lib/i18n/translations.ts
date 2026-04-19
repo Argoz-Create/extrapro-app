@@ -115,6 +115,7 @@ export const translations = {
     "createAd.selectProfession": "Choisir une profession",
     "createAd.startDate": "Date de debut",
     "createAd.endDate": "Date de fin (optionnel)",
+    "createAd.endDateHint": "Laissez vide pour une mission d'une journee.",
     "createAd.workDate": "Date de travail",
     "createAd.startTime": "Heure de debut",
     "createAd.endTime": "Heure de fin",
@@ -142,8 +143,11 @@ export const translations = {
     "createAd.descriptionPlaceholder": "Details sur le poste, tenue, experience souhaitee...",
     "createAd.urgent": "Marquer comme urgent",
     "createAd.publish": "Publier l'annonce",
+    "createAd.publishFromDraft": "Publier le brouillon",
     "createAd.success": "Annonce publiee!",
     "createAd.backToDashboard": "Retour au tableau de bord",
+    "createAd.clearForm": "Effacer le formulaire",
+    "createAd.clearFormConfirm": "Effacer tous les champs ?",
 
     // About page
     "about.title": "A propos",
@@ -307,6 +311,7 @@ export const translations = {
     "createAd.selectProfession": "Choose a profession",
     "createAd.startDate": "Start date",
     "createAd.endDate": "End date (optional)",
+    "createAd.endDateHint": "Leave blank for a single-day assignment.",
     "createAd.workDate": "Work date",
     "createAd.startTime": "Start time",
     "createAd.endTime": "End time",
@@ -334,8 +339,11 @@ export const translations = {
     "createAd.descriptionPlaceholder": "Details about the position, dress code, experience required...",
     "createAd.urgent": "Mark as urgent",
     "createAd.publish": "Publish listing",
+    "createAd.publishFromDraft": "Publish draft",
     "createAd.success": "Listing published!",
     "createAd.backToDashboard": "Back to dashboard",
+    "createAd.clearForm": "Clear form",
+    "createAd.clearFormConfirm": "Clear all fields?",
 
     // About page
     "about.title": "About",
