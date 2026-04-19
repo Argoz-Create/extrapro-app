@@ -45,6 +45,7 @@ CREATE POLICY "Anyone can view active job ads"
     ON job_ads FOR SELECT
     USING (
         status = 'active'
+        AND deleted_at IS NULL
         AND COALESCE(work_end_date, work_date) >= CURRENT_DATE
     );
 
