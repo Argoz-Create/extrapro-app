@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect, useTransition } from "react";
-import { updateJob } from "@/lib/actions/jobs";
+import { updateJob, publishJobDraft } from "@/lib/actions/jobs";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +17,7 @@ type SelectOption = {
 
 type JobData = {
   id: string;
+  status: string;
   profession_id: string | null;
   city_id: string | null;
   city_name?: string | null;
@@ -187,8 +188,10 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
   const { t } = useTranslation();
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
+  const [isPublishPending, startPublishTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const isDraft = job.status === "draft";
 
   const [values, setValues] = useState<FormValues>(() => getInitialEditValues(job));
 
@@ -266,22 +269,7 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
     }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    const errors = validateForm(values);
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
-      setServerError(null);
-      const firstErrorField = Object.keys(errors)[0];
-      const el = formRef.current?.querySelector(`[name="${firstErrorField}"]`);
-      el?.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
-
-    setFieldErrors({});
-    setServerError(null);
-
+  function buildFormData(): FormData {
     const formData = new FormData();
     formData.set("job_id", job.id);
     formData.set("profession_id", values.profession_id);
@@ -302,10 +290,57 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
     if (values.contact_whatsapp) formData.set("contact_whatsapp", values.contact_whatsapp);
     if (values.required_skill) formData.set("required_skill", values.required_skill);
     if (values.is_urgent) formData.set("is_urgent", "on");
+    return formData;
+  }
+
+  function validateAndScroll(): boolean {
+    const errors = validateForm(values);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setServerError(null);
+      const firstErrorField = Object.keys(errors)[0];
+      const el = formRef.current?.querySelector(`[name="${firstErrorField}"]`);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return false;
+    }
+    setFieldErrors({});
+    setServerError(null);
+    return true;
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!validateAndScroll()) return;
+
+    const formData = buildFormData();
 
     startTransition(async () => {
       try {
         const result = await updateJob({ error: null }, formData);
+        if (result?.error) {
+          setServerError(result.error);
+          if (result.fieldErrors) {
+            setFieldErrors(result.fieldErrors);
+          }
+        } else {
+          // Success - clear edit draft
+          try { localStorage.removeItem(getEditDraftKey(job.id)); } catch { /* ignore */ }
+        }
+      } catch {
+        // redirect() throws on success
+        try { localStorage.removeItem(getEditDraftKey(job.id)); } catch { /* ignore */ }
+      }
+    });
+  }
+
+  function handlePublish() {
+    if (!validateAndScroll()) return;
+
+    const formData = buildFormData();
+
+    startPublishTransition(async () => {
+      try {
+        const result = await publishJobDraft({ error: null }, formData);
         if (result?.error) {
           setServerError(result.error);
           if (result.fieldErrors) {
@@ -368,23 +403,29 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
         />
 
         {/* Date range */}
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            label={t("createAd.startDate")}
-            name="work_date"
-            type="date"
-            value={values.work_date}
-            onChange={(e) => updateField("work_date", e.target.value)}
-            error={fieldErrors.work_date}
-          />
-          <Input
-            label={t("createAd.endDate")}
-            name="work_end_date"
-            type="date"
-            value={values.work_end_date}
-            onChange={(e) => updateField("work_end_date", e.target.value)}
-            error={fieldErrors.work_end_date}
-          />
+        <div>
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              label={t("createAd.startDate")}
+              name="work_date"
+              type="date"
+              value={values.work_date}
+              onChange={(e) => updateField("work_date", e.target.value)}
+              error={fieldErrors.work_date}
+            />
+            <Input
+              label={t("createAd.endDate")}
+              name="work_end_date"
+              type="date"
+              min={values.work_date || undefined}
+              value={values.work_end_date}
+              onChange={(e) => updateField("work_end_date", e.target.value)}
+              error={fieldErrors.work_end_date}
+            />
+          </div>
+          <p className="mt-1.5 text-xs text-text-tertiary">
+            {t("createAd.endDateHint")}
+          </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -540,9 +581,31 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
         </label>
       </div>
 
-      <Button type="submit" fullWidth loading={isPending}>
-        {t("ad.save")}
-      </Button>
+      {isDraft ? (
+        <div className="space-y-2">
+          <Button
+            type="button"
+            variant="primary"
+            fullWidth
+            loading={isPublishPending}
+            onClick={handlePublish}
+          >
+            {t("createAd.publishFromDraft")}
+          </Button>
+          <Button
+            type="submit"
+            variant="outline"
+            fullWidth
+            loading={isPending}
+          >
+            {t("ad.save")}
+          </Button>
+        </div>
+      ) : (
+        <Button type="submit" fullWidth loading={isPending}>
+          {t("ad.save")}
+        </Button>
+      )}
     </form>
   );
 }

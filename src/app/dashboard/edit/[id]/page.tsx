@@ -48,7 +48,11 @@ export default async function EditAdPage({ params }: EditAdPageProps) {
   const cityName = job.city_id
     ? cities.find((c) => c.id === job.city_id)?.name ?? null
     : null;
-  const jobWithCityName = { ...job, city_name: cityName };
+  const jobWithCityName = {
+    ...job,
+    status: job.status as string,
+    city_name: cityName,
+  };
 
   return (
     <div className="space-y-6">

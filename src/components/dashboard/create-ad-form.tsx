@@ -333,9 +333,21 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           clearDraftFromStorage();
         }
       } catch {
-        // redirect() throws — this is expected on success
+        // redirect() throws on success — clear the stored draft
+        // so the next visit to /new starts fresh.
+        clearDraftFromStorage();
       }
     });
+  }
+
+  function handleClearForm() {
+    if (typeof window !== "undefined" && !window.confirm(t("createAd.clearFormConfirm"))) {
+      return;
+    }
+    clearDraftFromStorage();
+    setValues(emptyForm);
+    setFieldErrors({});
+    setServerError(null);
   }
 
   function handleSaveDraft() {
@@ -404,24 +416,30 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
           error={fieldErrors.required_skill}
         />
 
-        {/* Date range */}
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            label={t("createAd.startDate")}
-            name="work_date"
-            type="date"
-            value={values.work_date}
-            onChange={(e) => updateField("work_date", e.target.value)}
-            error={fieldErrors.work_date}
-          />
-          <Input
-            label={t("createAd.endDate")}
-            name="work_end_date"
-            type="date"
-            value={values.work_end_date}
-            onChange={(e) => updateField("work_end_date", e.target.value)}
-            error={fieldErrors.work_end_date}
-          />
+        {/* Date range — end date is optional (blank = single-day) */}
+        <div>
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              label={t("createAd.startDate")}
+              name="work_date"
+              type="date"
+              value={values.work_date}
+              onChange={(e) => updateField("work_date", e.target.value)}
+              error={fieldErrors.work_date}
+            />
+            <Input
+              label={t("createAd.endDate")}
+              name="work_end_date"
+              type="date"
+              min={values.work_date || undefined}
+              value={values.work_end_date}
+              onChange={(e) => updateField("work_end_date", e.target.value)}
+              error={fieldErrors.work_end_date}
+            />
+          </div>
+          <p className="mt-1.5 text-xs text-text-tertiary">
+            {t("createAd.endDateHint")}
+          </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -590,6 +608,13 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
         >
           {t("ad.saveDraft")}
         </Button>
+        <button
+          type="button"
+          onClick={handleClearForm}
+          className="mt-1 text-xs text-text-tertiary hover:text-text-primary self-center"
+        >
+          {t("createAd.clearForm")}
+        </button>
       </div>
     </form>
   );

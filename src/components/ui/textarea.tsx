@@ -10,11 +10,16 @@ type TextareaProps = Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "cl
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   function Textarea({ label, error, className = "", id, rows = 3, maxLength, onChange, ...props }, ref) {
-    const [charCount, setCharCount] = useState(0);
+    // Track local count for the uncontrolled case; when the parent passes `value`,
+    // derive the count from that so pre-filled drafts don't show 0/500.
+    const [internalCount, setInternalCount] = useState(0);
+    const controlledLength =
+      typeof props.value === "string" ? props.value.length : undefined;
+    const charCount = controlledLength ?? internalCount;
     const textareaId = id || (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
 
     function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-      setCharCount(e.target.value.length);
+      setInternalCount(e.target.value.length);
       onChange?.(e);
     }
 

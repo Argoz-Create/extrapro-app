@@ -5,7 +5,7 @@ import { ContactDetails } from "@/components/job/contact-details";
 import { ShareButton } from "@/components/job/share-button";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/lib/i18n/context";
-import { formatDate, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
+import { formatDateRange, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
 import type { JobAdWithRelations } from "@/lib/types/database";
 
 type JobDetailJob = JobAdWithRelations & {
@@ -18,7 +18,7 @@ type JobDetailContentProps = {
 
 export function JobDetailContent({ job }: JobDetailContentProps) {
   const { t } = useTranslation();
-  const salary = formatSalary(job.hourly_rate, job.daily_rate);
+  const salary = formatSalary(job.hourly_rate, job.daily_rate, job.flat_rate);
 
   return (
     <main className="mx-auto max-w-lg px-4 py-4">
@@ -63,7 +63,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
         {/* Meta */}
         <div className="mt-4 space-y-2 text-sm text-text-secondary">
           {job.cities?.name && <p>{"\u{1F4CD}"} {job.cities.name}</p>}
-          {job.work_date && <p>{"\u{1F4C5}"} {formatDate(job.work_date)}</p>}
+          {job.work_date && <p>{"\u{1F4C5}"} {formatDateRange(job.work_date, job.work_end_date)}</p>}
           {job.start_time && job.end_time && <p>{"\u23F0"} {formatTimeRange(job.start_time, job.end_time)}</p>}
         </div>
 
