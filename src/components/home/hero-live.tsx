@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Zap, Heart, Sparkles } from "lucide-react";
 import { getActiveJobs } from "@/lib/queries/jobs";
 import { getLanguage } from "@/lib/i18n/get-language";
 import { FeatureCard } from "./feature-card";
@@ -68,17 +69,17 @@ export async function HeroLive() {
             {/* Feature cards grid */}
             <div className="mt-8 grid grid-cols-3 gap-3">
               <FeatureCard
-                icon="⚡"
+                icon={Zap}
                 title={translations["home.hero.feature1.title"]}
                 text={translations["home.hero.feature1.text"]}
               />
               <FeatureCard
-                icon="●"
+                icon={Sparkles}
                 title={translations["home.hero.feature2.title"]}
                 text={translations["home.hero.feature2.text"]}
               />
               <FeatureCard
-                icon="♥"
+                icon={Heart}
                 title={translations["home.hero.feature3.title"]}
                 text={translations["home.hero.feature3.text"]}
               />

@@ -10,6 +10,7 @@ import { CityAutocomplete } from "@/components/ui/city-autocomplete";
 import type { CityResult } from "@/components/ui/city-autocomplete";
 import { MultiProfessionPicker } from "@/components/ui/multi-profession-picker";
 import { useTranslation } from "@/lib/i18n/context";
+import type { TranslationKey } from "@/lib/i18n/translations";
 import type { Profession } from "@/lib/types/database";
 
 type SelectOption = {
@@ -135,59 +136,61 @@ function saveErrorToStorage(error: string) {
 const frenchPhoneRegex =
   /^(?:(?:\+|00)33[\s.-]?|0)[1-9](?:[\s.-]?\d{2}){4}$/;
 
-function validateForm(values: FormValues): Record<string, string> {
+type TFn = (key: TranslationKey) => string;
+
+function validateForm(values: FormValues, t: TFn): Record<string, string> {
   const errors: Record<string, string> = {};
 
   if (!values.profession_ids || values.profession_ids.length === 0) {
     if (!values.custom_profession) {
-      errors.profession_ids = "Veuillez choisir une profession";
+      errors.profession_ids = t("validation.professionRequired");
     }
   }
   if (!values.city_id) {
-    errors.city_id = "Veuillez choisir une ville";
+    errors.city_id = t("validation.cityRequired");
   }
   if (values.city_id === "__new__" && !values.new_city_name.trim()) {
-    errors.new_city_name = "Nom de la ville requis";
+    errors.new_city_name = t("validation.cityNameRequired");
   }
   if (!values.work_date) {
-    errors.work_date = "La date de travail est requise";
+    errors.work_date = t("validation.workDateRequired");
   } else {
     const today = new Date().toISOString().split("T")[0];
     if (values.work_date < today) {
-      errors.work_date = "La date doit etre aujourd'hui ou dans le futur";
+      errors.work_date = t("validation.workDateFuture");
     }
   }
   if (values.work_end_date && values.work_date && values.work_end_date < values.work_date) {
-    errors.work_end_date = "La date de fin doit etre apres la date de debut";
+    errors.work_end_date = t("validation.endDateAfterStart");
   }
   if (!values.start_time) {
-    errors.start_time = "L'heure de debut est requise";
+    errors.start_time = t("validation.startTimeRequired");
   }
   if (!values.end_time) {
-    errors.end_time = "L'heure de fin est requise";
+    errors.end_time = t("validation.endTimeRequired");
   }
   if (values.start_time && values.end_time && values.end_time === values.start_time) {
-    errors.end_time = "L'heure de fin ne peut pas etre identique a l'heure de debut";
+    errors.end_time = t("validation.endTimeDifferent");
   }
   if (!values.salary || parseFloat(values.salary) <= 0) {
-    errors.salary = "Le salaire doit etre positif";
+    errors.salary = t("validation.salaryPositive");
   }
   const validPhones = values.contact_phones.filter((p) => p.trim() !== "");
   if (validPhones.length === 0) {
-    errors.contact_phones = "Le telephone est requis";
+    errors.contact_phones = t("validation.phoneRequired");
   } else {
     for (const phone of validPhones) {
       if (!frenchPhoneRegex.test(phone.trim())) {
-        errors.contact_phones = "Numero de telephone francais invalide";
+        errors.contact_phones = t("validation.phoneInvalid");
         break;
       }
     }
   }
   if (values.required_skill && values.required_skill.length > 200) {
-    errors.required_skill = "Maximum 200 caracteres";
+    errors.required_skill = t("validation.max200chars");
   }
   if (values.description && values.description.length > 500) {
-    errors.description = "Maximum 500 caracteres";
+    errors.description = t("validation.max500chars");
   }
 
   return errors;
@@ -314,7 +317,7 @@ export function CreateAdForm({ professions, cities: initialCities }: CreateAdFor
     e.preventDefault();
 
     // Client-side validation
-    const errors = validateForm(values);
+    const errors = validateForm(values, t);
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       setServerError(null);

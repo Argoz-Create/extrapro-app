@@ -1,3 +1,4 @@
+import { Heart } from "lucide-react";
 import { getLanguage } from "@/lib/i18n/get-language";
 
 const ASSOCIATIONS = [
@@ -56,7 +57,7 @@ export async function AssociationsBand() {
               key={index}
               className="flex items-center gap-3 rounded-lg border border-gray-800 bg-gray-900/50 px-4 py-3 transition-colors hover:border-gray-700 hover:bg-gray-900"
             >
-              <span className="text-lg text-[#FF3B30]">♥</span>
+              <Heart className="h-3.5 w-3.5 flex-shrink-0 fill-primary text-primary" strokeWidth={2} />
               <span className="font-medium text-white">{name}</span>
             </div>
           ))}
