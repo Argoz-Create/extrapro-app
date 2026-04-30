@@ -1,0 +1,16 @@
+-- =============================================================================
+-- Migration: 00025_drop_job_ads_profession_id   ⚠ DEFERRED — DO NOT RUN YET
+-- Description: Drop the legacy single-profession column on job_ads after the
+--              junction table (00020) has been used in production for ≥ 1 week
+--              with no regressions. The application code stops reading
+--              profession_id once the multi-profession PR ships, but we keep
+--              the column for safety/rollback during the bake-in period.
+--
+-- To activate this migration: rename this file
+--   00025_drop_job_ads_profession_id.sql.deferred  →  00025_drop_job_ads_profession_id.sql
+-- and re-run `supabase db push` (or apply via the dashboard). The .deferred
+-- suffix prevents Supabase CLI from picking it up automatically.
+-- =============================================================================
+
+-- DROP INDEX IF EXISTS idx_job_ads_profession;
+-- ALTER TABLE job_ads DROP COLUMN profession_id;

@@ -38,13 +38,15 @@ export function JobFeed({ initialJobs, filters }: JobFeedProps) {
       const supabase = createClient();
       let query = supabase
         .from("job_ads")
-        .select("*, professions(name_fr, icon), cities(name, department_id, region_id), employers(company_name, contact_name)")
+        .select("*, professions:job_ad_professions(profession:professions(id, name_fr, icon, category)), cities(name, department_id, region_id), employers(company_name, contact_name)")
         .eq("status", "active")
         .order("published_at", { ascending: false })
         .lt("published_at", lastJob.published_at)
         .limit(20);
 
-      if (filters.profession_id) query = query.eq("profession_id", filters.profession_id);
+      if (filters.profession_id) {
+        query = query.filter("job_ad_professions.profession_id", "eq", filters.profession_id);
+      }
 
       if (filters.city_id) {
         query = query.eq("city_id", filters.city_id);

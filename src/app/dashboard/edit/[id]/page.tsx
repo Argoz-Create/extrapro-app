@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getEmployerProfile } from "@/lib/queries/employers";
 import { getProfessions } from "@/lib/queries/professions";
 import { getCities } from "@/lib/queries/cities";
-import { getJobForEdit } from "@/lib/queries/jobs";
+import { getJobForEdit, getJobById } from "@/lib/queries/jobs";
 import { EditAdForm } from "@/components/dashboard/edit-ad-form";
 import { EditAdHeader } from "@/components/dashboard/edit-ad-header";
 
@@ -24,20 +24,16 @@ export default async function EditAdPage({ params }: EditAdPageProps) {
     redirect("/login");
   }
 
-  const [job, professions, cities] = await Promise.all([
+  const [job, professions, cities, jobWithRelations] = await Promise.all([
     getJobForEdit(id, employer.id),
     getProfessions(),
     getCities(),
+    getJobById(id).catch(() => null),
   ]);
 
   if (!job) {
     redirect("/dashboard");
   }
-
-  const professionOptions = professions.map((p) => ({
-    value: p.id,
-    label: `${p.icon} ${p.name_fr}`,
-  }));
 
   const cityOptions = cities.map((c) => ({
     value: c.id,
@@ -54,10 +50,18 @@ export default async function EditAdPage({ params }: EditAdPageProps) {
     city_name: cityName,
   };
 
+  // Get professions linked to this job
+  const jobProfessions = jobWithRelations?.professions || [];
+
   return (
     <div className="space-y-6">
       <EditAdHeader />
-      <EditAdForm professions={professionOptions} cities={cityOptions} job={jobWithCityName} />
+      <EditAdForm
+        professions={professions}
+        cities={cityOptions}
+        job={jobWithCityName}
+        jobProfessions={jobProfessions}
+      />
     </div>
   );
 }

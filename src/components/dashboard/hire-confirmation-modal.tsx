@@ -45,7 +45,7 @@ export function HireConfirmationModal({
     <Modal open={open} onClose={onClose} title={t("hire.confirmTitle")}>
       <p className="text-sm text-text-secondary mb-5">
         {t("hire.confirmMessage", {
-          profession: job.professions?.name_fr ?? "",
+          profession: (job.professions && job.professions.length > 0) ? job.professions[0].name_fr : "",
           date: job.work_date ? formatDate(job.work_date) : "",
         })}
       </p>

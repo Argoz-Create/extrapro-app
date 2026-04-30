@@ -10,6 +10,60 @@ type JobActionState = {
   fieldErrors?: Record<string, string>;
 };
 
+// Helper to normalize custom profession text for deduplication
+function normalizeCustomProfession(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+// Upsert a custom profession suggestion to the database
+async function upsertProfessionSuggestion(
+  supabase: any,
+  displayText: string
+): Promise<void> {
+  const normalized = normalizeCustomProfession(displayText);
+  
+  try {
+    // Try to find existing suggestion
+    const { data: existing } = await supabase
+      .from("profession_suggestions")
+      .select("id, name_display, use_count")
+      .eq("name_normalized", normalized)
+      .maybeSingle();
+
+    if (existing) {
+      // Update existing: increment use_count, update last_seen_at and name_display if longer
+      const longerDisplay =
+        displayText.length > existing.name_display.length
+          ? displayText
+          : existing.name_display;
+      await supabase
+        .from("profession_suggestions")
+        .update({
+          use_count: existing.use_count + 1,
+          last_seen_at: new Date().toISOString(),
+          name_display: longerDisplay,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("name_normalized", normalized);
+    } else {
+      // Insert new
+      await supabase.from("profession_suggestions").insert({
+        name_normalized: normalized,
+        name_display: displayText,
+        use_count: 1,
+      });
+    }
+  } catch (err) {
+    // Best-effort — don't fail the ad creation if suggestion capture fails
+    console.error("Error upserting profession suggestion:", err);
+  }
+}
+
 export async function createJob(
   prevState: JobActionState,
   formData: FormData
@@ -34,10 +88,14 @@ export async function createJob(
     return { error: "Profil employeur introuvable" };
   }
 
-  // Extract form data
+  // Extract form data — profession_ids are sent as repeated form values
+  const profession_ids = formData.getAll("profession_id") as string[];
+  const customProfession = ((formData.get("custom_profession") as string) || "").trim();
   const workEndDate = (formData.get("work_end_date") as string)?.trim();
+  
   const raw = {
-    profession_id: (formData.get("profession_id") as string) || "",
+    profession_ids: profession_ids.filter(Boolean),
+    custom_profession: customProfession || undefined,
     city_id: (formData.get("city_id") as string) || "",
     new_city_name: (formData.get("new_city_name") as string)?.trim() || undefined,
     new_city_postal_code: (formData.get("new_city_postal_code") as string)?.trim() || undefined,
@@ -100,21 +158,26 @@ export async function createJob(
     }
   }
 
-  // Get profession name and city name for auto-generated title
-  const [{ data: profession }, { data: city }] = await Promise.all([
-    supabase
+  // Get profession names for title generation (use first profession if multiple)
+  let titleProfession = "Extra";
+  if (validated.profession_ids.length > 0) {
+    const { data: profession } = await supabase
       .from("professions")
       .select("name_fr")
-      .eq("id", validated.profession_id)
-      .single(),
-    supabase
-      .from("cities")
-      .select("name")
-      .eq("id", cityId)
-      .single(),
-  ]);
+      .eq("id", validated.profession_ids[0])
+      .single();
+    if (profession) titleProfession = profession.name_fr;
+  } else if (validated.custom_profession) {
+    titleProfession = validated.custom_profession;
+  }
 
-  const title = `${profession?.name_fr ?? "Extra"} - ${city?.name ?? "Ville"}`;
+  const { data: city } = await supabase
+    .from("cities")
+    .select("name")
+    .eq("id", cityId)
+    .single();
+
+  const title = `${titleProfession} - ${city?.name ?? "Ville"}`;
 
   // Determine rate fields based on salary_type
   const hourly_rate = validated.salary_type === "hourly" ? validated.salary : null;
@@ -122,32 +185,57 @@ export async function createJob(
   const flat_rate = validated.salary_type === "flat" ? validated.salary : null;
 
   // Insert job ad
-  const { error } = await supabase.from("job_ads").insert({
-    employer_id: employer.id,
-    profession_id: validated.profession_id,
-    city_id: cityId,
-    title,
-    description: validated.description || null,
-    work_date: validated.work_date,
-    work_end_date: validated.work_end_date || null,
-    start_time: validated.start_time,
-    end_time: validated.end_time,
-    hourly_rate,
-    daily_rate,
-    flat_rate,
-    contact_phone: validated.contact_phone,
-    contact_name: validated.contact_name || null,
-    contact_email: validated.contact_email || null,
-    contact_whatsapp: validated.contact_whatsapp || null,
-    required_skill: validated.required_skill || null,
-    status: "active",
-    is_urgent: validated.is_urgent,
-    published_at: new Date().toISOString(),
-  });
+  const { data: jobAd, error: insertErr } = await supabase
+    .from("job_ads")
+    .insert({
+      employer_id: employer.id,
+      profession_id: validated.profession_ids[0] ?? null, // For legacy compat
+      city_id: cityId,
+      title,
+      description: validated.description || null,
+      custom_profession: validated.custom_profession || null,
+      work_date: validated.work_date,
+      work_end_date: validated.work_end_date || null,
+      start_time: validated.start_time,
+      end_time: validated.end_time,
+      hourly_rate,
+      daily_rate,
+      flat_rate,
+      contact_phone: validated.contact_phone,
+      contact_name: validated.contact_name || null,
+      contact_email: validated.contact_email || null,
+      contact_whatsapp: validated.contact_whatsapp || null,
+      required_skill: validated.required_skill || null,
+      status: "active",
+      is_urgent: validated.is_urgent,
+      published_at: new Date().toISOString(),
+    })
+    .select("id")
+    .single();
 
-  if (error) {
-    console.error("createJob insert error:", error);
-    return { error: `Erreur: ${error.message}` };
+  if (insertErr || !jobAd) {
+    console.error("createJob insert error:", insertErr);
+    return { error: `Erreur: ${insertErr?.message || "Unknown error"}` };
+  }
+
+  // Insert junction table entries for all selected professions
+  if (validated.profession_ids.length > 0) {
+    const links = validated.profession_ids.map((profession_id) => ({
+      job_ad_id: jobAd.id,
+      profession_id,
+    }));
+    const { error: linkErr } = await supabase.from("job_ad_professions").insert(links);
+    if (linkErr) {
+      // Best-effort cleanup
+      await supabase.from("job_ads").delete().eq("id", jobAd.id);
+      console.error("createJob junction insert error:", linkErr);
+      return { error: "Erreur liaison des métiers" };
+    }
+  }
+
+  // Capture custom profession suggestion
+  if (validated.custom_profession) {
+    await upsertProfessionSuggestion(supabase, validated.custom_profession);
   }
 
   revalidatePath("/dashboard", "layout");
@@ -191,44 +279,61 @@ export async function saveJobDraft(
   let cityId = (formData.get("city_id") as string) || null;
   if (cityId === "__new__" || cityId === "") cityId = null;
 
-  const professionId = (formData.get("profession_id") as string) || null;
+  const profession_ids = (formData.getAll("profession_id") as string[]).filter(Boolean);
+  const customProfession = ((formData.get("custom_profession") as string) || "").trim();
 
   // Build a partial title
   let title = "Brouillon";
-  if (professionId) {
+  if (profession_ids.length > 0) {
     const { data: profession } = await supabase
       .from("professions")
       .select("name_fr")
-      .eq("id", professionId)
+      .eq("id", profession_ids[0])
       .single();
     if (profession) title = `${profession.name_fr} - Brouillon`;
+  } else if (customProfession) {
+    title = `${customProfession} - Brouillon`;
   }
 
-  const { error } = await supabase.from("job_ads").insert({
-    employer_id: employer.id,
-    profession_id: professionId,
-    city_id: cityId,
-    title,
-    description: (formData.get("description") as string)?.trim() || null,
-    work_date: (formData.get("work_date") as string) || null,
-    work_end_date: workEndDate || null,
-    start_time: (formData.get("start_time") as string) || null,
-    end_time: (formData.get("end_time") as string) || null,
-    hourly_rate,
-    daily_rate,
-    flat_rate,
-    contact_phone: (formData.get("contact_phone") as string) || null,
-    contact_name: (formData.get("contact_name") as string)?.trim() || null,
-    contact_email: (formData.get("contact_email") as string)?.trim() || null,
-    contact_whatsapp: (formData.get("contact_whatsapp") as string)?.trim() || null,
-    required_skill: (formData.get("required_skill") as string)?.trim() || null,
-    status: "draft",
-    is_urgent: formData.get("is_urgent") === "on",
-  });
+  const { data: newJob, error } = await supabase
+    .from("job_ads")
+    .insert({
+      employer_id: employer.id,
+      profession_id: profession_ids[0] ?? null,
+      city_id: cityId,
+      title,
+      description: (formData.get("description") as string)?.trim() || null,
+      custom_profession: customProfession || null,
+      work_date: (formData.get("work_date") as string) || null,
+      work_end_date: workEndDate || null,
+      start_time: (formData.get("start_time") as string) || null,
+      end_time: (formData.get("end_time") as string) || null,
+      hourly_rate,
+      daily_rate,
+      flat_rate,
+      contact_phone: (formData.get("contact_phone") as string) || null,
+      contact_name: (formData.get("contact_name") as string)?.trim() || null,
+      contact_email: (formData.get("contact_email") as string)?.trim() || null,
+      contact_whatsapp: (formData.get("contact_whatsapp") as string)?.trim() || null,
+      required_skill: (formData.get("required_skill") as string)?.trim() || null,
+      status: "draft",
+      is_urgent: formData.get("is_urgent") === "on",
+    })
+    .select("id")
+    .single();
 
-  if (error) {
+  if (error || !newJob) {
     console.error("saveJobDraft insert error:", error);
-    return { error: `Erreur: ${error.message}` };
+    return { error: `Erreur: ${error?.message || "Unknown error"}` };
+  }
+
+  // Insert junction entries for draft (even though drafts are incomplete, we capture what's there)
+  if (profession_ids.length > 0) {
+    const links = profession_ids.map((profession_id) => ({
+      job_ad_id: newJob.id,
+      profession_id,
+    }));
+    await supabase.from("job_ad_professions").insert(links);
   }
 
   revalidatePath("/dashboard", "layout");
@@ -277,9 +382,13 @@ export async function updateJob(
   }
 
   // Extract form data
+  const profession_ids = (formData.getAll("profession_id") as string[]).filter(Boolean);
+  const customProfession = ((formData.get("custom_profession") as string) || "").trim();
   const workEndDate = (formData.get("work_end_date") as string)?.trim();
+  
   const raw = {
-    profession_id: (formData.get("profession_id") as string) || "",
+    profession_ids,
+    custom_profession: customProfession || undefined,
     city_id: (formData.get("city_id") as string) || "",
     new_city_name: (formData.get("new_city_name") as string)?.trim() || undefined,
     new_city_postal_code: (formData.get("new_city_postal_code") as string)?.trim() || undefined,
@@ -342,21 +451,26 @@ export async function updateJob(
     }
   }
 
-  // Get profession name and city name for auto-generated title
-  const [{ data: profession }, { data: city }] = await Promise.all([
-    supabase
+  // Get profession names for title generation
+  let titleProfession = "Extra";
+  if (validated.profession_ids.length > 0) {
+    const { data: profession } = await supabase
       .from("professions")
       .select("name_fr")
-      .eq("id", validated.profession_id)
-      .single(),
-    supabase
-      .from("cities")
-      .select("name")
-      .eq("id", cityId)
-      .single(),
-  ]);
+      .eq("id", validated.profession_ids[0])
+      .single();
+    if (profession) titleProfession = profession.name_fr;
+  } else if (validated.custom_profession) {
+    titleProfession = validated.custom_profession;
+  }
 
-  const title = `${profession?.name_fr ?? "Extra"} - ${city?.name ?? "Ville"}`;
+  const { data: city } = await supabase
+    .from("cities")
+    .select("name")
+    .eq("id", cityId)
+    .single();
+
+  const title = `${titleProfession} - ${city?.name ?? "Ville"}`;
 
   // Determine rate fields based on salary_type
   const hourly_rate = validated.salary_type === "hourly" ? validated.salary : null;
@@ -367,10 +481,11 @@ export async function updateJob(
   const { error } = await supabase
     .from("job_ads")
     .update({
-      profession_id: validated.profession_id,
+      profession_id: validated.profession_ids[0] ?? null,
       city_id: cityId,
       title,
       description: validated.description || null,
+      custom_profession: validated.custom_profession || null,
       work_date: validated.work_date,
       work_end_date: validated.work_end_date || null,
       start_time: validated.start_time,
@@ -390,6 +505,21 @@ export async function updateJob(
   if (error) {
     console.error("updateJob error:", error);
     return { error: `Erreur: ${error.message}` };
+  }
+
+  // Update junction table: delete old entries and insert new ones
+  await supabase.from("job_ad_professions").delete().eq("job_ad_id", jobId);
+  if (validated.profession_ids.length > 0) {
+    const links = validated.profession_ids.map((profession_id) => ({
+      job_ad_id: jobId,
+      profession_id,
+    }));
+    await supabase.from("job_ad_professions").insert(links);
+  }
+
+  // Capture custom profession suggestion
+  if (validated.custom_profession) {
+    await upsertProfessionSuggestion(supabase, validated.custom_profession);
   }
 
   revalidatePath("/dashboard", "layout");
@@ -447,9 +577,13 @@ export async function publishJobDraft(
     return { error: "Seuls les brouillons peuvent etre publies" };
   }
 
+  const profession_ids = (formData.getAll("profession_id") as string[]).filter(Boolean);
+  const customProfession = ((formData.get("custom_profession") as string) || "").trim();
   const workEndDate = (formData.get("work_end_date") as string)?.trim();
+  
   const raw = {
-    profession_id: (formData.get("profession_id") as string) || "",
+    profession_ids,
+    custom_profession: customProfession || undefined,
     city_id: (formData.get("city_id") as string) || "",
     new_city_name: (formData.get("new_city_name") as string)?.trim() || undefined,
     new_city_postal_code: (formData.get("new_city_postal_code") as string)?.trim() || undefined,
@@ -509,20 +643,25 @@ export async function publishJobDraft(
     }
   }
 
-  const [{ data: profession }, { data: city }] = await Promise.all([
-    supabase
+  let titleProfession = "Extra";
+  if (validated.profession_ids.length > 0) {
+    const { data: profession } = await supabase
       .from("professions")
       .select("name_fr")
-      .eq("id", validated.profession_id)
-      .single(),
-    supabase
-      .from("cities")
-      .select("name")
-      .eq("id", cityId)
-      .single(),
-  ]);
+      .eq("id", validated.profession_ids[0])
+      .single();
+    if (profession) titleProfession = profession.name_fr;
+  } else if (validated.custom_profession) {
+    titleProfession = validated.custom_profession;
+  }
 
-  const title = `${profession?.name_fr ?? "Extra"} - ${city?.name ?? "Ville"}`;
+  const { data: city } = await supabase
+    .from("cities")
+    .select("name")
+    .eq("id", cityId)
+    .single();
+
+  const title = `${titleProfession} - ${city?.name ?? "Ville"}`;
 
   const hourly_rate = validated.salary_type === "hourly" ? validated.salary : null;
   const daily_rate = validated.salary_type === "daily" ? validated.salary : null;
@@ -531,10 +670,11 @@ export async function publishJobDraft(
   const { error } = await supabase
     .from("job_ads")
     .update({
-      profession_id: validated.profession_id,
+      profession_id: validated.profession_ids[0] ?? null,
       city_id: cityId,
       title,
       description: validated.description || null,
+      custom_profession: validated.custom_profession || null,
       work_date: validated.work_date,
       work_end_date: validated.work_end_date || null,
       start_time: validated.start_time,
@@ -555,6 +695,21 @@ export async function publishJobDraft(
   if (error) {
     console.error("publishJobDraft error:", error);
     return { error: `Erreur: ${error.message}` };
+  }
+
+  // Update junction table
+  await supabase.from("job_ad_professions").delete().eq("job_ad_id", jobId);
+  if (validated.profession_ids.length > 0) {
+    const links = validated.profession_ids.map((profession_id) => ({
+      job_ad_id: jobId,
+      profession_id,
+    }));
+    await supabase.from("job_ad_professions").insert(links);
+  }
+
+  // Capture custom profession suggestion
+  if (validated.custom_profession) {
+    await upsertProfessionSuggestion(supabase, validated.custom_profession);
   }
 
   revalidatePath("/dashboard", "layout");
@@ -624,6 +779,12 @@ export async function relistJob(jobAdId: string): Promise<{ error: string | null
     return { error: "Annonce introuvable ou acces non autorise" };
   }
 
+  // Fetch the professions linked to this ad (for copying)
+  const { data: linkedProfessions } = await supabase
+    .from("job_ad_professions")
+    .select("profession_id")
+    .eq("job_ad_id", jobAdId);
+
   // Create a new draft copy with cleared dates and reset stats
   const { data: newJob, error } = await supabase
     .from("job_ads")
@@ -633,6 +794,7 @@ export async function relistJob(jobAdId: string): Promise<{ error: string | null
       city_id: oldJob.city_id,
       title: oldJob.title,
       description: oldJob.description,
+      custom_profession: oldJob.custom_profession,
       work_date: null,
       work_end_date: null,
       start_time: oldJob.start_time,
@@ -658,6 +820,15 @@ export async function relistJob(jobAdId: string): Promise<{ error: string | null
   if (error || !newJob) {
     console.error("relistJob error:", error);
     return { error: "Erreur lors de la re-publication." };
+  }
+
+  // Copy profession links from old ad to new draft
+  if (linkedProfessions && linkedProfessions.length > 0) {
+    const links = linkedProfessions.map((item) => ({
+      job_ad_id: newJob.id,
+      profession_id: item.profession_id,
+    }));
+    await supabase.from("job_ad_professions").insert(links);
   }
 
   revalidatePath("/dashboard", "layout");

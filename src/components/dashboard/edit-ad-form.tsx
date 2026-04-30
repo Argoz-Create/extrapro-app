@@ -8,7 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { CityAutocomplete } from "@/components/ui/city-autocomplete";
 import type { CityResult } from "@/components/ui/city-autocomplete";
+import { MultiProfessionPicker } from "@/components/ui/multi-profession-picker";
 import { useTranslation } from "@/lib/i18n/context";
+import type { Profession } from "@/lib/types/database";
 
 type SelectOption = {
   value: string;
@@ -19,6 +21,7 @@ type JobData = {
   id: string;
   status: string;
   profession_id: string | null;
+  custom_profession: string | null;
   city_id: string | null;
   city_name?: string | null;
   work_date: string | null;
@@ -38,13 +41,15 @@ type JobData = {
 };
 
 type EditAdFormProps = {
-  professions: SelectOption[];
+  professions: Profession[];
   cities: SelectOption[];
   job: JobData;
+  jobProfessions?: Pick<Profession, "id" | "name_fr" | "icon" | "category">[];
 };
 
 type FormValues = {
-  profession_id: string;
+  profession_ids: string[];
+  custom_profession: string;
   city_id: string;
   city_display_name: string;
   new_city_name: string;
@@ -62,6 +67,7 @@ type FormValues = {
   contact_email: string;
   contact_whatsapp: string;
   is_urgent: boolean;
+  is_single_day: boolean;
 };
 
 function getSalaryType(job: JobData): string {
@@ -104,7 +110,8 @@ function getInitialEditValues(job: JobData): FormValues {
     : [""];
 
   return {
-    profession_id: job.profession_id ?? "",
+    profession_ids: [],
+    custom_profession: job.custom_profession ?? "",
     city_id: job.city_id ?? "",
     city_display_name: job.city_name ?? "",
     new_city_name: "",
@@ -122,6 +129,7 @@ function getInitialEditValues(job: JobData): FormValues {
     contact_email: job.contact_email ?? "",
     contact_whatsapp: job.contact_whatsapp ?? "",
     is_urgent: job.is_urgent,
+    is_single_day: !job.work_end_date,
   };
 }
 
@@ -131,8 +139,10 @@ const frenchPhoneRegex =
 function validateForm(values: FormValues): Record<string, string> {
   const errors: Record<string, string> = {};
 
-  if (!values.profession_id) {
-    errors.profession_id = "Veuillez choisir une profession";
+  if (!values.profession_ids || values.profession_ids.length === 0) {
+    if (!values.custom_profession) {
+      errors.profession_ids = "Veuillez choisir une profession";
+    }
   }
   if (!values.city_id) {
     errors.city_id = "Veuillez choisir une ville";
@@ -184,7 +194,7 @@ function validateForm(values: FormValues): Record<string, string> {
   return errors;
 }
 
-export function EditAdForm({ professions, cities: initialCities, job }: EditAdFormProps) {
+export function EditAdForm({ professions, cities: initialCities, job, jobProfessions }: EditAdFormProps) {
   const { t } = useTranslation();
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
@@ -193,7 +203,13 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const isDraft = job.status === "draft";
 
-  const [values, setValues] = useState<FormValues>(() => getInitialEditValues(job));
+  const [values, setValues] = useState<FormValues>(() => {
+    const baseValues = getInitialEditValues(job);
+    if (jobProfessions) {
+      baseValues.profession_ids = jobProfessions.map((p) => p.id);
+    }
+    return baseValues;
+  });
 
   // Save to localStorage on value changes (for remount persistence)
   useEffect(() => {
@@ -204,7 +220,7 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
     }
   }, [values, job.id]);
 
-  const updateField = useCallback((field: keyof FormValues, value: string | boolean) => {
+  const updateField = useCallback((field: keyof FormValues, value: string | boolean | string[]) => {
     setValues((prev) => ({ ...prev, [field]: value }));
     setFieldErrors((prev) => {
       if (prev[field]) {
@@ -272,7 +288,12 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
   function buildFormData(): FormData {
     const formData = new FormData();
     formData.set("job_id", job.id);
-    formData.set("profession_id", values.profession_id);
+    for (const id of values.profession_ids) {
+    formData.append("profession_id", id);
+  }
+  if (values.custom_profession) {
+    formData.set("custom_profession", values.custom_profession);
+  }
     formData.set("city_id", values.city_id);
     if (values.new_city_name) formData.set("new_city_name", values.new_city_name);
     if (values.new_city_postal_code) formData.set("new_city_postal_code", values.new_city_postal_code);
@@ -372,14 +393,16 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
           <span className="text-xs text-text-tertiary">{t("createAd.publicSectionHint")}</span>
         </div>
 
-        <Select
-          label={t("createAd.profession")}
-          name="profession_id"
-          options={professions}
-          placeholder={t("createAd.selectProfession")}
-          value={values.profession_id}
-          onChange={(e) => updateField("profession_id", e.target.value)}
-          error={fieldErrors.profession_id}
+        <MultiProfessionPicker
+          professions={professions}
+          value={values.profession_ids}
+          onChange={(ids) => updateField("profession_ids", ids)}
+          customProfession={values.custom_profession}
+          onCustomChange={(text) => updateField("custom_profession", text)}
+          max={5}
+          error={fieldErrors.profession_ids}
+          label={t("createAd.roles")}
+          hint={t("createAd.rolesHint")}
         />
 
         <CityAutocomplete
@@ -404,28 +427,47 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
 
         {/* Date range */}
         <div>
-          <div className="grid grid-cols-2 gap-3">
+          {/* Single-day toggle */}
+          <div className="flex items-center gap-3 mb-4 p-3 bg-primary/5 border border-primary/10 rounded-[10px]">
+            <input
+              type="checkbox"
+              id="is_single_day"
+              checked={values.is_single_day}
+              onChange={(e) => {
+                updateField("is_single_day", e.target.checked);
+                if (e.target.checked) {
+                  updateField("work_end_date", "");
+                }
+              }}
+              className="w-4 h-4 cursor-pointer"
+            />
+            <label htmlFor="is_single_day" className="flex-1 cursor-pointer">
+              <span className="block text-sm font-medium text-text-primary">{t("createAd.singleDay")}</span>
+              <span className="block text-xs text-text-tertiary">{t("createAd.singleDayHint")}</span>
+            </label>
+          </div>
+
+          <div className={values.is_single_day ? "grid grid-cols-1 gap-3" : "grid grid-cols-2 gap-3"}>
             <Input
-              label={t("createAd.startDate")}
+              label={values.is_single_day ? t("createAd.workDate") : t("createAd.startDate")}
               name="work_date"
               type="date"
               value={values.work_date}
               onChange={(e) => updateField("work_date", e.target.value)}
               error={fieldErrors.work_date}
             />
-            <Input
-              label={t("createAd.endDate")}
-              name="work_end_date"
-              type="date"
-              min={values.work_date || undefined}
-              value={values.work_end_date}
-              onChange={(e) => updateField("work_end_date", e.target.value)}
-              error={fieldErrors.work_end_date}
-            />
+            {!values.is_single_day && (
+              <Input
+                label={t("createAd.endDate")}
+                name="work_end_date"
+                type="date"
+                min={values.work_date || undefined}
+                value={values.work_end_date}
+                onChange={(e) => updateField("work_end_date", e.target.value)}
+                error={fieldErrors.work_end_date}
+              />
+            )}
           </div>
-          <p className="mt-1.5 text-xs text-text-tertiary">
-            {t("createAd.endDateHint")}
-          </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -445,6 +487,36 @@ export function EditAdForm({ professions, cities: initialCities, job }: EditAdFo
             onChange={(e) => updateField("end_time", e.target.value)}
             error={fieldErrors.end_time}
           />
+        </div>
+
+        {/* Until midnight quick-select chips */}
+        <div>
+          <div className="flex gap-2 mb-2">
+            <button
+              type="button"
+              onClick={() => updateField("end_time", "18:00")}
+              className="px-3 py-1.5 bg-text-tertiary/10 text-text-primary text-sm font-medium rounded-full hover:bg-text-tertiary/20 transition-colors"
+            >
+              {t("createAd.endTime.quick6pm")}
+            </button>
+            <button
+              type="button"
+              onClick={() => updateField("end_time", "22:00")}
+              className="px-3 py-1.5 bg-text-tertiary/10 text-text-primary text-sm font-medium rounded-full hover:bg-text-tertiary/20 transition-colors"
+            >
+              {t("createAd.endTime.quick10pm")}
+            </button>
+            <button
+              type="button"
+              onClick={() => updateField("end_time", "23:59")}
+              className="px-3 py-1.5 bg-text-tertiary/10 text-text-primary text-sm font-medium rounded-full hover:bg-text-tertiary/20 transition-colors"
+            >
+              {t("createAd.endTime.quickMidnight")}
+            </button>
+          </div>
+          <p className="text-xs text-text-tertiary">
+            {t("createAd.endTime.midnightHint")}
+          </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">

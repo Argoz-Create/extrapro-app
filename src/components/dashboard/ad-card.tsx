@@ -67,10 +67,16 @@ export function AdCard({ job }: AdCardProps) {
 
         {/* Profession + city */}
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-xl flex-shrink-0">{job.professions?.icon ?? "\u{1F4DD}"}</span>
+          <span className="text-xl flex-shrink-0">
+            {Array.isArray(job.professions) && job.professions.length > 0
+              ? job.professions[0]?.icon
+              : "\u{1F4DD}"}
+          </span>
           <div className="min-w-0">
             <p className="font-semibold text-sm text-text-primary truncate">
-              {job.professions?.name_fr ?? t("status.draft")}
+              {Array.isArray(job.professions) && job.professions.length > 0
+                ? job.professions[0]?.name_fr
+                : t("status.draft")}
             </p>
             <p className="text-xs text-text-secondary">{job.cities?.name ?? ""}</p>
           </div>

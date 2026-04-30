@@ -27,7 +27,8 @@ export const registerSchema = z.object({
 
 export const createAdSchema = z
   .object({
-    profession_id: z.string().min(1, "Veuillez choisir une profession"),
+    profession_ids: z.array(z.string().uuid()).max(5, "Maximum 5 métiers par annonce").default([]),
+    custom_profession: z.string().trim().max(60).optional(),
     city_id: z.string().min(1, "Veuillez choisir une ville"),
     new_city_name: z.string().optional(),
     new_city_postal_code: z.string().optional(),
@@ -51,6 +52,10 @@ export const createAdSchema = z
     description: z.string().max(500, "Maximum 500 caracteres").optional(),
     is_urgent: z.boolean().default(false),
   })
+  .refine(
+    (data) => data.profession_ids.length > 0 || data.custom_profession,
+    { message: "Sélectionnez au moins un métier", path: ["profession_ids"] }
+  )
   .refine(
     (data) => {
       const today = new Date().toISOString().split("T")[0];
