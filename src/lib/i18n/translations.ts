@@ -215,6 +215,38 @@ export const translations = {
     "common.back": "Retour",
     "common.loading": "Chargement...",
     "common.error": "Une erreur est survenue",
+    // Pricing strip
+    "home.pricing.pill1": "Gratuit pour parcourir",
+    "home.pricing.pill2": "Sans abonnement",
+    "home.pricing.pill3": "Sans engagement",
+
+    // How it works
+    "home.howItWorks.eyebrow": "Le fonctionnement",
+    "home.howItWorks.title": "Une mission ouverte. Un appel. C'est tout.",
+    "home.howItWorks.employer.tag": "Côté employeur",
+    "home.howItWorks.employer.title": "Recrutez en 5 minutes",
+    "home.howItWorks.employer.step1.title": "Publiez votre annonce",
+    "home.howItWorks.employer.step1.body": "30 secondes, depuis le téléphone",
+    "home.howItWorks.employer.step2.title": "Recevez les appels",
+    "home.howItWorks.employer.step2.body": "Directement, sans intermédiaire",
+    "home.howItWorks.employer.step3.title": "Confirmez la mission",
+    "home.howItWorks.employer.step3.body": "Vous décidez qui vient",
+    "home.howItWorks.employer.step4.title": "Une asso est financée",
+    "home.howItWorks.employer.step4.body": "Une part de chaque mission",
+    "home.howItWorks.worker.tag": "Côté extra",
+    "home.howItWorks.worker.title": "Trouvez du travail en 10 secondes",
+    "home.howItWorks.worker.step1.title": "Parcourez les annonces",
+    "home.howItWorks.worker.step1.body": "Sans inscription",
+    "home.howItWorks.worker.step2.title": "Appelez l'employeur",
+    "home.howItWorks.worker.step2.body": "D'un seul tap",
+    "home.howItWorks.worker.step3.title": "Travaillez le jour même",
+    "home.howItWorks.worker.step3.body": "Le plus souvent",
+    "home.howItWorks.worker.step4.title": "Payé sur place",
+    "home.howItWorks.worker.step4.body": "Selon l'accord trouvé",
+
+    // Sticky mobile CTA
+    "home.stickyCta": "Publier",
+
   },
   en: {
     // Top bar
@@ -452,6 +484,38 @@ export const translations = {
     "home.assos.eyebrow": "Our cause",
     "home.assos.title": "Eleven charities — funded automatically, every booking.",
     "home.assos.subhead": "No marketing, no campaign. A fixed share of every paid booking goes directly to a partner charity.",
+
+    // Pricing strip
+    "home.pricing.pill1": "Free to browse",
+    "home.pricing.pill2": "No subscription",
+    "home.pricing.pill3": "No commitment",
+
+    // How it works
+    "home.howItWorks.eyebrow": "How it works",
+    "home.howItWorks.title": "One ad. One call. That's it.",
+    "home.howItWorks.employer.tag": "For employers",
+    "home.howItWorks.employer.title": "Hire in 5 minutes",
+    "home.howItWorks.employer.step1.title": "Post your ad",
+    "home.howItWorks.employer.step1.body": "30 seconds, from your phone",
+    "home.howItWorks.employer.step2.title": "Get calls",
+    "home.howItWorks.employer.step2.body": "Direct, no middleman",
+    "home.howItWorks.employer.step3.title": "Confirm the booking",
+    "home.howItWorks.employer.step3.body": "You choose who shows up",
+    "home.howItWorks.employer.step4.title": "A charity gets funded",
+    "home.howItWorks.employer.step4.body": "A share of every booking",
+    "home.howItWorks.worker.tag": "For workers",
+    "home.howItWorks.worker.title": "Find work in 10 seconds",
+    "home.howItWorks.worker.step1.title": "Browse ads",
+    "home.howItWorks.worker.step1.body": "No sign-up",
+    "home.howItWorks.worker.step2.title": "Call the employer",
+    "home.howItWorks.worker.step2.body": "One tap",
+    "home.howItWorks.worker.step3.title": "Work the same day",
+    "home.howItWorks.worker.step3.body": "Usually",
+    "home.howItWorks.worker.step4.title": "Paid on site",
+    "home.howItWorks.worker.step4.body": "Per agreement",
+
+    // Sticky mobile CTA
+    "home.stickyCta": "Post an ad",
 
   },
 } as const;
