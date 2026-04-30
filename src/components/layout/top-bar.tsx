@@ -17,7 +17,7 @@ export function TopBar() {
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center pulse-coral">
             <span className="text-white font-bold text-sm">E</span>
           </div>
-          <span className="font-display font-800 text-text-primary tracking-tight">
+          <span className="font-display font-extrabold text-text-primary tracking-tight">
             EXTRAPRO
           </span>
         </Link>

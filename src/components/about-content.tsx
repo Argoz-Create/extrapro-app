@@ -24,7 +24,7 @@ export function AboutContent({ stats }: AboutContentProps) {
 
       {/* Notre Mission */}
       <section className="mb-8">
-        <h1 className="text-2xl font-display font-700 text-text-primary mb-3">
+        <h1 className="text-2xl font-display font-bold text-text-primary mb-3">
           {t("about.missionTitle")}
         </h1>
         <p className="text-sm text-text-secondary leading-relaxed">
@@ -34,7 +34,7 @@ export function AboutContent({ stats }: AboutContentProps) {
 
       {/* Comment ca marche */}
       <section className="mb-8">
-        <h2 className="text-xl font-display font-700 text-text-primary mb-4">
+        <h2 className="text-xl font-display font-bold text-text-primary mb-4">
           {t("about.howTitle")}
         </h2>
         <div className="space-y-4">
@@ -58,7 +58,7 @@ export function AboutContent({ stats }: AboutContentProps) {
 
       {/* Impact */}
       <section className="mb-8">
-        <h2 className="text-xl font-display font-700 text-text-primary mb-4">
+        <h2 className="text-xl font-display font-bold text-text-primary mb-4">
           {t("about.impactTitle")}
         </h2>
         <div className="rounded-2xl border border-border-light bg-white p-5 shadow-sm">
@@ -113,7 +113,7 @@ function Step({
 function StatBlock({ value, label }: { value: string; label: string }) {
   return (
     <div>
-      <p className="text-2xl font-display font-700 font-mono text-success">{value}</p>
+      <p className="text-2xl font-display font-bold font-mono text-success">{value}</p>
       <p className="text-xs text-text-secondary mt-0.5">{label}</p>
     </div>
   );

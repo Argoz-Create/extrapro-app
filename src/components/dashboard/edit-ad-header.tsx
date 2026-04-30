@@ -26,7 +26,7 @@ export function EditAdHeader() {
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </Link>
-      <h1 className="text-xl font-display font-700 text-text-primary">
+      <h1 className="text-xl font-display font-bold text-text-primary">
         {t("ad.edit")}
       </h1>
     </div>
