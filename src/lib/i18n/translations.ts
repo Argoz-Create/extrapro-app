@@ -432,6 +432,27 @@ export const translations = {
     "common.back": "Back",
     "common.loading": "Loading...",
     "common.error": "An error occurred",
+    // Homepage hero & associations (new)
+    "home.hero.statusPill": "LIVE · URGENT",
+    "home.hero.headline.start": "Find your extra.",
+    "home.hero.headline.accent": "Now.",
+    "home.hero.subhead": "The first live matching platform for temp workers in restaurants, hotels and events. No commitment. No subscription. A share of every booking goes to charity.",
+    "home.hero.feature1.title": "10 seconds",
+    "home.hero.feature1.text": "post to phone call",
+    "home.hero.feature2.title": "No subscription",
+    "home.hero.feature2.text": "pay per use",
+    "home.hero.feature3.title": "11 charities",
+    "home.hero.feature3.text": "funded directly",
+    "home.hero.cta.primary": "Post urgently →",
+    "home.hero.cta.secondary": "See live feed",
+    "home.feed.label.heading": "Active ads · Paris",
+    "home.feed.label.live": "LIVE",
+    "home.feed.empty": "No active ads right now. Be the first to post.",
+    "home.feed.callBtn": "Call",
+    "home.assos.eyebrow": "Our cause",
+    "home.assos.title": "Eleven charities — funded automatically, every booking.",
+    "home.assos.subhead": "No marketing, no campaign. A fixed share of every paid booking goes directly to a partner charity.",
+
   },
 } as const;
 
