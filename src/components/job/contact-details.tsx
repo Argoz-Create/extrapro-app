@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { User, Phone, MessageCircle, Mail } from "lucide-react";
 import { logCallClick } from "@/lib/actions/interactions";
 import { useTranslation } from "@/lib/i18n/context";
 
@@ -56,7 +57,7 @@ export function ContactDetails({
           {/* Name */}
           {displayName && (
             <div className="flex items-center gap-2 text-sm text-text-primary">
-              <span className="flex-shrink-0">{"\u{1F464}"}</span>
+              <User className="h-4 w-4 flex-shrink-0 text-text-secondary" strokeWidth={2} />
               <span className="font-medium">{displayName}</span>
             </div>
           )}
@@ -68,7 +69,7 @@ export function ContactDetails({
               href={`tel:${singlePhone}`}
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
-              <span className="flex-shrink-0">{"\u{1F4DE}"}</span>
+              <Phone className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
               <span>{singlePhone}</span>
             </a>
           ))}
@@ -81,7 +82,7 @@ export function ContactDetails({
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
-              <span className="flex-shrink-0">{"\u{1F4AC}"}</span>
+              <MessageCircle className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
               <span>WhatsApp</span>
             </a>
           )}
@@ -92,7 +93,7 @@ export function ContactDetails({
               href={`mailto:${contactEmail}`}
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
-              <span className="flex-shrink-0">{"✉️"}</span>
+              <Mail className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
               <span>{contactEmail}</span>
             </a>
           )}

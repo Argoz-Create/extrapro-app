@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { MapPin, Target, Calendar, Banknote, Briefcase } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ContactDetails } from "@/components/job/contact-details";
@@ -38,7 +39,7 @@ export function JobCard({ job }: JobCardProps) {
         <div className="mt-3 space-y-1.5">
           {/* 1. Ville / City */}
           <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <span className="flex-shrink-0">{"\u{1F4CD}"}</span>
+            <MapPin className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
             <span className="font-medium text-text-tertiary">{t("job.location")}:</span>
             <span>{job.cities?.name}</span>
           </div>
@@ -51,7 +52,6 @@ export function JobCard({ job }: JobCardProps) {
                 <>
                   {job.professions.slice(0, 3).map((prof) => (
                     <span key={prof.id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-soft text-primary rounded-full text-xs font-medium">
-                      <span>{prof.icon}</span>
                       <span>{prof.name_fr}</span>
                     </span>
                   ))}
@@ -74,7 +74,7 @@ export function JobCard({ job }: JobCardProps) {
           {/* 3. Competence requise / Required skill */}
           {job.required_skill && (
             <div className="flex items-center gap-2 text-sm text-text-secondary">
-              <span className="flex-shrink-0">{"\u{1F3AF}"}</span>
+              <Target className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
               <span className="font-medium text-text-tertiary">{t("job.requiredSkill")}:</span>
               <span>{job.required_skill}</span>
             </div>
@@ -82,7 +82,7 @@ export function JobCard({ job }: JobCardProps) {
 
           {/* 4. Date, Heure et Emplacement */}
           <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <span className="flex-shrink-0">{"\u{1F4C5}"}</span>
+            <Calendar className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
             <span>
               {job.work_date && formatDateRange(job.work_date, job.work_end_date)} {"·"} {job.start_time && job.end_time && formatTimeRange(job.start_time, job.end_time)} {"·"} {job.cities?.name}
             </span>
@@ -91,7 +91,7 @@ export function JobCard({ job }: JobCardProps) {
           {/* 5. Salaire */}
           {salary && (
             <div className="flex items-center gap-2">
-              <span className="flex-shrink-0">{"\u{1F4B0}"}</span>
+              <Banknote className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
               <span className="text-lg font-bold font-mono text-success">{salary}</span>
             </div>
           )}

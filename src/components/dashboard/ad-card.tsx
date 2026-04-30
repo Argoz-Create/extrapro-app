@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition, useState, useOptimistic } from "react";
+import { Calendar, Clock, Banknote, Eye, Phone } from "lucide-react";
 import type { JobAdWithRelations, JobStatus } from "@/lib/types/database";
 import { formatDateRange, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
 import { toggleJobStatus, relistJob } from "@/lib/actions/jobs";
@@ -67,11 +68,9 @@ export function AdCard({ job }: AdCardProps) {
 
         {/* Profession + city */}
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-xl flex-shrink-0">
-            {Array.isArray(job.professions) && job.professions.length > 0
-              ? job.professions[0]?.icon
-              : "\u{1F4DD}"}
-          </span>
+          <div className="text-text-secondary flex-shrink-0">
+            (no icon for draft jobs)
+          </div>
           <div className="min-w-0">
             <p className="font-semibold text-sm font-display text-text-primary truncate">
               {Array.isArray(job.professions) && job.professions.length > 0
@@ -83,16 +82,37 @@ export function AdCard({ job }: AdCardProps) {
         </div>
 
         {/* Details */}
-        <div className="mt-3 flex items-center gap-3 text-xs text-text-secondary">
-          {job.work_date && <span>{"\u{1F4C5}"} {formatDateRange(job.work_date, job.work_end_date)}</span>}
-          {job.start_time && job.end_time && <span>{"\u{1F550}"} {formatTimeRange(job.start_time, job.end_time)}</span>}
-          {salary && <span>{"\u{1F4B6}"} {salary}</span>}
+        <div className="mt-3 flex items-center gap-3 text-xs text-text-secondary flex-wrap">
+          {job.work_date && (
+            <div className="flex items-center gap-1">
+              <Calendar className="h-3.5 w-3.5" strokeWidth={2} />
+              <span>{formatDateRange(job.work_date, job.work_end_date)}</span>
+            </div>
+          )}
+          {job.start_time && job.end_time && (
+            <div className="flex items-center gap-1">
+              <Clock className="h-3.5 w-3.5" strokeWidth={2} />
+              <span>{formatTimeRange(job.start_time, job.end_time)}</span>
+            </div>
+          )}
+          {salary && (
+            <div className="flex items-center gap-1">
+              <Banknote className="h-3.5 w-3.5" strokeWidth={2} />
+              <span>{salary}</span>
+            </div>
+          )}
         </div>
 
         {/* Stats */}
-        <div className="mt-2 flex items-center gap-4 text-xs text-text-tertiary">
-          <span>{"\u{1F441}"} {job.view_count} {t("dashboard.viewsCount")}</span>
-          <span>{"\u{1F4DE}"} {job.call_click_count} {t("dashboard.calls")}</span>
+        <div className="mt-2 flex items-center gap-4 text-xs text-text-tertiary flex-wrap">
+          <div className="flex items-center gap-1">
+            <Eye className="h-3.5 w-3.5" strokeWidth={2} />
+            <span>{job.view_count} {t("dashboard.viewsCount")}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Phone className="h-3.5 w-3.5" strokeWidth={2} />
+            <span>{job.call_click_count} {t("dashboard.calls")}</span>
+          </div>
         </div>
 
         {/* Actions */}

@@ -1,4 +1,12 @@
+import type { LucideIcon } from "lucide-react";
+import { Zap, Phone, CheckCircle2, Heart, Search, Clock, Banknote } from "lucide-react";
 import { getLanguage } from "@/lib/i18n/get-language";
+
+interface Step {
+  icon: LucideIcon;
+  title: string;
+  body: string;
+}
 
 export async function HowItWorks() {
   const language = await getLanguage();
@@ -14,7 +22,7 @@ export async function HowItWorks() {
       title: language === "fr" ? "Recrutez en 5 minutes" : "Hire in 5 minutes",
       steps: [
         {
-          icon: "⚡",
+          icon: Zap,
           title:
             language === "fr" ? "Publiez votre annonce" : "Post your ad",
           body:
@@ -23,7 +31,7 @@ export async function HowItWorks() {
               : "30 seconds, from your phone",
         },
         {
-          icon: "📞",
+          icon: Phone,
           title: language === "fr" ? "Recevez les appels" : "Get calls",
           body:
             language === "fr"
@@ -31,7 +39,7 @@ export async function HowItWorks() {
               : "Direct, no middleman",
         },
         {
-          icon: "✅",
+          icon: CheckCircle2,
           title:
             language === "fr" ? "Confirmez la mission" : "Confirm the booking",
           body:
@@ -40,7 +48,7 @@ export async function HowItWorks() {
               : "You choose who shows up",
         },
         {
-          icon: "♥",
+          icon: Heart,
           title:
             language === "fr" ? "Une asso est financée" : "A charity gets funded",
           body:
@@ -58,18 +66,18 @@ export async function HowItWorks() {
           : "Find work in 10 seconds",
       steps: [
         {
-          icon: "👀",
+          icon: Search,
           title: language === "fr" ? "Parcourez les annonces" : "Browse ads",
           body: language === "fr" ? "Sans inscription" : "No sign-up",
         },
         {
-          icon: "📞",
+          icon: Phone,
           title:
             language === "fr" ? "Appelez l'employeur" : "Call the employer",
           body: language === "fr" ? "D'un seul tap" : "One tap",
         },
         {
-          icon: "🔥",
+          icon: Clock,
           title:
             language === "fr"
               ? "Travaillez le jour même"
@@ -77,7 +85,7 @@ export async function HowItWorks() {
           body: language === "fr" ? "Le plus souvent" : "Usually",
         },
         {
-          icon: "💶",
+          icon: Banknote,
           title: language === "fr" ? "Payé sur place" : "Paid on site",
           body:
             language === "fr"
@@ -117,29 +125,32 @@ export async function HowItWorks() {
 
             {/* Steps */}
             <div className="space-y-0">
-              {translations.employer.steps.map((step, idx) => (
-                <div
-                  key={idx}
-                  className={`flex items-start gap-4 py-4 ${
-                    idx < translations.employer.steps.length - 1
-                      ? "border-b border-border-light"
-                      : ""
-                  }`}
-                >
-                  <span className="font-mono text-sm text-text-tertiary" style={{ minWidth: "32px" }}>
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-2xl" style={{ minWidth: "32px" }}>
-                    {step.icon}
-                  </span>
-                  <div className="flex flex-col gap-1">
-                    <h4 className="font-display text-base font-semibold text-text-primary">
-                      {step.title}
-                    </h4>
-                    <p className="text-sm text-text-secondary">{step.body}</p>
+              {translations.employer.steps.map((step, idx) => {
+                const StepIcon = step.icon;
+                return (
+                  <div
+                    key={idx}
+                    className={`flex items-start gap-4 py-4 ${
+                      idx < translations.employer.steps.length - 1
+                        ? "border-b border-border-light"
+                        : ""
+                    }`}
+                  >
+                    <span className="font-mono text-sm text-text-tertiary" style={{ minWidth: "32px" }}>
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <div style={{ minWidth: "32px" }} className="flex justify-center">
+                      <StepIcon className="h-5 w-5 text-primary" strokeWidth={2} />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <h4 className="font-display text-base font-semibold text-text-primary">
+                        {step.title}
+                      </h4>
+                      <p className="text-sm text-text-secondary">{step.body}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -157,29 +168,32 @@ export async function HowItWorks() {
 
             {/* Steps */}
             <div className="space-y-0">
-              {translations.worker.steps.map((step, idx) => (
-                <div
-                  key={idx}
-                  className={`flex items-start gap-4 py-4 ${
-                    idx < translations.worker.steps.length - 1
-                      ? "border-b border-border-light"
-                      : ""
-                  }`}
-                >
-                  <span className="font-mono text-sm text-text-tertiary" style={{ minWidth: "32px" }}>
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-2xl" style={{ minWidth: "32px" }}>
-                    {step.icon}
-                  </span>
-                  <div className="flex flex-col gap-1">
-                    <h4 className="font-display text-base font-semibold text-text-primary">
-                      {step.title}
-                    </h4>
-                    <p className="text-sm text-text-secondary">{step.body}</p>
+              {translations.worker.steps.map((step, idx) => {
+                const StepIcon = step.icon;
+                return (
+                  <div
+                    key={idx}
+                    className={`flex items-start gap-4 py-4 ${
+                      idx < translations.worker.steps.length - 1
+                        ? "border-b border-border-light"
+                        : ""
+                    }`}
+                  >
+                    <span className="font-mono text-sm text-text-tertiary" style={{ minWidth: "32px" }}>
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <div style={{ minWidth: "32px" }} className="flex justify-center">
+                      <StepIcon className="h-5 w-5 text-primary" strokeWidth={2} />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <h4 className="font-display text-base font-semibold text-text-primary">
+                        {step.title}
+                      </h4>
+                      <p className="text-sm text-text-secondary">{step.body}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

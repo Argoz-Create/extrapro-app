@@ -1,5 +1,6 @@
 "use client";
 
+import { PhoneCall, ClipboardList, Eye } from "lucide-react";
 import type { EmployerStats } from "@/lib/types/database";
 import { formatNumber } from "@/lib/utils/format";
 import { StatCard } from "./stat-card";
@@ -15,17 +16,17 @@ export function StatsGrid({ stats }: StatsGridProps) {
   return (
     <div className="grid grid-cols-3 gap-3">
       <StatCard
-        icon={"\u{1F4DE}"}
+        icon={PhoneCall}
         value={String(stats.total_hires)}
         label={t("dashboard.hires")}
       />
       <StatCard
-        icon={"\u{1F4CB}"}
+        icon={ClipboardList}
         value={String(stats.active_ads)}
         label={t("dashboard.activeAds")}
       />
       <StatCard
-        icon={"\u{1F441}"}
+        icon={Eye}
         value={formatNumber(stats.total_views)}
         label={t("dashboard.views")}
       />

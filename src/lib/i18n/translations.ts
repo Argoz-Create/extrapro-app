@@ -215,6 +215,7 @@ export const translations = {
     "common.back": "Retour",
     "common.loading": "Chargement...",
     "common.error": "Une erreur est survenue",
+    "common.remove": "Retirer",
     // Pricing strip
     "home.pricing.pill1": "Gratuit pour parcourir",
     "home.pricing.pill2": "Sans abonnement",
@@ -464,6 +465,7 @@ export const translations = {
     "common.back": "Back",
     "common.loading": "Loading...",
     "common.error": "An error occurred",
+    "common.remove": "Remove",
     // Homepage hero & associations (new)
     "home.hero.statusPill": "LIVE · URGENT",
     "home.hero.headline.start": "Find your extra.",

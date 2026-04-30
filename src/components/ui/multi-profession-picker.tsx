@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useMemo } from "react";
+import { X } from "lucide-react";
 import type { Profession } from "@/lib/types/database";
 import { useTranslation } from "@/lib/i18n/context";
 
@@ -128,15 +129,14 @@ export const MultiProfessionPicker = ({
             key={prof.id}
             className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-primary/10 border border-primary/20 rounded-full"
           >
-            <span className="text-sm">{prof.icon}</span>
             <span className="text-sm text-primary font-medium">{prof.name_fr}</span>
             <button
               type="button"
               onClick={() => handleRemoveSelected(prof.id)}
               className="ml-1 text-primary/60 hover:text-primary transition-colors"
-              aria-label="Remove"
+              aria-label={t("common.remove") || "Remove"}
             >
-              ✕
+              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
             </button>
           </div>
         ))}
@@ -148,9 +148,9 @@ export const MultiProfessionPicker = ({
               type="button"
               onClick={handleRemoveCustom}
               className="ml-1 text-text-tertiary/60 hover:text-text-tertiary transition-colors"
-              aria-label="Remove"
+              aria-label={t("common.remove") || "Remove"}
             >
-              ✕
+              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
             </button>
           </div>
         )}
@@ -191,7 +191,6 @@ export const MultiProfessionPicker = ({
                         : "bg-white border-border text-text-primary hover:border-primary hover:bg-primary/5",
                     ].join(" ")}
                   >
-                    <span className="text-sm">{prof.icon}</span>
                     <span className="text-sm font-medium">{prof.name_fr}</span>
                   </button>
                 );
@@ -253,7 +252,7 @@ export const MultiProfessionPicker = ({
             }}
             className="px-4 py-2.5 bg-text-tertiary/10 text-text-tertiary font-medium rounded-xl hover:bg-text-tertiary/20 transition-colors"
           >
-            ✕
+            <X className="h-4 w-4" strokeWidth={2.5} />
           </button>
         </div>
       )}
