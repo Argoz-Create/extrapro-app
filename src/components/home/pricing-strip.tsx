@@ -12,17 +12,17 @@ export async function PricingStrip() {
   const pills = [translations.pill1, translations.pill2, translations.pill3];
 
   return (
-    <section className="border-b border-gray-200 bg-white py-8 md:py-10">
+    <section className="border-b border-border-light bg-surface py-8 md:py-10">
       <div className="mx-auto max-w-5xl px-4">
         <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
           {pills.map((pill, idx) => (
             <div
               key={idx}
-              className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text-primary"
             >
               {/* Checkmark SVG */}
               <svg
-                className="h-3.5 w-3.5 text-green-500"
+                className="h-3.5 w-3.5 text-success"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >

@@ -28,7 +28,7 @@ export function StickyMobileCTA() {
   return (
     <Link
       href="/dashboard/new"
-      className="fixed bottom-4 right-4 z-50 inline-flex items-center gap-2 rounded-full bg-orange-500 px-5 py-3 font-display font-bold text-sm text-white shadow-lg transition-all duration-200 hover:bg-orange-600 active:scale-95 md:hidden"
+      className="fixed bottom-4 right-4 z-50 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 font-display font-bold text-sm text-white shadow-lg transition-all duration-200 hover:bg-primary-dark active:scale-95 md:hidden"
       style={{ boxShadow: "0 10px 25px rgba(255, 59, 48, 0.3)" }}
     >
       <span aria-hidden>⚡</span>

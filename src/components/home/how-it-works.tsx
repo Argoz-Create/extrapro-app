@@ -89,14 +89,14 @@ export async function HowItWorks() {
   };
 
   return (
-    <section className="bg-gray-50 py-16 md:py-24">
+    <section className="bg-bg py-16 md:py-24">
       <div className="mx-auto max-w-6xl px-4">
         {/* Section header */}
         <div className="mb-12 text-center">
-          <span className="font-mono text-xs font-bold uppercase text-gray-500">
+          <span className="font-mono text-xs font-bold uppercase text-text-tertiary">
             {translations.eyebrow}
           </span>
-          <h2 className="font-display mt-2 text-3xl font-bold text-gray-900 md:text-4xl">
+          <h2 className="font-display mt-2 text-3xl font-bold text-text-primary md:text-4xl">
             {translations.title}
           </h2>
         </div>
@@ -107,10 +107,10 @@ export async function HowItWorks() {
           <div>
             {/* Column header */}
             <div className="mb-8">
-              <span className="inline-block rounded-full bg-orange-100 px-3 py-1 font-mono text-xs font-bold uppercase text-orange-700">
+              <span className="inline-block rounded-full bg-primary-soft px-3 py-1 font-mono text-xs font-bold uppercase text-primary">
                 {translations.employer.tag}
               </span>
-              <h3 className="font-display mt-3 text-xl font-bold text-gray-900">
+              <h3 className="font-display mt-3 text-xl font-bold text-text-primary">
                 {translations.employer.title}
               </h3>
             </div>
@@ -122,21 +122,21 @@ export async function HowItWorks() {
                   key={idx}
                   className={`flex items-start gap-4 py-4 ${
                     idx < translations.employer.steps.length - 1
-                      ? "border-b border-gray-200"
+                      ? "border-b border-border-light"
                       : ""
                   }`}
                 >
-                  <span className="font-mono text-sm text-gray-400" style={{ minWidth: "32px" }}>
+                  <span className="font-mono text-sm text-text-tertiary" style={{ minWidth: "32px" }}>
                     {String(idx + 1).padStart(2, "0")}
                   </span>
                   <span className="text-2xl" style={{ minWidth: "32px" }}>
                     {step.icon}
                   </span>
                   <div className="flex flex-col gap-1">
-                    <h4 className="font-display text-base font-semibold text-gray-900">
+                    <h4 className="font-display text-base font-semibold text-text-primary">
                       {step.title}
                     </h4>
-                    <p className="text-sm text-gray-600">{step.body}</p>
+                    <p className="text-sm text-text-secondary">{step.body}</p>
                   </div>
                 </div>
               ))}
@@ -147,10 +147,10 @@ export async function HowItWorks() {
           <div>
             {/* Column header */}
             <div className="mb-8">
-              <span className="inline-block rounded-full bg-green-100 px-3 py-1 font-mono text-xs font-bold uppercase text-green-700">
+              <span className="inline-block rounded-full bg-success-soft px-3 py-1 font-mono text-xs font-bold uppercase text-success-dark">
                 {translations.worker.tag}
               </span>
-              <h3 className="font-display mt-3 text-xl font-bold text-gray-900">
+              <h3 className="font-display mt-3 text-xl font-bold text-text-primary">
                 {translations.worker.title}
               </h3>
             </div>
@@ -162,21 +162,21 @@ export async function HowItWorks() {
                   key={idx}
                   className={`flex items-start gap-4 py-4 ${
                     idx < translations.worker.steps.length - 1
-                      ? "border-b border-gray-200"
+                      ? "border-b border-border-light"
                       : ""
                   }`}
                 >
-                  <span className="font-mono text-sm text-gray-400" style={{ minWidth: "32px" }}>
+                  <span className="font-mono text-sm text-text-tertiary" style={{ minWidth: "32px" }}>
                     {String(idx + 1).padStart(2, "0")}
                   </span>
                   <span className="text-2xl" style={{ minWidth: "32px" }}>
                     {step.icon}
                   </span>
                   <div className="flex flex-col gap-1">
-                    <h4 className="font-display text-base font-semibold text-gray-900">
+                    <h4 className="font-display text-base font-semibold text-text-primary">
                       {step.title}
                     </h4>
-                    <p className="text-sm text-gray-600">{step.body}</p>
+                    <p className="text-sm text-text-secondary">{step.body}</p>
                   </div>
                 </div>
               ))}
