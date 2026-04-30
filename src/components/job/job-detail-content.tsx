@@ -46,16 +46,37 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
         </div>
 
         {/* Header */}
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">{job.professions?.icon}</span>
-          <div>
-            <h1 className="text-xl font-bold text-text-primary">
-              {job.professions?.name_fr}
+        <div className="flex items-start gap-3">
+          <span className="text-3xl flex-shrink-0">
+            {job.professions && job.professions.length > 0 ? job.professions[0].icon : "💼"}
+          </span>
+          <div className="flex-1">
+            <h1 className="text-xl font-bold text-text-primary mb-1">
+              {job.professions && job.professions.length > 0
+                ? job.professions.map(p => p.name_fr).join(", ")
+                : job.custom_profession || "Extra"}
             </h1>
             {job.employers?.company_name && (
               <p className="text-sm text-text-secondary">
                 {job.employers.company_name}
               </p>
+            )}
+            {/* All professions as chips */}
+            {job.professions && job.professions.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {job.professions.map((prof) => (
+                  <span key={prof.id} className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                    <span>{prof.icon}</span>
+                    <span>{prof.name_fr}</span>
+                  </span>
+                ))}
+                {job.custom_profession && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-text-tertiary/10 text-text-tertiary rounded-full text-xs font-medium italic">
+                    {job.custom_profession}
+                    <span className="text-text-tertiary/70">(suggéré)</span>
+                  </span>
+                )}
+              </div>
             )}
           </div>
         </div>

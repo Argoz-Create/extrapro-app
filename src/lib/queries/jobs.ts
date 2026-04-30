@@ -8,6 +8,17 @@ export type JobFilters = {
   region_id?: string;
 };
 
+// Helper to flatten the nested professions relation from the junction table
+function flattenProfessions(rows: any[]): JobAdWithRelations[] {
+  return rows.map((row) => {
+    const professions = (row.professions || []).map((item: any) => item.profession);
+    return {
+      ...row,
+      professions: professions.filter(Boolean),
+    };
+  });
+}
+
 export async function expireOldJobs(): Promise<void> {
   const supabase = await createClient();
   const today = new Date().toISOString().split("T")[0];
@@ -47,7 +58,7 @@ export async function getActiveJobs(
   const today = new Date().toISOString().split("T")[0];
   let query = supabase
     .from("job_ads")
-    .select("*, professions(name_fr, icon), cities(name, department_id, region_id), employers(company_name, contact_name)")
+    .select("*, professions:job_ad_professions(profession:professions(id, name_fr, icon, category)), cities(name, department_id, region_id), employers(company_name, contact_name)")
     .eq("status", "active")
     // Defensive filter in case cron lags: only show ads whose last relevant day
     // is today or later. Multi-day ads use end date; single-day use work_date.
@@ -55,7 +66,10 @@ export async function getActiveJobs(
     .order("published_at", { ascending: false })
     .limit(limit);
 
-  if (filters?.profession_id) query = query.eq("profession_id", filters.profession_id);
+  if (filters?.profession_id) {
+    // Filter by profession via the junction table
+    query = query.filter("job_ad_professions.profession_id", "eq", filters.profession_id);
+  }
   if (filters?.city_id) query = query.eq("city_id", filters.city_id);
   if (cursor) query = query.lt("published_at", cursor);
 
@@ -79,7 +93,7 @@ export async function getActiveJobs(
 
   const { data, error } = await query;
   if (error) throw error;
-  return (data ?? []) as unknown as JobAdWithRelations[];
+  return flattenProfessions((data ?? []) as any[]);
 }
 
 export async function getActiveJobCount(): Promise<number> {
@@ -110,11 +124,12 @@ export async function getJobById(id: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("job_ads")
-    .select("*, professions(name_fr, icon), cities(name), employers(company_name)")
+    .select("*, professions:job_ad_professions(profession:professions(id, name_fr, icon, category)), cities(name), employers(company_name)")
     .eq("id", id)
     .single();
   if (error) throw error;
-  return data as unknown as JobAdWithRelations & {
+  const flattened = flattenProfessions([data as any])[0];
+  return flattened as JobAdWithRelations & {
     employers: { company_name: string };
   };
 }

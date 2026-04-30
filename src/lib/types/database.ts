@@ -11,6 +11,8 @@ export type DonationStatus = "pending" | "confirmed" | "transferred";
 
 export type SalaryType = "hourly" | "daily" | "flat";
 
+export type ProfessionCategory = "kitchen" | "service" | "hotel" | "events" | "support";
+
 export interface Region {
   id: string;
   name: string;
@@ -46,6 +48,20 @@ export interface Profession {
   created_at: string;
 }
 
+export interface ProfessionSuggestion {
+  id: string;
+  name_normalized: string;
+  name_display: string;
+  use_count: number;
+  first_seen_at: string;
+  last_seen_at: string;
+  status: "pending" | "promoted" | "merged" | "rejected";
+  promoted_to_profession_id: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Employer {
   id: string;
   auth_user_id: string;
@@ -72,6 +88,7 @@ export interface JobAd {
   city_id: string | null;
   title: string | null;
   description: string | null;
+  custom_profession: string | null;
   work_date: string | null;
   work_end_date: string | null;
   start_time: string | null;
@@ -98,7 +115,7 @@ export interface JobAd {
 }
 
 export interface JobAdWithRelations extends JobAd {
-  professions: Pick<Profession, "name_fr" | "icon"> | null;
+  professions: Pick<Profession, "id" | "name_fr" | "icon" | "category">[];
   cities: Pick<City, "name"> | null;
   employers?: Pick<Employer, "company_name" | "contact_name">;
 }

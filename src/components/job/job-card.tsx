@@ -44,10 +44,31 @@ export function JobCard({ job }: JobCardProps) {
           </div>
 
           {/* 2. Poste / Position */}
-          <div className="flex items-center gap-2 text-sm text-text-secondary">
-            <span className="flex-shrink-0">{job.professions?.icon}</span>
-            <span className="font-medium text-text-tertiary">{t("job.position")}:</span>
-            <span>{job.professions?.name_fr}</span>
+          <div className="text-sm text-text-secondary">
+            <span className="font-medium text-text-tertiary block mb-1.5">{t("job.position")}:</span>
+            <div className="flex flex-wrap gap-1.5">
+              {job.professions && job.professions.length > 0 ? (
+                <>
+                  {job.professions.slice(0, 3).map((prof) => (
+                    <span key={prof.id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                      <span>{prof.icon}</span>
+                      <span>{prof.name_fr}</span>
+                    </span>
+                  ))}
+                  {job.professions.length > 3 && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-text-tertiary/10 text-text-tertiary rounded-full text-xs font-medium">
+                      +{job.professions.length - 3}
+                    </span>
+                  )}
+                </>
+              ) : null}
+              {job.custom_profession && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-text-tertiary/10 text-text-tertiary rounded-full text-xs font-medium italic">
+                  {job.custom_profession}
+                  <span className="text-text-tertiary/70">(suggéré)</span>
+                </span>
+              )}
+            </div>
           </div>
 
           {/* 3. Competence requise / Required skill */}

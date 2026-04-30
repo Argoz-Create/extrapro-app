@@ -23,11 +23,6 @@ export default async function NewAdPage() {
     getCities(),
   ]);
 
-  const professionOptions = professions.map((p) => ({
-    value: p.id,
-    label: `${p.icon} ${p.name_fr}`,
-  }));
-
   const cityOptions = cities.map((c) => ({
     value: c.id,
     label: c.name,
@@ -39,7 +34,7 @@ export default async function NewAdPage() {
       <NewAdHeader />
 
       {/* Form */}
-      <CreateAdForm professions={professionOptions} cities={cityOptions} />
+      <CreateAdForm professions={professions} cities={cityOptions} />
     </div>
   );
 }

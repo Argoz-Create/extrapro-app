@@ -16,9 +16,12 @@ export async function generateMetadata({ params }: JobDetailProps): Promise<Meta
   try {
     const job = await getJobById(id);
     const salary = formatSalary(job.hourly_rate, job.daily_rate);
+    const professionNames = job.professions && job.professions.length > 0 
+      ? job.professions.map(p => p.name_fr).join(", ")
+      : "Extra";
     return {
-      title: `${job.professions?.name_fr ?? "Extra"} a ${job.cities?.name ?? ""} — EXTRAPRO`,
-      description: `${job.professions?.name_fr ?? "Extra"} a ${job.cities?.name ?? ""}${salary ? ` — ${salary}` : ""}. Trouvez sur EXTRAPRO.`,
+      title: `${professionNames} a ${job.cities?.name ?? ""} — EXTRAPRO`,
+      description: `${professionNames} a ${job.cities?.name ?? ""}${salary ? ` — ${salary}` : ""}. Trouvez sur EXTRAPRO.`,
     };
   } catch {
     return {
