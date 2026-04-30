@@ -52,6 +52,11 @@ export default function RootLayout({
       <body className={`${inter.variable} ${manrope.variable} font-sans antialiased`}>
         <LanguageProvider>
           {children}
+          {/* StickyMobileCTA must live INSIDE LanguageProvider — it's a
+              client component that calls useTranslation(). Placing it outside
+              the provider broke prerendering on every page that didn't
+              short-circuit (caught first on /a-propos during build). */}
+          <StickyMobileCTA />
         </LanguageProvider>
         <Toaster
           position="bottom-center"
@@ -63,7 +68,6 @@ export default function RootLayout({
             },
           }}
         />
-        <StickyMobileCTA />
       </body>
     </html>
   );
