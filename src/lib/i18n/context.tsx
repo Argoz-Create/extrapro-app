@@ -24,6 +24,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("extrapro-lang", lang);
+    // Also set cookie for server-side access
+    document.cookie = `extrapro-lang=${lang}; path=/; max-age=${60 * 60 * 24 * 365}`;
   }, []);
 
   const t = useCallback(
@@ -50,6 +52,14 @@ export function useTranslation() {
   const context = useContext(LanguageContext);
   if (!context) {
     throw new Error("useTranslation must be used within LanguageProvider");
+  }
+  return context;
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error("useLanguage must be used within LanguageProvider");
   }
   return context;
 }

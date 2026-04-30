@@ -1,12 +1,12 @@
 import { Suspense } from "react";
 import { TopBar } from "@/components/layout/top-bar";
 import { Footer } from "@/components/layout/footer";
-import { HeroSection } from "@/components/layout/hero-section";
 import { JobFilters } from "@/components/job/job-filters";
 import { JobFeed } from "@/components/job/job-feed";
 import { ListingsHeader } from "@/components/job/listings-header";
-import { OurMission } from "@/components/layout/our-mission";
-import { getActiveJobs, getActiveJobCount } from "@/lib/queries/jobs";
+import { HeroLive } from "@/components/home/hero-live";
+import { AssociationsBand } from "@/components/home/associations-band";
+import { getActiveJobs } from "@/lib/queries/jobs";
 import { getProfessions } from "@/lib/queries/professions";
 import { getCities } from "@/lib/queries/cities";
 import { getRegions } from "@/lib/queries/regions";
@@ -37,16 +37,14 @@ export default async function Home({ searchParams }: HomeProps) {
   let cities: City[] = [];
   let regions: Region[] = [];
   let departments: Department[] = [];
-  let totalCount = 0;
 
   try {
-    [jobs, professions, cities, regions, departments, totalCount] = await Promise.all([
+    [jobs, professions, cities, regions, departments] = await Promise.all([
       getActiveJobs(filters),
       getProfessions(),
       getCities(),
       getRegions(),
       getDepartments(),
-      getActiveJobCount(),
     ]);
   } catch {
     // Supabase not configured or unreachable — render with empty data
@@ -55,8 +53,8 @@ export default async function Home({ searchParams }: HomeProps) {
   return (
     <div className="min-h-screen bg-background">
       <TopBar />
-      <HeroSection jobCount={totalCount} />
-      <OurMission />
+      <HeroLive />
+      <AssociationsBand />
 
       <main className="mx-auto max-w-lg px-4 py-4">
         {/* Filters */}
@@ -76,7 +74,9 @@ export default async function Home({ searchParams }: HomeProps) {
         </Suspense>
 
         {/* Listings header */}
-        <ListingsHeader count={jobs.length} />
+        <div id="feed">
+          <ListingsHeader count={jobs.length} />
+        </div>
 
         {/* Job feed */}
         <div className="mt-2">
