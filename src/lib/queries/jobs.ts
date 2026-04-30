@@ -8,8 +8,9 @@ export type JobFilters = {
   region_id?: string;
 };
 
-// Helper to flatten the nested professions relation from the junction table
-function flattenProfessions(rows: any[]): JobAdWithRelations[] {
+// Helper to flatten the nested professions relation from the junction table.
+// Exported so dashboard queries (employers.ts) can reuse the same shape.
+export function flattenProfessions(rows: any[]): JobAdWithRelations[] {
   return rows.map((row) => {
     const professions = (row.professions || []).map((item: any) => item.profession);
     return {
