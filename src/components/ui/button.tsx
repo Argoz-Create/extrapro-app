@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-type ButtonVariant = "primary" | "outline" | "ghost";
+type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "dark";
 type ButtonSize = "sm" | "default" | "lg";
 
 type ButtonBaseProps = {
@@ -26,17 +26,21 @@ type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-gradient-to-b from-primary to-primary-dark text-white shadow-[0_1px_2px_rgba(0,0,0,0.1),0_1px_3px_rgba(22,163,74,0.3)] hover:shadow-[0_4px_12px_rgba(34,197,94,0.3)] active:scale-[0.98]",
+    "bg-primary text-white hover:bg-primary-dark active:scale-[0.98] rounded-full",
+  secondary:
+    "bg-transparent border border-border text-text-primary hover:border-text-primary rounded-full",
   outline:
-    "bg-white border border-primary text-primary hover:bg-green-50 active:bg-green-100",
+    "bg-transparent border border-border text-text-primary hover:border-text-primary rounded-full",
   ghost:
-    "bg-transparent text-text-primary hover:bg-gray-100 active:bg-gray-200",
+    "bg-transparent text-text-primary hover:bg-gray-100 active:bg-gray-200 rounded-full",
+  dark:
+    "bg-white text-ink hover:bg-gray-100 rounded-full",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-xs rounded-[8px]",
-  default: "px-4 py-2.5 text-sm rounded-[8px]",
-  lg: "px-6 py-3 text-base rounded-[8px]",
+  sm: "px-3 py-1.5 text-xs",
+  default: "px-4 py-2.5 text-sm",
+  lg: "px-6 py-3 text-base",
 };
 
 function Spinner() {
@@ -78,7 +82,7 @@ export const Button = React.forwardRef<
   } = props;
 
   const baseClasses =
-    "inline-flex items-center justify-center font-medium transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center font-medium transition-all duration-200 ease-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
   const classes = [
     baseClasses,
     variantStyles[variant],

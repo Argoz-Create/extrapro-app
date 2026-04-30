@@ -24,7 +24,7 @@ export function DashboardContent({ companyName, stats, jobs, newlyExpiredCount }
     <div className="space-y-6">
       {/* Heading */}
       <div>
-        <h1 className="text-xl font-bold text-text-primary">
+        <h1 className="text-xl font-display font-700 text-text-primary">
           {t("dashboard.title")}
         </h1>
         <p className="text-sm text-text-secondary">{companyName}</p>
@@ -32,7 +32,7 @@ export function DashboardContent({ companyName, stats, jobs, newlyExpiredCount }
 
       {/* Expired notice */}
       {newlyExpiredCount > 0 && (
-        <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm p-3 rounded-[10px]">
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm p-3 rounded-xl">
           {t("ad.expiredNotice")}
         </div>
       )}

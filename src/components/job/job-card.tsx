@@ -32,7 +32,7 @@ export function JobCard({ job }: JobCardProps) {
               </span>
             )}
           </div>
-          {job.is_urgent && <Badge variant="urgent">{t("job.urgent")}</Badge>}
+          {job.is_urgent && <Badge variant="urgent">• {t("job.urgent")}</Badge>}
         </div>
 
         <div className="mt-3 space-y-1.5">
@@ -50,7 +50,7 @@ export function JobCard({ job }: JobCardProps) {
               {job.professions && job.professions.length > 0 ? (
                 <>
                   {job.professions.slice(0, 3).map((prof) => (
-                    <span key={prof.id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                    <span key={prof.id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-soft text-primary rounded-full text-xs font-medium">
                       <span>{prof.icon}</span>
                       <span>{prof.name_fr}</span>
                     </span>
@@ -63,9 +63,9 @@ export function JobCard({ job }: JobCardProps) {
                 </>
               ) : null}
               {job.custom_profession && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-text-tertiary/10 text-text-tertiary rounded-full text-xs font-medium italic">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-soft text-primary rounded-full text-xs font-medium italic">
                   {job.custom_profession}
-                  <span className="text-text-tertiary/70">(suggéré)</span>
+                  <span className="text-primary/70">(suggéré)</span>
                 </span>
               )}
             </div>
@@ -84,7 +84,7 @@ export function JobCard({ job }: JobCardProps) {
           <div className="flex items-center gap-2 text-sm text-text-secondary">
             <span className="flex-shrink-0">{"\u{1F4C5}"}</span>
             <span>
-              {job.work_date && formatDateRange(job.work_date, job.work_end_date)} {"\u00B7"} {job.start_time && job.end_time && formatTimeRange(job.start_time, job.end_time)} {"\u00B7"} {job.cities?.name}
+              {job.work_date && formatDateRange(job.work_date, job.work_end_date)} {"·"} {job.start_time && job.end_time && formatTimeRange(job.start_time, job.end_time)} {"·"} {job.cities?.name}
             </span>
           </div>
 
@@ -92,7 +92,7 @@ export function JobCard({ job }: JobCardProps) {
           {salary && (
             <div className="flex items-center gap-2">
               <span className="flex-shrink-0">{"\u{1F4B0}"}</span>
-              <span className="text-lg font-bold text-primary">{salary}</span>
+              <span className="text-lg font-bold font-mono text-success">{salary}</span>
             </div>
           )}
         </div>

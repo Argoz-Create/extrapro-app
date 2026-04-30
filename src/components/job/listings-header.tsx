@@ -11,10 +11,10 @@ export function ListingsHeader({ count }: ListingsHeaderProps) {
 
   return (
     <div className="mt-4 flex items-center justify-between">
-      <h2 className="text-base font-semibold text-text-primary">
+      <h2 className="text-base font-display font-700 text-text-primary">
         {t("landing.availableListings")}
       </h2>
-      <span className="text-sm text-text-tertiary">
+      <span className="text-sm text-text-tertiary font-mono">
         {count > 0 ? count : ""}
       </span>
     </div>
