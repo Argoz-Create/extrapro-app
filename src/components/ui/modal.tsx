@@ -45,8 +45,8 @@ export function Modal({ open, onClose, title, className = "", children }: ModalP
         role="dialog"
         aria-modal="true"
         className={[
-          "relative bg-white rounded-t-[14px] sm:rounded-[14px] p-5 w-full max-w-sm mx-auto",
-          "shadow-[0_10px_40px_rgba(0,0,0,0.15)]",
+          "relative bg-surface rounded-t-2xl sm:rounded-2xl p-5 w-full max-w-sm mx-auto",
+          "shadow-md",
           "animate-[slideUp_200ms_ease-out]",
           className,
         ]

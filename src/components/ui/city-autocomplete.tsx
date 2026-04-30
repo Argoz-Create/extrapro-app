@@ -156,7 +156,7 @@ export function CityAutocomplete({
           onFocus={handleFocus}
           placeholder={placeholder}
           className={[
-            "w-full bg-input-bg border border-transparent rounded-[10px] px-3 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary",
+            "w-full bg-white border border-transparent rounded-xl px-3 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary",
             "outline-none transition-all duration-150",
             "focus:bg-white focus:border-primary focus:ring-[3px] focus:ring-primary/10",
             error ? "border-red-400 focus:border-red-400 focus:ring-red-400/10" : "",
@@ -187,7 +187,7 @@ export function CityAutocomplete({
 
       {/* Dropdown */}
       {isOpen && hasResults && (
-        <div className="absolute z-50 mt-1 w-full rounded-[10px] border border-border-light bg-white shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full rounded-xl border border-border-light bg-white shadow-lg max-h-60 overflow-y-auto">
           {/* Existing cities from DB */}
           {matchingExisting.length > 0 && (
             <>
@@ -233,7 +233,7 @@ export function CityAutocomplete({
 
       {/* No results message */}
       {isOpen && !hasResults && query.length >= 2 && !isLoading && (
-        <div className="absolute z-50 mt-1 w-full rounded-[10px] border border-border-light bg-white shadow-lg px-3 py-3 text-sm text-text-tertiary text-center">
+        <div className="absolute z-50 mt-1 w-full rounded-xl border border-border-light bg-white shadow-lg px-3 py-3 text-sm text-text-tertiary text-center">
           Aucune ville trouvee
         </div>
       )}

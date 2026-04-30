@@ -162,7 +162,7 @@ export const MultiProfessionPicker = ({
         placeholder={t("createAd.searchRoles")}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full bg-input-bg border border-transparent rounded-[10px] px-3 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-150 focus:bg-white focus:border-primary focus:ring-[3px] focus:ring-primary/10 mb-3"
+        className="w-full bg-white border border-transparent rounded-xl px-3 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-150 focus:bg-white focus:border-primary focus:ring-[3px] focus:ring-primary/10 mb-3"
       />
 
       {/* Grouped list */}
@@ -235,13 +235,13 @@ export const MultiProfessionPicker = ({
             placeholder={t("createAd.customRolePlaceholder")}
             disabled={isFull && !customProfession}
             autoFocus
-            className="flex-1 bg-input-bg border border-transparent rounded-[10px] px-3 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-150 focus:bg-white focus:border-primary focus:ring-[3px] focus:ring-primary/10 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-white border border-transparent rounded-xl px-3 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary outline-none transition-all duration-150 focus:bg-white focus:border-primary focus:ring-[3px] focus:ring-primary/10 disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <button
             type="button"
             onClick={handleAddCustom}
             disabled={!customInput.trim() || (isFull && !customProfession)}
-            className="px-4 py-2.5 bg-primary text-white font-medium rounded-[10px] hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2.5 bg-primary text-white font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t("createAd.customRoleSubmit")}
           </button>
@@ -251,7 +251,7 @@ export const MultiProfessionPicker = ({
               setShowCustomInput(false);
               setCustomInput("");
             }}
-            className="px-4 py-2.5 bg-text-tertiary/10 text-text-tertiary font-medium rounded-[10px] hover:bg-text-tertiary/20 transition-colors"
+            className="px-4 py-2.5 bg-text-tertiary/10 text-text-tertiary font-medium rounded-xl hover:bg-text-tertiary/20 transition-colors"
           >
             ✕
           </button>

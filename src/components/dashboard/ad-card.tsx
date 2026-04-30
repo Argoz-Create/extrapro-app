@@ -73,7 +73,7 @@ export function AdCard({ job }: AdCardProps) {
               : "\u{1F4DD}"}
           </span>
           <div className="min-w-0">
-            <p className="font-semibold text-sm text-text-primary truncate">
+            <p className="font-semibold text-sm font-display text-text-primary truncate">
               {Array.isArray(job.professions) && job.professions.length > 0
                 ? job.professions[0]?.name_fr
                 : t("status.draft")}

@@ -18,7 +18,7 @@ export function RegisterForm() {
   return (
     <form action={formAction} className="space-y-4">
       {state?.error && (
-        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[10px]">
+        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">
           {state.error}
         </div>
       )}

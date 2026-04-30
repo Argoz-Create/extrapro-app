@@ -20,7 +20,7 @@ export function ShareButton() {
   return (
     <button
       onClick={handleShare}
-      className="inline-flex items-center gap-2 rounded-[8px] border border-border px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-gray-50 active:bg-gray-100"
+      className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:bg-gray-50 active:bg-gray-100"
     >
       {"\u{1F517}"} {copied ? t("job.shareCopied") : t("job.share")}
     </button>

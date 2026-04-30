@@ -381,7 +381,7 @@ export function EditAdForm({ professions, cities: initialCities, job, jobProfess
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-6" noValidate>
       {serverError && (
-        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-[10px]">
+        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl">
           {serverError}
         </div>
       )}
@@ -428,7 +428,7 @@ export function EditAdForm({ professions, cities: initialCities, job, jobProfess
         {/* Date range */}
         <div>
           {/* Single-day toggle */}
-          <div className="flex items-center gap-3 mb-4 p-3 bg-primary/5 border border-primary/10 rounded-[10px]">
+          <div className="flex items-center gap-3 mb-4 p-3 bg-primary/5 border border-primary/10 rounded-xl">
             <input
               type="checkbox"
               id="is_single_day"

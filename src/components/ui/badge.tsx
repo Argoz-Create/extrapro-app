@@ -1,6 +1,6 @@
 import React from "react";
 
-type BadgeVariant = "urgent" | "active" | "inactive" | "filled" | "draft";
+type BadgeVariant = "urgent" | "live" | "status-active" | "status-inactive" | "filled" | "draft" | "active" | "inactive";
 
 type BadgeProps = {
   variant?: BadgeVariant;
@@ -9,18 +9,22 @@ type BadgeProps = {
 };
 
 const variantStyles: Record<BadgeVariant, string> = {
-  urgent: "bg-amber-100 text-amber-900 font-bold text-xs uppercase",
-  active: "bg-green-100 text-green-800 text-xs",
-  inactive: "bg-gray-100 text-gray-600 text-xs",
-  filled: "bg-blue-100 text-blue-800 text-xs",
-  draft: "bg-amber-100 text-amber-800 text-xs",
+  urgent: "bg-primary-soft text-primary font-semibold text-xs px-3 py-1 rounded-full",
+  live: "bg-success-soft text-success-dark font-semibold text-xs",
+  "status-active": "bg-success-soft text-success-dark text-xs",
+  "status-inactive": "bg-gray-100 text-text-tertiary text-xs",
+  filled: "bg-primary text-white text-xs",
+  draft: "bg-gray-100 text-text-secondary text-xs",
+  active: "bg-success-soft text-success-dark text-xs",
+  inactive: "bg-gray-100 text-text-tertiary text-xs",
 };
 
-export function Badge({ variant = "active", className = "", children }: BadgeProps) {
+export function Badge({ variant = "status-active", className = "", children }: BadgeProps) {
   return (
     <span
       className={[
-        "inline-flex items-center px-2 py-0.5 rounded-full font-medium leading-none whitespace-nowrap",
+        "inline-flex items-center font-medium leading-none whitespace-nowrap rounded-full",
+        variant === "urgent" || variant === "live" ? "" : "px-2 py-0.5",
         variantStyles[variant],
         className,
       ]

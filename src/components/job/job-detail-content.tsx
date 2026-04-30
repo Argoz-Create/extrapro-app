@@ -31,7 +31,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
       </Link>
 
       {/* Card */}
-      <div className="rounded-[14px] border border-border-light bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_1px_3px_rgba(0,0,0,0.06)]">
+      <div className="rounded-2xl border border-border-light bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_1px_3px_rgba(0,0,0,0.06)]">
         {/* Publication info: ID + date */}
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 text-xs text-text-tertiary">
@@ -51,7 +51,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
             {job.professions && job.professions.length > 0 ? job.professions[0].icon : "💼"}
           </span>
           <div className="flex-1">
-            <h1 className="text-xl font-bold text-text-primary mb-1">
+            <h1 className="text-xl font-display font-700 text-text-primary mb-1">
               {job.professions && job.professions.length > 0
                 ? job.professions.map(p => p.name_fr).join(", ")
                 : job.custom_profession || "Extra"}
@@ -65,7 +65,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
             {job.professions && job.professions.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {job.professions.map((prof) => (
-                  <span key={prof.id} className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                  <span key={prof.id} className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary-soft text-primary rounded-full text-xs font-medium">
                     <span>{prof.icon}</span>
                     <span>{prof.name_fr}</span>
                   </span>
@@ -90,7 +90,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
 
         {/* Salary */}
         {salary && (
-          <p className="mt-4 text-2xl font-bold text-primary">{salary}</p>
+          <p className="mt-4 text-2xl font-bold font-mono text-success">{salary}</p>
         )}
 
         {/* Required skill */}

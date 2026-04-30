@@ -14,10 +14,10 @@ export function TopBar() {
       <div className="h-14 max-w-5xl mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-b from-primary to-primary-dark flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center pulse-coral">
             <span className="text-white font-bold text-sm">E</span>
           </div>
-          <span className="font-bold text-text-primary tracking-tight">
+          <span className="font-display font-800 text-text-primary tracking-tight">
             EXTRAPRO
           </span>
         </Link>

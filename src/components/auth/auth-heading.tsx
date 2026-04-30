@@ -11,7 +11,7 @@ export function AuthHeading({ translationKey }: AuthHeadingProps) {
   const { t } = useTranslation();
 
   return (
-    <h1 className="text-2xl font-bold text-text-primary text-center mb-6">
+    <h1 className="text-2xl font-display font-700 text-text-primary text-center mb-6">
       {t(translationKey)}
     </h1>
   );
