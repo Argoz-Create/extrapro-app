@@ -51,7 +51,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
             {job.professions && job.professions.length > 0 ? job.professions[0].icon : "💼"}
           </span>
           <div className="flex-1">
-            <h1 className="text-xl font-display font-700 text-text-primary mb-1">
+            <h1 className="text-xl font-display font-bold text-text-primary mb-1">
               {job.professions && job.professions.length > 0
                 ? job.professions.map(p => p.name_fr).join(", ")
                 : job.custom_profession || "Extra"}

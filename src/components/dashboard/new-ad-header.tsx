@@ -26,7 +26,7 @@ export function NewAdHeader() {
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </Link>
-      <h1 className="text-xl font-display font-700 text-text-primary">
+      <h1 className="text-xl font-display font-bold text-text-primary">
         {t("createAd.title")}
       </h1>
     </div>

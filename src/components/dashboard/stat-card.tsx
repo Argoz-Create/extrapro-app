@@ -10,7 +10,7 @@ export function StatCard({ icon, value, label }: StatCardProps) {
   return (
     <Card className="p-4 text-center">
       <span className="text-2xl">{icon}</span>
-      <p className="mt-1 text-xl font-display font-700 text-success">{value}</p>
+      <p className="mt-1 text-xl font-display font-bold text-success">{value}</p>
       <p className="text-xs text-text-secondary">{label}</p>
     </Card>
   );

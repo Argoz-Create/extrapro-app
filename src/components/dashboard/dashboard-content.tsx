@@ -24,7 +24,7 @@ export function DashboardContent({ companyName, stats, jobs, newlyExpiredCount }
     <div className="space-y-6">
       {/* Heading */}
       <div>
-        <h1 className="text-xl font-display font-700 text-text-primary">
+        <h1 className="text-xl font-display font-bold text-text-primary">
           {t("dashboard.title")}
         </h1>
         <p className="text-sm text-text-secondary">{companyName}</p>

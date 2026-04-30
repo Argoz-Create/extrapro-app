@@ -21,12 +21,13 @@ export function DashboardHeader() {
   return (
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-border-light">
       <div className="h-14 max-w-5xl mx-auto px-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2">
+        {/* Logo — links to public homepage. To return to the dashboard,
+            employers use the "Home" / browser back / Pro Area CTA. */}
+        <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center pulse-coral">
             <span className="text-white font-bold text-sm">E</span>
           </div>
-          <span className="font-display font-800 text-text-primary tracking-tight">
+          <span className="font-display font-extrabold text-text-primary tracking-tight">
             EXTRAPRO
           </span>
         </Link>
