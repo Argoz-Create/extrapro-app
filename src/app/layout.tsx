@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { Inter, Manrope } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n/context";
+import { StickyMobileCTA } from "@/components/home/sticky-mobile-cta";
 import "./globals.css";
 
 const inter = Inter({
@@ -62,6 +63,7 @@ export default function RootLayout({
             },
           }}
         />
+        <StickyMobileCTA />
       </body>
     </html>
   );
