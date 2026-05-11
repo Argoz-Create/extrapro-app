@@ -13,21 +13,21 @@ export async function HeroLive() {
 
   // Build translations map for client component
   const translations: Record<string, string> = {
-    "home.hero.statusPill": language === "fr" ? "EN DIRECT · EN URGENCE" : "LIVE · URGENT",
+    "home.hero.statusPill": language === "fr" ? "EN DIRECT · France" : "LIVE · France",
     "home.hero.headline.start": language === "fr" ? "Trouvez votre extra." : "Find your extra.",
     "home.hero.headline.accent": language === "fr" ? "Maintenant." : "Now.",
     "home.hero.subhead":
       language === "fr"
-        ? "La première plateforme en live pour les extras de la restauration, hôtellerie et événementiel. Sans engagement. Sans abonnement. Une partie des bénéfices revient aux associations."
-        : "The first live matching platform for temp workers in restaurants, hotels and events. No commitment. No subscription. A share of every booking goes to charity.",
+        ? "La première plateforme en direct pour les extras de la restauration, de l'hôtellerie et de l'événementiel. Sans engagement. Sans abonnement. 1 € reversé à une association à chaque embauche."
+        : "The first live matching platform for temp workers in restaurants, hotels and events. No commitment. No subscription. €1 donated to a charity per booking.",
     "home.hero.feature1.title": language === "fr" ? "10 secondes" : "10 seconds",
-    "home.hero.feature1.text": language === "fr" ? "de la pub à l'appel" : "post to phone call",
+    "home.hero.feature1.text": language === "fr" ? "de l'annonce à l'appel" : "post to phone call",
     "home.hero.feature2.title": language === "fr" ? "Sans abonnement" : "No subscription",
-    "home.hero.feature2.text": language === "fr" ? "payez à l'usage" : "pay per use",
-    "home.hero.feature3.title": language === "fr" ? "11 associations" : "11 charities",
-    "home.hero.feature3.text": language === "fr" ? "soutenues directement" : "funded directly",
-    "home.hero.cta.primary": language === "fr" ? "Publier en urgence →" : "Post urgently →",
-    "home.hero.cta.secondary": language === "fr" ? "Voir le feed live" : "See live feed",
+    "home.hero.feature2.text": language === "fr" ? "paiement à l'usage" : "pay per use",
+    "home.hero.feature3.title": language === "fr" ? "1 € reversé" : "€1 donated",
+    "home.hero.feature3.text": language === "fr" ? "à chaque embauche" : "per booking",
+    "home.hero.cta.primary": language === "fr" ? "Publier une mission →" : "Post a listing →",
+    "home.hero.cta.secondary": language === "fr" ? "Voir les missions" : "See live feed",
     "home.feed.label.heading": language === "fr" ? "Annonces actives · Paris" : "Active ads · Paris",
     "home.feed.label.live": language === "fr" ? "EN LIVE" : "LIVE",
     "home.feed.empty":

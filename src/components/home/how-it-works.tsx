@@ -50,11 +50,11 @@ export async function HowItWorks() {
         {
           icon: Heart,
           title:
-            language === "fr" ? "Une asso est financée" : "A charity gets funded",
+            language === "fr" ? "Une association reçoit 1 €" : "A charity receives €1",
           body:
             language === "fr"
-              ? "Une part de chaque mission"
-              : "A share of every booking",
+              ? "Pour chaque embauche confirmée"
+              : "For every confirmed booking",
         },
       ],
     },

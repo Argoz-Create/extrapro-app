@@ -7,7 +7,6 @@ import { ListingsHeader } from "@/components/job/listings-header";
 import { HeroLive } from "@/components/home/hero-live";
 import { PricingStrip } from "@/components/home/pricing-strip";
 import { HowItWorks } from "@/components/home/how-it-works";
-import { AssociationsBand } from "@/components/home/associations-band";
 import { getActiveJobs } from "@/lib/queries/jobs";
 import { getProfessions } from "@/lib/queries/professions";
 import { getCities } from "@/lib/queries/cities";
@@ -58,7 +57,6 @@ export default async function Home({ searchParams }: HomeProps) {
       <HeroLive />
       <PricingStrip />
       <HowItWorks />
-      <AssociationsBand />
 
       <main className="mx-auto max-w-lg px-4 py-4">
         {/* Filters */}
