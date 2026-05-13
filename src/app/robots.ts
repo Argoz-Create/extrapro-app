@@ -6,9 +6,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        // /designideas is an internal design preview; /dashboard, /api,
-        // /auth and /maintenance carry no public crawl value.
-        disallow: ["/dashboard", "/api", "/auth", "/maintenance", "/designideas"],
+        // /designideas is an internal design preview; /dashboard, /api
+        // and /auth carry no public crawl value.
+        disallow: ["/dashboard", "/api", "/auth", "/designideas"],
       },
     ],
     sitemap: "https://www.extra-pro.com/sitemap.xml",
