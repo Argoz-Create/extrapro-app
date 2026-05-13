@@ -3,6 +3,8 @@ import { Toaster } from "sonner";
 import { Inter, Manrope } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n/context";
 import { StickyMobileCTA } from "@/components/home/sticky-mobile-cta";
+import { CookieConsent } from "@/components/layout/cookie-consent";
+import { AnalyticsScripts } from "@/components/layout/analytics-scripts";
 import { getLanguage } from "@/lib/i18n/get-language";
 import "./globals.css";
 
@@ -54,12 +56,14 @@ export default async function RootLayout({
       <body className={`${inter.variable} ${manrope.variable} font-sans antialiased`}>
         <LanguageProvider>
           {children}
-          {/* StickyMobileCTA must live INSIDE LanguageProvider — it's a
-              client component that calls useTranslation(). Placing it outside
-              the provider broke prerendering on every page that didn't
+          {/* StickyMobileCTA + CookieConsent must live INSIDE LanguageProvider —
+              they're client components that call useTranslation(). Placing them
+              outside the provider broke prerendering on every page that didn't
               short-circuit (caught first on /a-propos during build). */}
           <StickyMobileCTA />
+          <CookieConsent />
         </LanguageProvider>
+        <AnalyticsScripts />
         <Toaster
           position="bottom-center"
           toastOptions={{
