@@ -3,6 +3,7 @@ import { Toaster } from "sonner";
 import { Inter, Manrope } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n/context";
 import { StickyMobileCTA } from "@/components/home/sticky-mobile-cta";
+import { getLanguage } from "@/lib/i18n/get-language";
 import "./globals.css";
 
 const inter = Inter({
@@ -34,13 +35,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const language = await getLanguage();
   return (
-    <html lang="fr">
+    <html lang={language}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
