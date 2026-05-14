@@ -1,6 +1,6 @@
 "use client";
 
-import { PhoneCall, ClipboardList, Eye } from "lucide-react";
+import { PhoneCall, ClipboardText, Eye } from "@phosphor-icons/react";
 import type { EmployerStats } from "@/lib/types/database";
 import { formatNumber } from "@/lib/utils/format";
 import { StatCard } from "./stat-card";
@@ -21,7 +21,7 @@ export function StatsGrid({ stats }: StatsGridProps) {
         label={t("dashboard.hires")}
       />
       <StatCard
-        icon={ClipboardList}
+        icon={ClipboardText}
         value={String(stats.active_ads)}
         label={t("dashboard.activeAds")}
       />

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Phone, CheckCircle2 } from "lucide-react";
+import { MagnifyingGlass, Phone, CheckCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/context";
 
@@ -37,7 +37,7 @@ export function HeroSection({ jobCount }: HeroSectionProps) {
         <div className="mt-6 grid grid-cols-3 gap-3 text-center">
           <div>
             <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary-dark">
-              <Search className="h-5 w-5" strokeWidth={2} />
+              <MagnifyingGlass size={20} weight="duotone" />
             </div>
             <p className="mt-1 text-xs font-medium text-text-primary">
               {t("landing.step1")}
@@ -45,7 +45,7 @@ export function HeroSection({ jobCount }: HeroSectionProps) {
           </div>
           <div>
             <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary-dark">
-              <Phone className="h-5 w-5" strokeWidth={2} />
+              <Phone size={20} weight="duotone" />
             </div>
             <p className="mt-1 text-xs font-medium text-text-primary">
               {t("landing.step2")}
@@ -53,7 +53,7 @@ export function HeroSection({ jobCount }: HeroSectionProps) {
           </div>
           <div>
             <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary-dark">
-              <CheckCircle2 className="h-5 w-5" strokeWidth={2} />
+              <CheckCircle size={20} weight="duotone" />
             </div>
             <p className="mt-1 text-xs font-medium text-text-primary">
               {t("landing.step3")}

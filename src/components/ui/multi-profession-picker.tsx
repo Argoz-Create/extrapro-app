@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useMemo } from "react";
-import { X } from "lucide-react";
+import { X } from "@phosphor-icons/react";
 import type { Profession } from "@/lib/types/database";
 import { useTranslation } from "@/lib/i18n/context";
 
@@ -136,7 +136,7 @@ export const MultiProfessionPicker = ({
               className="ml-1 text-primary/60 hover:text-primary transition-colors"
               aria-label={t("common.remove") || "Remove"}
             >
-              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+              <X size={14} weight="bold" />
             </button>
           </div>
         ))}
@@ -150,7 +150,7 @@ export const MultiProfessionPicker = ({
               className="ml-1 text-text-tertiary/60 hover:text-text-tertiary transition-colors"
               aria-label={t("common.remove") || "Remove"}
             >
-              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+              <X size={14} weight="bold" />
             </button>
           </div>
         )}
@@ -252,7 +252,7 @@ export const MultiProfessionPicker = ({
             }}
             className="px-4 py-2.5 bg-text-tertiary/10 text-text-tertiary font-medium rounded-xl hover:bg-text-tertiary/20 transition-colors"
           >
-            <X className="h-4 w-4" strokeWidth={2.5} />
+            <X size={16} weight="bold" />
           </button>
         </div>
       )}

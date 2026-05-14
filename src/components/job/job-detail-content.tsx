@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Briefcase, MapPin, Calendar, Clock } from "lucide-react";
+import { Briefcase, MapPin, Calendar, Clock } from "@phosphor-icons/react";
 import { ContactDetails } from "@/components/job/contact-details";
 import { ShareButton } from "@/components/job/share-button";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +49,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
         {/* Header */}
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 pt-1">
-            <Briefcase className="h-6 w-6 text-text-secondary" strokeWidth={2} />
+            <Briefcase size={24} className="text-text-secondary" weight="duotone" />
           </div>
           <div className="flex-1">
             <h1 className="text-xl font-display font-bold text-text-primary mb-1">
@@ -85,19 +85,19 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
         <div className="mt-4 space-y-2 text-sm text-text-secondary">
           {job.cities?.name && (
             <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
+              <MapPin size={16} className="flex-shrink-0" weight="duotone" />
               <span>{job.cities.name}</span>
             </div>
           )}
           {job.work_date && (
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
+              <Calendar size={16} className="flex-shrink-0" weight="duotone" />
               <span>{formatDateRange(job.work_date, job.work_end_date)}</span>
             </div>
           )}
           {job.start_time && job.end_time && (
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
+              <Clock size={16} className="flex-shrink-0" weight="duotone" />
               <span>{formatTimeRange(job.start_time, job.end_time)}</span>
             </div>
           )}
