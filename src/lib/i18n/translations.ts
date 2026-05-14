@@ -264,6 +264,13 @@ export const translations = {
     // Sticky mobile CTA
     "home.stickyCta": "Publier",
 
+    // Cookie consent banner
+    "consent.banner.aria": "Bandeau de consentement aux cookies",
+    "consent.banner.text": "Nous utilisons des cookies pour mesurer l'audience et améliorer le site. Vous pouvez accepter ou refuser à tout moment.",
+    "consent.accept": "Accepter",
+    "consent.refuse": "Refuser",
+    "consent.details": "En savoir plus",
+
   },
   en: {
     // Top bar
@@ -550,6 +557,13 @@ export const translations = {
 
     // Sticky mobile CTA
     "home.stickyCta": "Post an ad",
+
+    // Cookie consent banner
+    "consent.banner.aria": "Cookie consent banner",
+    "consent.banner.text": "We use cookies to measure traffic and improve the site. You can accept or refuse at any time.",
+    "consent.accept": "Accept",
+    "consent.refuse": "Refuse",
+    "consent.details": "Learn more",
 
   },
 } as const;
