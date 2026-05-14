@@ -1,19 +1,32 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { TopBar } from "@/components/layout/top-bar";
 import { Footer } from "@/components/layout/footer";
-import { HeroSection } from "@/components/layout/hero-section";
 import { JobFilters } from "@/components/job/job-filters";
 import { JobFeed } from "@/components/job/job-feed";
 import { ListingsHeader } from "@/components/job/listings-header";
-import { OurMission } from "@/components/layout/our-mission";
-import { getActiveJobs, getActiveJobCount } from "@/lib/queries/jobs";
+import { HeroLive } from "@/components/home/hero-live";
+import { PricingStrip } from "@/components/home/pricing-strip";
+import { HowItWorks } from "@/components/home/how-it-works";
+import { AssociationsBand } from "@/components/home/associations-band";
+import { getActiveJobs } from "@/lib/queries/jobs";
 import { getProfessions } from "@/lib/queries/professions";
 import { getCities } from "@/lib/queries/cities";
 import { getRegions } from "@/lib/queries/regions";
 import { getDepartments } from "@/lib/queries/departments";
 import type { JobAdWithRelations, Profession, City, Region, Department } from "@/lib/types/database";
 
-type HomeProps = {
+// Design preview / showcase route. Renders the alternative Direction B
+// homepage (coral palette, Live hero, pricing strip, how-it-works,
+// associations band) kept for reference. Not the live production design —
+// the main route at `/` is the original green/simple design.
+export const metadata: Metadata = {
+  title: "Design preview — EXTRAPRO",
+  description: "Alternative homepage design preview.",
+  robots: { index: false, follow: false },
+};
+
+type DesignIdeasProps = {
   searchParams: Promise<{
     profession?: string;
     city?: string;
@@ -22,7 +35,7 @@ type HomeProps = {
   }>;
 };
 
-export default async function Home({ searchParams }: HomeProps) {
+export default async function DesignIdeas({ searchParams }: DesignIdeasProps) {
   const params = await searchParams;
 
   const filters = {
@@ -37,29 +50,28 @@ export default async function Home({ searchParams }: HomeProps) {
   let cities: City[] = [];
   let regions: Region[] = [];
   let departments: Department[] = [];
-  let totalCount = 0;
 
   try {
-    [jobs, professions, cities, regions, departments, totalCount] = await Promise.all([
+    [jobs, professions, cities, regions, departments] = await Promise.all([
       getActiveJobs(filters),
       getProfessions(),
       getCities(),
       getRegions(),
       getDepartments(),
-      getActiveJobCount(),
     ]);
   } catch {
     // Supabase not configured or unreachable — render with empty data
   }
 
   return (
-    <div className="green-theme min-h-screen bg-background">
+    <div className="min-h-screen bg-bg">
       <TopBar />
-      <HeroSection jobCount={totalCount} />
-      <OurMission />
+      <HeroLive />
+      <PricingStrip />
+      <HowItWorks />
+      <AssociationsBand />
 
       <main className="mx-auto max-w-lg px-4 py-4">
-        {/* Filters */}
         <Suspense fallback={null}>
           <JobFilters
             professions={professions}
@@ -75,10 +87,10 @@ export default async function Home({ searchParams }: HomeProps) {
           />
         </Suspense>
 
-        {/* Listings header */}
-        <ListingsHeader count={jobs.length} />
+        <div id="feed">
+          <ListingsHeader count={jobs.length} />
+        </div>
 
-        {/* Job feed */}
         <div className="mt-2">
           <JobFeed initialJobs={jobs} filters={filters} />
         </div>

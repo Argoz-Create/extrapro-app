@@ -9,20 +9,10 @@ export function StickyMobileCTA() {
   const pathname = usePathname();
   const { t } = useTranslation();
 
-  // Determine if this route should show the sticky CTA
-  const isVisible =
-    pathname === "/" ||
-    pathname.startsWith("/annonces/");
-
-  // Hide on protected/off-flow routes
-  const isHidden =
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/register") ||
-    pathname.startsWith("/maintenance") ||
-    pathname.startsWith("/a-propos");
-
-  if (isHidden || !isVisible) {
+  // Sticky CTA belongs to the Direction B design showcase only.
+  // The production homepage at `/` is the original green/simple design
+  // and intentionally does not surface this widget.
+  if (pathname !== "/designideas") {
     return null;
   }
 

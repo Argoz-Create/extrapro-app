@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
+  /* Direction B (coral) — default tokens, used by /designideas */
   --color-primary: #FF3B30;
   --color-primary-dark: #DC2626;
   --color-primary-soft: #FEE2E2;
@@ -10,6 +11,7 @@
   --color-ink: #09090B;
   --color-ink-2: #1F2937;
   --color-bg: #FAFAFA;
+  --color-background: #FAFAFA;
   --color-surface: #FFFFFF;
   --color-text-primary: #0F172A;
   --color-text-secondary: #475569;
@@ -24,6 +26,23 @@
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-full: 9999px;
+}
+
+/* Green theme — original State A palette, scoped to the main homepage.
+   Wrap a page root in <div className="green-theme"> to apply. The same
+   Tailwind utility classes (bg-primary, text-primary-dark, etc.) resolve
+   to green values inside this scope without changing any component code. */
+.green-theme {
+  --color-primary: #22C55E;
+  --color-primary-dark: #16a34a;
+  --color-bg: #F8FAFC;
+  --color-background: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-border-light: rgba(229, 231, 235, 0.5);
 }
 
 body {
