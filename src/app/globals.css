@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
-@theme inline {
+/* IMPORTANT: do NOT add `inline` to this @theme block. With `inline`,
+   Tailwind inlines the literal hex into every generated utility class,
+   which defeats the `.green-theme` scope override below — the State A
+   homepage at `/` would render in coral instead of green. The plain
+   `@theme` form generates utilities like `bg-primary { background-color:
+   var(--color-primary) }`, so the scoped override works. */
+@theme {
   /* Direction B (coral) — default tokens, used by /designideas */
   --color-primary: #FF3B30;
   --color-primary-dark: #DC2626;

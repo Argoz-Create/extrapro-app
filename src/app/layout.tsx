@@ -68,7 +68,10 @@ export default async function RootLayout({
           position="bottom-center"
           toastOptions={{
             style: {
-              background: "#FF3B30",
+              // Green to match the production homepage palette. Toaster
+              // lives at <body> level (outside the .green-theme scope),
+              // so a CSS var wouldn't pick up the override — hardcoded.
+              background: "#22C55E",
               color: "white",
               border: "none",
             },
