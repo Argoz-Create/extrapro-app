@@ -8,6 +8,7 @@ import { confirmHire } from "@/lib/actions/jobs";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/context";
+import { track } from "@/lib/analytics/events";
 
 type HireConfirmationModalProps = {
   open: boolean;
@@ -33,6 +34,9 @@ export function HireConfirmationModal({
           toast.error(result.error);
           return;
         }
+        // North-star event — fire BEFORE close so it lands while the
+        // GA4 dataLayer is still hot.
+        track.hireConfirm(job!.id);
         toast.success(t("hire.success"));
         onClose();
       } catch {

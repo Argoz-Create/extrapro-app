@@ -132,7 +132,7 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
 
         {/* Share button */}
         <div className="mt-4">
-          <ShareButton />
+          <ShareButton jobAdId={job.id} />
         </div>
 
         {/* Contact details */}
@@ -144,6 +144,8 @@ export function JobDetailContent({ job }: JobDetailContentProps) {
             contactEmail={job.contact_email}
             contactWhatsapp={job.contact_whatsapp}
             companyName={job.employers?.company_name}
+            profession={job.professions?.[0]?.name_fr ?? null}
+            city={job.cities?.name ?? null}
           />
         </div>
       </div>

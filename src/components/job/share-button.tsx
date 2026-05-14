@@ -2,8 +2,13 @@
 
 import { useState } from "react";
 import { useTranslation } from "@/lib/i18n/context";
+import { track } from "@/lib/analytics/events";
 
-export function ShareButton() {
+type ShareButtonProps = {
+  jobAdId?: string;
+};
+
+export function ShareButton({ jobAdId }: ShareButtonProps = {}) {
   const [copied, setCopied] = useState(false);
   const { t } = useTranslation();
 
@@ -12,6 +17,9 @@ export function ShareButton() {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      if (jobAdId) {
+        track.shareListing(jobAdId, "clipboard");
+      }
     } catch {
       // Fallback: do nothing if clipboard API unavailable
     }

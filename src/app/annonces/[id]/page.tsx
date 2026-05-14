@@ -119,8 +119,13 @@ export default async function JobDetail({ params }: JobDetailProps) {
 
       <Footer />
 
-      {/* Track view */}
-      <ViewTracker jobAdId={job.id} />
+      {/* Track view (server-side counter + GA4 event) */}
+      <ViewTracker
+        jobAdId={job.id}
+        profession={job.professions?.[0]?.name_fr ?? null}
+        city={job.cities?.name ?? null}
+        urgent={job.is_urgent ?? false}
+      />
     </div>
   );
 }

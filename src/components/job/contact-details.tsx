@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { User, Phone, MessageCircle, Mail } from "lucide-react";
 import { logCallClick } from "@/lib/actions/interactions";
+import { track } from "@/lib/analytics/events";
 import { useTranslation } from "@/lib/i18n/context";
 
 type ContactDetailsProps = {
@@ -12,6 +13,8 @@ type ContactDetailsProps = {
   contactEmail?: string | null;
   contactWhatsapp?: string | null;
   companyName?: string | null;
+  profession?: string | null;
+  city?: string | null;
 };
 
 export function ContactDetails({
@@ -21,6 +24,8 @@ export function ContactDetails({
   contactEmail,
   contactWhatsapp,
   companyName,
+  profession,
+  city,
 }: ContactDetailsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
@@ -29,7 +34,12 @@ export function ContactDetails({
     e.stopPropagation();
     e.preventDefault();
     if (!isOpen) {
+      // Server-side call-click counter (always — internal analytics).
       logCallClick(jobAdId);
+      // GA4 click_call event (gated on consent inside track.*). This is
+      // the funnel's north-star event — opening the contact panel is the
+      // strongest "intent to call" signal we can capture client-side.
+      track.clickCall(jobAdId, profession ?? null, city ?? null);
     }
     setIsOpen((prev) => !prev);
   }
