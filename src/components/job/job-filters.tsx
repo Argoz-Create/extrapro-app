@@ -47,7 +47,12 @@ export function JobFilters({
     { value: "", label: t("filter.allProfessions") },
     ...professions.map((p) => ({
       value: p.id,
-      label: `${p.icon} ${p.name_fr}`,
+      // Profession `icon` column on the DB is an emoji string ("🍳",
+      // "🍷", etc.); rendering it prefixed every option in the
+      // dropdown with a native emoji, which contradicts the
+      // Lucide-only icon discipline. Drop the prefix; the name alone
+      // is enough.
+      label: p.name_fr,
     })),
   ];
 
