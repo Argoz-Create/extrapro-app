@@ -1,12 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { signUp } from "@/lib/actions/auth";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { COMPANY_TYPES } from "@/lib/utils/constants";
 import { useTranslation } from "@/lib/i18n/context";
+import { track } from "@/lib/analytics/events";
 import Link from "next/link";
 
 export function RegisterForm() {
@@ -14,6 +15,14 @@ export function RegisterForm() {
     error: null,
   });
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // GA4 signup_start — fires once per form mount. signup_complete is
+    // deferred (the signUp action redirects to /dashboard on success, so
+    // the form unmounts before we can fire success — would need a
+    // dashboard-side detector).
+    track.signupStart();
+  }, []);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -79,11 +88,11 @@ export function RegisterForm() {
         />
         <span className="text-sm text-text-secondary">
           {t("auth.acceptTerms")}{" "}
-          <Link href="/terms" className="text-primary hover:underline">
+          <Link href="/conditions" className="text-primary hover:underline">
             {t("auth.termsOfService")}
           </Link>{" "}
           {t("auth.and")}{" "}
-          <Link href="/privacy" className="text-primary hover:underline">
+          <Link href="/confidentialite" className="text-primary hover:underline">
             {t("auth.privacyPolicy")}
           </Link>
         </span>
