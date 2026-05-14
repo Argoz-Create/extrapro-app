@@ -47,6 +47,25 @@ export async function expireOldJobs(): Promise<void> {
     .lt("work_date", today);
 }
 
+// Thin variant used by the dynamic sitemap. Returns only the columns
+// needed to emit <url> entries — id for the path, published_at/updated_at
+// for <lastmod>. Skips the expensive joins (professions, cities, employers)
+// since sitemaps don't render relations.
+export async function getActiveJobsForSitemap(): Promise<
+  Array<{ id: string; published_at: string | null; updated_at: string | null }>
+> {
+  const supabase = await createClient();
+  const today = new Date().toISOString().split("T")[0];
+  const { data } = await supabase
+    .from("job_ads")
+    .select("id, published_at, updated_at")
+    .eq("status", "active")
+    .or(`work_end_date.gte.${today},and(work_end_date.is.null,work_date.gte.${today})`)
+    .order("published_at", { ascending: false })
+    .limit(5000);
+  return data ?? [];
+}
+
 export async function getActiveJobs(
   filters?: JobFilters,
   cursor?: string,
