@@ -9,13 +9,13 @@ const nextConfig: NextConfig = {
 // SENTRY_PROJECT + SENTRY_AUTH_TOKEN are set (typically only in CI). Local
 // dev + preview deploys without these env vars build normally — Sentry
 // just skips the upload step.
+//
+// Minimal viable config. Avoided the deprecated options
+// (hideSourceMaps removed in current SDK, disableLogger /
+// reactComponentAnnotation / automaticVercelMonitors all moved under
+// `webpack` in the new SDK and not supported under Turbopack anyway).
 export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
   silent: !process.env.CI,
-  widenClientFileUpload: true,
-  reactComponentAnnotation: { enabled: true },
-  hideSourceMaps: true,
-  disableLogger: true,
-  automaticVercelMonitors: true,
 });
