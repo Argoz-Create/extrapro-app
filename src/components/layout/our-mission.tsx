@@ -1,6 +1,6 @@
 "use client";
 
-import { Zap, Heart, Sparkles } from "lucide-react";
+import { Lightning, Heart, Sparkle } from "@phosphor-icons/react";
 import { useTranslation } from "@/lib/i18n/context";
 
 export function OurMission() {
@@ -18,19 +18,19 @@ export function OurMission() {
 
         <div className="mt-5 grid grid-cols-3 gap-3 text-center">
           <div className="rounded-[10px] bg-primary/5 p-3 flex flex-col items-center">
-            <Zap className="h-5 w-5 text-primary-dark" strokeWidth={2} />
+            <Lightning size={20} weight="duotone" className="text-primary-dark" />
             <p className="mt-1 text-xs font-medium text-primary-dark">
               {t("mission.solidarity")}
             </p>
           </div>
           <div className="rounded-[10px] bg-green-50 p-3 flex flex-col items-center">
-            <Heart className="h-5 w-5 text-green-700" strokeWidth={2} />
+            <Heart size={20} weight="duotone" className="text-green-700" />
             <p className="mt-1 text-xs font-medium text-green-700">
               {t("mission.free")}
             </p>
           </div>
           <div className="rounded-[10px] bg-amber-50 p-3 flex flex-col items-center">
-            <Sparkles className="h-5 w-5 text-amber-700" strokeWidth={2} />
+            <Sparkle size={20} weight="duotone" className="text-amber-700" />
             <p className="mt-1 text-xs font-medium text-amber-700">
               {t("mission.fast")}
             </p>

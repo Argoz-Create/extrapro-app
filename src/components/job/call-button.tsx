@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone } from "lucide-react";
+import { Phone } from "@phosphor-icons/react";
 import { logCallClick } from "@/lib/actions/interactions";
 import { track } from "@/lib/analytics/events";
 
@@ -28,7 +28,7 @@ export function CallButton({ phone, jobAdId, contactName, companyName, professio
       onClick={handleClick}
       className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-medium text-white transition-all duration-200 ease-out hover:bg-primary-dark active:scale-[0.98]"
     >
-      <Phone className="h-4 w-4" strokeWidth={2} />
+      <Phone size={16} weight="duotone" />
       <span>{phone}</span>
       {displayName && (
         <>

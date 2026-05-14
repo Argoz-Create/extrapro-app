@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { User, Phone, MessageCircle, Mail } from "lucide-react";
+import { User, Phone, ChatCircle, Envelope } from "@phosphor-icons/react";
 import { logCallClick } from "@/lib/actions/interactions";
 import { track } from "@/lib/analytics/events";
 import { useTranslation } from "@/lib/i18n/context";
@@ -67,7 +67,7 @@ export function ContactDetails({
           {/* Name */}
           {displayName && (
             <div className="flex items-center gap-2 text-sm text-text-primary">
-              <User className="h-4 w-4 flex-shrink-0 text-text-secondary" strokeWidth={2} />
+              <User size={16} weight="duotone" className="flex-shrink-0 text-text-secondary" />
               <span className="font-medium">{displayName}</span>
             </div>
           )}
@@ -79,7 +79,7 @@ export function ContactDetails({
               href={`tel:${singlePhone}`}
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
-              <Phone className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
+              <Phone size={16} weight="duotone" className="flex-shrink-0" />
               <span>{singlePhone}</span>
             </a>
           ))}
@@ -92,7 +92,7 @@ export function ContactDetails({
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
-              <MessageCircle className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
+              <ChatCircle size={16} weight="duotone" className="flex-shrink-0" />
               <span>WhatsApp</span>
             </a>
           )}
@@ -103,7 +103,7 @@ export function ContactDetails({
               href={`mailto:${contactEmail}`}
               className="flex items-center gap-2 text-sm text-primary hover:underline"
             >
-              <Mail className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
+              <Envelope size={16} weight="duotone" className="flex-shrink-0" />
               <span>{contactEmail}</span>
             </a>
           )}

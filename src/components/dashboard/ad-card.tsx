@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition, useState, useOptimistic } from "react";
-import { Calendar, Clock, Banknote, Eye, Phone } from "lucide-react";
+import { Calendar, Clock, Money, Eye, Phone } from "@phosphor-icons/react";
 import type { JobAdWithRelations, JobStatus } from "@/lib/types/database";
 import { formatDateRange, formatTimeRange, formatSalary, formatDateTime } from "@/lib/utils/format";
 import { toggleJobStatus, relistJob } from "@/lib/actions/jobs";
@@ -85,19 +85,19 @@ export function AdCard({ job }: AdCardProps) {
         <div className="mt-3 flex items-center gap-3 text-xs text-text-secondary flex-wrap">
           {job.work_date && (
             <div className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5" strokeWidth={2} />
+              <Calendar size={14} weight="duotone" />
               <span>{formatDateRange(job.work_date, job.work_end_date)}</span>
             </div>
           )}
           {job.start_time && job.end_time && (
             <div className="flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5" strokeWidth={2} />
+              <Clock size={14} weight="duotone" />
               <span>{formatTimeRange(job.start_time, job.end_time)}</span>
             </div>
           )}
           {salary && (
             <div className="flex items-center gap-1">
-              <Banknote className="h-3.5 w-3.5" strokeWidth={2} />
+              <Money size={14} weight="duotone" />
               <span>{salary}</span>
             </div>
           )}
@@ -106,11 +106,11 @@ export function AdCard({ job }: AdCardProps) {
         {/* Stats */}
         <div className="mt-2 flex items-center gap-4 text-xs text-text-tertiary flex-wrap">
           <div className="flex items-center gap-1">
-            <Eye className="h-3.5 w-3.5" strokeWidth={2} />
+            <Eye size={14} weight="duotone" />
             <span>{job.view_count} {t("dashboard.viewsCount")}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Phone className="h-3.5 w-3.5" strokeWidth={2} />
+            <Phone size={14} weight="duotone" />
             <span>{job.call_click_count} {t("dashboard.calls")}</span>
           </div>
         </div>
