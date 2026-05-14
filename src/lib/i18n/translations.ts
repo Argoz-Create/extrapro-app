@@ -10,6 +10,7 @@ export const translations = {
     "footer.about": "A propos",
     "footer.terms": "Conditions",
     "footer.privacy": "Confidentialite",
+    "footer.legal": "Mentions legales",
 
     // Job card & detail
     "job.call": "APPELER",
@@ -283,6 +284,7 @@ export const translations = {
     "footer.about": "About",
     "footer.terms": "Terms",
     "footer.privacy": "Privacy",
+    "footer.legal": "Legal notice",
 
     // Job card & detail
     "job.call": "CALL",
