@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Search, Phone, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/context";
 
@@ -35,24 +36,24 @@ export function HeroSection({ jobCount }: HeroSectionProps) {
         {/* How it works - compact */}
         <div className="mt-6 grid grid-cols-3 gap-3 text-center">
           <div>
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-lg">
-              {"\u{1F50D}"}
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary-dark">
+              <Search className="h-5 w-5" strokeWidth={2} />
             </div>
             <p className="mt-1 text-xs font-medium text-text-primary">
               {t("landing.step1")}
             </p>
           </div>
           <div>
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-lg">
-              {"\u{1F4DE}"}
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary-dark">
+              <Phone className="h-5 w-5" strokeWidth={2} />
             </div>
             <p className="mt-1 text-xs font-medium text-text-primary">
               {t("landing.step2")}
             </p>
           </div>
           <div>
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-lg">
-              {"\u2705"}
+            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary-dark">
+              <CheckCircle2 className="h-5 w-5" strokeWidth={2} />
             </div>
             <p className="mt-1 text-xs font-medium text-text-primary">
               {t("landing.step3")}

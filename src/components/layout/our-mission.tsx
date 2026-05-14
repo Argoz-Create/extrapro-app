@@ -1,5 +1,6 @@
 "use client";
 
+import { Zap, Heart, Sparkles } from "lucide-react";
 import { useTranslation } from "@/lib/i18n/context";
 
 export function OurMission() {
@@ -16,20 +17,20 @@ export function OurMission() {
         </p>
 
         <div className="mt-5 grid grid-cols-3 gap-3 text-center">
-          <div className="rounded-[10px] bg-primary/5 p-3">
-            <span className="text-xl">{"\u{1F680}"}</span>
+          <div className="rounded-[10px] bg-primary/5 p-3 flex flex-col items-center">
+            <Zap className="h-5 w-5 text-primary-dark" strokeWidth={2} />
             <p className="mt-1 text-xs font-medium text-primary-dark">
               {t("mission.solidarity")}
             </p>
           </div>
-          <div className="rounded-[10px] bg-green-50 p-3">
-            <span className="text-xl">{"\u{1F49A}"}</span>
+          <div className="rounded-[10px] bg-green-50 p-3 flex flex-col items-center">
+            <Heart className="h-5 w-5 text-green-700" strokeWidth={2} />
             <p className="mt-1 text-xs font-medium text-green-700">
               {t("mission.free")}
             </p>
           </div>
-          <div className="rounded-[10px] bg-amber-50 p-3">
-            <span className="text-xl">{"\u26A1"}</span>
+          <div className="rounded-[10px] bg-amber-50 p-3 flex flex-col items-center">
+            <Sparkles className="h-5 w-5 text-amber-700" strokeWidth={2} />
             <p className="mt-1 text-xs font-medium text-amber-700">
               {t("mission.fast")}
             </p>
