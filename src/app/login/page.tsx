@@ -3,8 +3,8 @@ import { AuthHeading } from "@/components/auth/auth-heading";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Connexion — EXTRAPRO",
-  description: "Connectez-vous a votre espace professionnel EXTRAPRO.",
+  title: "Connexion — URJAYA",
+  description: "Connectez-vous a votre espace professionnel URJAYA.",
 };
 
 export default function LoginPage() {
@@ -17,7 +17,7 @@ export default function LoginPage() {
             <span className="text-white font-bold text-lg">E</span>
           </div>
           <span className="font-bold text-xl text-text-primary tracking-tight">
-            EXTRAPRO
+            URJAYA
           </span>
         </Link>
 

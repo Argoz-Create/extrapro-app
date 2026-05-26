@@ -6,9 +6,9 @@ import { getPlatformStats } from "@/lib/queries/stats";
 import type { PlatformStats } from "@/lib/types/database";
 
 export const metadata: Metadata = {
-  title: "A propos — EXTRAPRO",
+  title: "A propos — URJAYA",
   description:
-    "EXTRAPRO est la plateforme de recrutement en restauration et hotellerie.",
+    "URJAYA est la plateforme de recrutement en restauration et hotellerie.",
 };
 
 export default async function AboutPage() {

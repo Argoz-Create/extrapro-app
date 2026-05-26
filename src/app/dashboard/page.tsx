@@ -8,7 +8,7 @@ import {
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 
 export const metadata: Metadata = {
-  title: "Tableau de bord — EXTRAPRO",
+  title: "Tableau de bord — URJAYA",
   description: "Gerez vos annonces et suivez vos recrutements.",
 };
 

@@ -175,7 +175,7 @@ export const translations = {
     "about.title": "A propos",
     "about.back": "Retour",
     "about.missionTitle": "Notre Mission",
-    "about.missionText": "EXTRAPRO est la premiere plateforme de recrutement dediee a la restauration et l'hotellerie. Notre mission est simple : connecter les employeurs avec des extras qualifies, rapidement et gratuitement.",
+    "about.missionText": "URJAYA est la premiere plateforme de recrutement dediee a la restauration et l'hotellerie. Notre mission est simple : connecter les employeurs avec des extras qualifies, rapidement et gratuitement.",
     "about.howTitle": "Comment ca marche",
     "about.step1Title": "Publiez",
     "about.step1Text": "Les employeurs publient leurs annonces en quelques secondes. C'est gratuit et rapide.",
@@ -202,7 +202,7 @@ export const translations = {
 
     // Mission section (homepage)
     "mission.title": "Notre Mission",
-    "mission.text": "EXTRAPRO est la premiere plateforme de recrutement dediee a la restauration et l'hotellerie. Notre mission : connecter employeurs et extras qualifies, simplement et gratuitement.",
+    "mission.text": "URJAYA est la premiere plateforme de recrutement dediee a la restauration et l'hotellerie. Notre mission : connecter employeurs et extras qualifies, simplement et gratuitement.",
     "mission.solidarity": "Recrutement rapide",
     "mission.free": "100% gratuit",
     "mission.fast": "Simple et rapide",
@@ -449,7 +449,7 @@ export const translations = {
     "about.title": "About",
     "about.back": "Back",
     "about.missionTitle": "Our Mission",
-    "about.missionText": "EXTRAPRO is the first recruitment platform dedicated to the restaurant and hospitality industry. Our mission is simple: connect employers with qualified temporary staff, quickly and for free.",
+    "about.missionText": "URJAYA is the first recruitment platform dedicated to the restaurant and hospitality industry. Our mission is simple: connect employers with qualified temporary staff, quickly and for free.",
     "about.howTitle": "How it works",
     "about.step1Title": "Post",
     "about.step1Text": "Employers post their listings in seconds. It's free and fast.",
@@ -476,7 +476,7 @@ export const translations = {
 
     // Mission section (homepage)
     "mission.title": "Our Mission",
-    "mission.text": "EXTRAPRO is the first recruitment platform dedicated to the restaurant and hospitality industry. Our mission: connect employers with qualified temporary staff, simply and for free.",
+    "mission.text": "URJAYA is the first recruitment platform dedicated to the restaurant and hospitality industry. Our mission: connect employers with qualified temporary staff, simply and for free.",
     "mission.solidarity": "Fast hiring",
     "mission.free": "100% free",
     "mission.fast": "Simple and fast",

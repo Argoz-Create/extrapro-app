@@ -46,8 +46,8 @@ type FormValues = {
   is_single_day: boolean;
 };
 
-const DRAFT_KEY = "extrapro-draft-ad";
-const DRAFT_ERROR_KEY = "extrapro-draft-error";
+const DRAFT_KEY = "urjaya-draft-ad";
+const DRAFT_ERROR_KEY = "urjaya-draft-error";
 
 const emptyForm: FormValues = {
   profession_ids: [],

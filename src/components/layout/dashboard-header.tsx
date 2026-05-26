@@ -28,7 +28,7 @@ export function DashboardHeader() {
             <span className="text-white font-bold text-sm">E</span>
           </div>
           <span className="font-display font-extrabold text-text-primary tracking-tight">
-            EXTRAPRO
+            URJAYA
           </span>
         </Link>
 

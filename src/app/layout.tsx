@@ -25,11 +25,11 @@ const manrope = Manrope({
 // and referenced via CSS variable in the @theme block
 
 export const metadata: Metadata = {
-  title: "EXTRAPRO — Recrutement en restauration",
+  title: "URJAYA — Recrutement en restauration",
   description:
     "Trouvez des extras en restauration et hotellerie. Publiez et consultez des annonces gratuitement.",
   openGraph: {
-    title: "EXTRAPRO — Recrutement en restauration",
+    title: "URJAYA — Recrutement en restauration",
     description:
       "Trouvez des extras en restauration et hotellerie. Publiez et consultez des annonces gratuitement.",
     locale: "fr_FR",

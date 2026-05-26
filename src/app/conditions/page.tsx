@@ -7,9 +7,9 @@ import { Footer } from "@/components/layout/footer";
 // replaced with the publishing entity's real legal details.
 
 export const metadata: Metadata = {
-  title: "Conditions générales d'utilisation — EXTRAPRO",
+  title: "Conditions générales d'utilisation — URJAYA",
   description:
-    "Conditions générales d'utilisation de la plateforme EXTRAPRO de recrutement d'extras pour la restauration et l'hôtellerie.",
+    "Conditions générales d'utilisation de la plateforme URJAYA de recrutement d'extras pour la restauration et l'hôtellerie.",
 };
 
 export default function ConditionsPage() {
@@ -29,7 +29,7 @@ export default function ConditionsPage() {
           <section>
             <h2 className="text-lg font-semibold">Article 1 — Présentation du service</h2>
             <p className="mt-2">
-              EXTRAPRO est une plateforme de mise en relation entre des établissements de
+              URJAYA est une plateforme de mise en relation entre des établissements de
               restauration et d&apos;hôtellerie (les « Employeurs ») et des travailleurs
               indépendants ou occasionnels (les « Extras ») recherchant des missions de
               courte durée. Le service est accessible à l&apos;adresse{" "}
@@ -63,7 +63,7 @@ export default function ConditionsPage() {
               L&apos;Employeur est seul responsable du contenu et de la légalité des annonces
               qu&apos;il publie. Il s&apos;engage à respecter la réglementation française du
               travail, notamment les dispositions applicables aux contrats de courte durée et
-              aux extras de la restauration. EXTRAPRO se réserve le droit de retirer toute
+              aux extras de la restauration. URJAYA se réserve le droit de retirer toute
               annonce manifestement illégale ou contraire aux présentes conditions.
             </p>
           </section>
@@ -89,10 +89,10 @@ export default function ConditionsPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold">Article 7 — Rôle d&apos;EXTRAPRO</h2>
+            <h2 className="text-lg font-semibold">Article 7 — Rôle d&apos;URJAYA</h2>
             <p className="mt-2">
-              EXTRAPRO agit exclusivement en qualité de prestataire technique de mise en
-              relation. EXTRAPRO n&apos;est ni l&apos;employeur des Extras, ni partie aux
+              URJAYA agit exclusivement en qualité de prestataire technique de mise en
+              relation. URJAYA n&apos;est ni l&apos;employeur des Extras, ni partie aux
               relations qui peuvent naître entre Employeurs et Extras, et ne saurait être
               tenue responsable de l&apos;exécution ou de l&apos;inexécution de ces relations.
             </p>
@@ -122,7 +122,7 @@ export default function ConditionsPage() {
           <section>
             <h2 className="text-lg font-semibold">Article 10 — Propriété intellectuelle</h2>
             <p className="mt-2">
-              La marque EXTRAPRO, le nom de domaine, la charte graphique, le code source et
+              La marque URJAYA, le nom de domaine, la charte graphique, le code source et
               l&apos;ensemble des contenus éditoriaux du site sont la propriété exclusive de
               [NOM DE L&apos;ÉDITEUR] ou de ses partenaires. Toute reproduction est interdite
               sans autorisation préalable.
@@ -132,7 +132,7 @@ export default function ConditionsPage() {
           <section>
             <h2 className="text-lg font-semibold">Article 11 — Suspension et résiliation</h2>
             <p className="mt-2">
-              EXTRAPRO se réserve le droit de suspendre ou de résilier l&apos;accès d&apos;un
+              URJAYA se réserve le droit de suspendre ou de résilier l&apos;accès d&apos;un
               Employeur en cas de manquement aux présentes conditions, sans préjudice
               d&apos;éventuels dommages-intérêts.
             </p>
@@ -141,7 +141,7 @@ export default function ConditionsPage() {
           <section>
             <h2 className="text-lg font-semibold">Article 12 — Modifications</h2>
             <p className="mt-2">
-              EXTRAPRO peut modifier les présentes conditions à tout moment. Les utilisateurs
+              URJAYA peut modifier les présentes conditions à tout moment. Les utilisateurs
               en sont informés par tout moyen approprié. La poursuite de l&apos;utilisation
               du service après modification vaut acceptation.
             </p>
@@ -160,7 +160,7 @@ export default function ConditionsPage() {
             <strong className="text-text-secondary">Document à valider par un juriste</strong>{" "}
             avant le lancement public. Les sections marquées [PLACEHOLDER] doivent être
             complétées selon la structure juridique de l&apos;éditeur (TZORSM, Dov Avigdir, ou
-            entité dédiée Extra-Pro).
+            entité dédiée Urjaya).
           </div>
         </div>
       </main>
