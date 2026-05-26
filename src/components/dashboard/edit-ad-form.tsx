@@ -83,7 +83,7 @@ function getSalaryValue(job: JobData): string {
 }
 
 function getEditDraftKey(jobId: string) {
-  return `extrapro-edit-draft-${jobId}`;
+  return `urjaya-edit-draft-${jobId}`;
 }
 
 function getInitialEditValues(job: JobData): FormValues {

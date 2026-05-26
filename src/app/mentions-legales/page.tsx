@@ -8,8 +8,8 @@ import { Footer } from "@/components/layout/footer";
 // with the publishing entity's real legal details before launch.
 
 export const metadata: Metadata = {
-  title: "Mentions légales — EXTRAPRO",
-  description: "Mentions légales du site EXTRAPRO conformément à la LCEN.",
+  title: "Mentions légales — URJAYA",
+  description: "Mentions légales du site URJAYA conformément à la LCEN.",
 };
 
 export default function MentionsLegalesPage() {

@@ -20,12 +20,12 @@ export async function generateMetadata({ params }: JobDetailProps): Promise<Meta
       ? job.professions.map(p => p.name_fr).join(", ")
       : "Extra";
     return {
-      title: `${professionNames} a ${job.cities?.name ?? ""} — EXTRAPRO`,
-      description: `${professionNames} a ${job.cities?.name ?? ""}${salary ? ` — ${salary}` : ""}. Trouvez sur EXTRAPRO.`,
+      title: `${professionNames} a ${job.cities?.name ?? ""} — URJAYA`,
+      description: `${professionNames} a ${job.cities?.name ?? ""}${salary ? ` — ${salary}` : ""}. Trouvez sur URJAYA.`,
     };
   } catch {
     return {
-      title: "Annonce — EXTRAPRO",
+      title: "Annonce — URJAYA",
     };
   }
 }
@@ -59,7 +59,7 @@ function buildJobPostingJsonLd(job: Awaited<ReturnType<typeof getJobById>>) {
     employmentType: "TEMPORARY",
     hiringOrganization: {
       "@type": "Organization",
-      name: job.employers?.company_name || "EXTRAPRO",
+      name: job.employers?.company_name || "URJAYA",
       sameAs: "https://www.extra-pro.com",
     },
     jobLocation: {

@@ -7,9 +7,9 @@ import { Footer } from "@/components/layout/footer";
 // 404s, the consent flow is non-compliant with the CNIL recommandations.
 
 export const metadata: Metadata = {
-  title: "Politique de confidentialité — EXTRAPRO",
+  title: "Politique de confidentialité — URJAYA",
   description:
-    "Politique de confidentialité d'EXTRAPRO : données collectées, finalités, droits des personnes, cookies.",
+    "Politique de confidentialité d'URJAYA : données collectées, finalités, droits des personnes, cookies.",
 };
 
 export default function ConfidentialitePage() {
@@ -28,7 +28,7 @@ export default function ConfidentialitePage() {
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-text-primary">
           <section>
             <p>
-              EXTRAPRO s&apos;engage à protéger la vie privée de ses utilisateurs et à
+              URJAYA s&apos;engage à protéger la vie privée de ses utilisateurs et à
               traiter leurs données personnelles dans le respect du Règlement général sur la
               protection des données (RGPD) et de la loi Informatique et Libertés.
             </p>
@@ -108,7 +108,7 @@ export default function ConfidentialitePage() {
           <section>
             <h2 className="text-lg font-semibold">5. Destinataires</h2>
             <p className="mt-2">
-              Les données sont accessibles aux personnes habilitées d&apos;EXTRAPRO et aux
+              Les données sont accessibles aux personnes habilitées d&apos;URJAYA et aux
               sous-traitants techniques suivants :
             </p>
             <ul className="mt-2 list-disc pl-6 space-y-1">
@@ -175,12 +175,12 @@ export default function ConfidentialitePage() {
           <section>
             <h2 className="text-lg font-semibold">8. Cookies</h2>
             <p className="mt-2">
-              EXTRAPRO utilise des cookies strictement nécessaires au fonctionnement du site
+              URJAYA utilise des cookies strictement nécessaires au fonctionnement du site
               (préférence de langue, session d&apos;authentification, consentement aux cookies).
               Avec votre accord, nous utilisons également Google Analytics 4 pour mesurer
               l&apos;audience. Vous pouvez accepter ou refuser ces cookies via le bandeau qui
               s&apos;affiche lors de votre première visite, et modifier votre choix à tout
-              moment en effaçant le cookie <span className="font-mono">extrapro-consent</span>.
+              moment en effaçant le cookie <span className="font-mono">urjaya-consent</span>.
             </p>
           </section>
 

@@ -3,18 +3,18 @@
 // loaded regardless (error tracking is considered legitimate interest
 // when no PII is sent — we don't attach user identifiers).
 //
-// Storage: `extrapro-consent` cookie (1 year, same-site lax) AND
+// Storage: `urjaya-consent` cookie (1 year, same-site lax) AND
 // localStorage mirror so the banner doesn't re-show on the next visit.
 // Server can read the cookie via `getConsent()` for SSR-conditional
 // rendering. Client reads localStorage first, falls back to cookie.
 
 export type ConsentState = "granted" | "denied" | "pending";
 
-const COOKIE_NAME = "extrapro-consent";
-const STORAGE_KEY = "extrapro-consent";
+const COOKIE_NAME = "urjaya-consent";
+const STORAGE_KEY = "urjaya-consent";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
-export const CONSENT_CHANGED_EVENT = "extrapro:consent-changed";
+export const CONSENT_CHANGED_EVENT = "urjaya:consent-changed";
 
 export function readConsentClient(): ConsentState {
   if (typeof window === "undefined") return "pending";
@@ -24,7 +24,7 @@ export function readConsentClient(): ConsentState {
   } catch {
     // localStorage blocked (private mode, etc.) — fall through to cookie
   }
-  const match = document.cookie.match(/(?:^|; )extrapro-consent=([^;]+)/);
+  const match = document.cookie.match(/(?:^|; )urjaya-consent=([^;]+)/);
   if (match) {
     const v = decodeURIComponent(match[1]);
     if (v === "granted" || v === "denied") return v;

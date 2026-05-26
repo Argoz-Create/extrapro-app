@@ -15,7 +15,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("fr");
 
   useEffect(() => {
-    const saved = localStorage.getItem("extrapro-lang") as Language;
+    const saved = localStorage.getItem("urjaya-lang") as Language;
     if (saved && (saved === "fr" || saved === "en")) {
       setLanguageState(saved);
     }
@@ -23,9 +23,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem("extrapro-lang", lang);
+    localStorage.setItem("urjaya-lang", lang);
     // Also set cookie for server-side access
-    document.cookie = `extrapro-lang=${lang}; path=/; max-age=${60 * 60 * 24 * 365}`;
+    document.cookie = `urjaya-lang=${lang}; path=/; max-age=${60 * 60 * 24 * 365}`;
   }, []);
 
   const t = useCallback(
