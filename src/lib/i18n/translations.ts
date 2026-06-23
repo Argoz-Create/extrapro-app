@@ -190,8 +190,11 @@ export const translations = {
     "about.totalAds": "Annonces publiees",
 
     // Landing page
-    "landing.headline": "Trouvez votre prochain extra en restauration",
-    "landing.subheadline": "Parcourez les offres disponibles librement, sans inscription. Appelez directement l'employeur.",
+    "landing.headline": "La solution immédiate pour recruter des extras qualifiés partout en France.",
+    "landing.subheadline": "La seule application qui résout vos urgences de recrutement — tout en faisant du bien.",
+    "landing.painline": "Un imprévu de dernière minute ? Un employé absent ? Un besoin urgent de personnel ?",
+    "landing.reassure": "Trouvez du personnel qualifié en quelques minutes seulement, n'importe où en France.",
+    "landing.viewListingsCta": "Voir les annonces",
     "landing.activeListings": "{count} annonces disponibles",
     "landing.step1": "Parcourez",
     "landing.step2": "Appelez",
@@ -199,10 +202,24 @@ export const translations = {
     "landing.employerCta": "Vous recrutez ? Espace Pro",
     "landing.noLoginRequired": "Aucune inscription requise pour consulter les annonces",
     "landing.availableListings": "Annonces disponibles",
+    "landing.trustline": "100 % gratuit · Aucun abonnement · Aucun engagement · Aucune inscription",
 
-    // Mission section (homepage)
-    "mission.title": "Notre Mission",
-    "mission.text": "URJAYA est la premiere plateforme de recrutement dediee a la restauration et l'hotellerie. Notre mission : connecter employeurs et extras qualifies, simplement et gratuitement.",
+    // Audiences section (homepage)
+    "audience.title": "URJAYA, pour tout le monde",
+    "audience.estabTitle": "Établissements & organisateurs",
+    "audience.estab1": "Publiez un besoin en quelques secondes",
+    "audience.estab2": "Trouvez immédiatement des extras disponibles près de chez vous",
+    "audience.estab3": "Recrutement ultra-rapide, sans intermédiaire ni complexité",
+    "audience.extraTitle": "Extras & professionnels",
+    "audience.extra1": "Consultez gratuitement les missions autour de vous",
+    "audience.extra2": "Contactez directement les établissements",
+    "audience.extra3": "Commencez à travailler instantanément",
+    "audience.tagline": "Simple • Rapide • Efficace • Solidaire",
+
+    // Mission / solidarity section (homepage)
+    "mission.title": "Recruter, c'est aussi faire du bien",
+    "mission.text": "Chaque mission réalisée transforme une urgence professionnelle en action solidaire : une contribution est automatiquement reversée à des associations caritatives françaises après chaque mise en relation.",
+    "mission.partnersLabel": "Nos associations partenaires",
     "mission.solidarity": "Recrutement rapide",
     "mission.free": "100% gratuit",
     "mission.fast": "Simple et rapide",
@@ -464,8 +481,11 @@ export const translations = {
     "about.totalAds": "Listings posted",
 
     // Landing page
-    "landing.headline": "Find your next restaurant & hospitality gig",
-    "landing.subheadline": "Browse available listings freely, no sign-up needed. Call the employer directly.",
+    "landing.headline": "The instant solution to hire qualified extra staff anywhere in France.",
+    "landing.subheadline": "The only app that solves your hiring emergencies — while doing good.",
+    "landing.painline": "A last-minute surprise? An absent employee? An urgent need for staff?",
+    "landing.reassure": "Find qualified staff in just a few minutes, anywhere in France.",
+    "landing.viewListingsCta": "View listings",
     "landing.activeListings": "{count} listings available",
     "landing.step1": "Browse",
     "landing.step2": "Call",
@@ -473,10 +493,24 @@ export const translations = {
     "landing.employerCta": "Hiring? Pro Area",
     "landing.noLoginRequired": "No sign-up required to view listings",
     "landing.availableListings": "Available listings",
+    "landing.trustline": "100% free · No subscription · No commitment · No sign-up",
 
-    // Mission section (homepage)
-    "mission.title": "Our Mission",
-    "mission.text": "URJAYA is the first recruitment platform dedicated to the restaurant and hospitality industry. Our mission: connect employers with qualified temporary staff, simply and for free.",
+    // Audiences section (homepage)
+    "audience.title": "URJAYA, for everyone",
+    "audience.estabTitle": "Venues & organizers",
+    "audience.estab1": "Post a need in seconds",
+    "audience.estab2": "Instantly find available extras near you",
+    "audience.estab3": "Ultra-fast hiring, no middleman, no hassle",
+    "audience.extraTitle": "Extras & professionals",
+    "audience.extra1": "Browse available gigs around you for free",
+    "audience.extra2": "Contact venues directly",
+    "audience.extra3": "Start working instantly",
+    "audience.tagline": "Simple • Fast • Effective • Solidary",
+
+    // Mission / solidarity section (homepage)
+    "mission.title": "Hiring that also does good",
+    "mission.text": "Every completed mission turns a hiring emergency into a solidarity action: a contribution is automatically donated to French charities after each connection.",
+    "mission.partnersLabel": "Our partner charities",
     "mission.solidarity": "Fast hiring",
     "mission.free": "100% free",
     "mission.fast": "Simple and fast",

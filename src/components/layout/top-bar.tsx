@@ -15,7 +15,7 @@ export function TopBar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center pulse-coral">
-            <span className="text-white font-bold text-sm">E</span>
+            <span className="text-white font-bold text-sm">U</span>
           </div>
           <span className="font-display font-extrabold text-text-primary tracking-tight">
             URJAYA

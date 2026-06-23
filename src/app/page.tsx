@@ -58,7 +58,7 @@ export default async function Home({ searchParams }: HomeProps) {
       <HeroSection jobCount={totalCount} />
       <OurMission />
 
-      <main className="mx-auto max-w-lg px-4 py-4">
+      <main id="annonces" className="mx-auto max-w-lg scroll-mt-16 px-4 py-4">
         {/* Filters */}
         <Suspense fallback={null}>
           <JobFilters
