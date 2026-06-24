@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/footer";
 // 404s, the consent flow is non-compliant with the CNIL recommandations.
 
 export const metadata: Metadata = {
-  title: "Politique de confidentialité — URJAYA",
+  title: "Politique de confidentialité",
   description:
     "Politique de confidentialité d'URJAYA : données collectées, finalités, droits des personnes, cookies.",
 };

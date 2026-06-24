@@ -8,7 +8,7 @@ import { Footer } from "@/components/layout/footer";
 // with the publishing entity's real legal details before launch.
 
 export const metadata: Metadata = {
-  title: "Mentions légales — URJAYA",
+  title: "Mentions légales",
   description: "Mentions légales du site URJAYA conformément à la LCEN.",
 };
 

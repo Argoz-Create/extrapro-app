@@ -8,7 +8,7 @@ import { EditAdForm } from "@/components/dashboard/edit-ad-form";
 import { EditAdHeader } from "@/components/dashboard/edit-ad-header";
 
 export const metadata: Metadata = {
-  title: "Modifier l'annonce — URJAYA",
+  title: "Modifier l'annonce",
   description: "Modifiez votre annonce d'extra.",
 };
 

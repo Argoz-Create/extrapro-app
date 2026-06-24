@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/footer";
 // replaced with the publishing entity's real legal details.
 
 export const metadata: Metadata = {
-  title: "Conditions générales d'utilisation — URJAYA",
+  title: "Conditions générales d'utilisation",
   description:
     "Conditions générales d'utilisation de la plateforme URJAYA de recrutement d'extras pour la restauration et l'hôtellerie.",
 };

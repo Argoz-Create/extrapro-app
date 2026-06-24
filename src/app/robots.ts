@@ -11,8 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/dashboard", "/api", "/auth", "/designideas"],
       },
     ],
-    // Stays on extra-pro.com until urjaya.fr DNS + Vercel cutover.
-    sitemap: "https://www.extra-pro.com/sitemap.xml",
-    host: "https://www.extra-pro.com",
+    sitemap: "https://www.urjaya.fr/sitemap.xml",
+    host: "https://www.urjaya.fr",
   };
 }

@@ -3,7 +3,7 @@ import { AuthHeading } from "@/components/auth/auth-heading";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Inscription — URJAYA",
+  title: "Inscription",
   description: "Creez votre compte professionnel URJAYA.",
 };
 

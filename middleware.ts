@@ -5,6 +5,20 @@ import type { NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // --- Domain consolidation (SEO) ---
+  // The site was renamed Extra-Pro -> URJAYA. Both domains point at this
+  // same deployment, which created duplicate content and let Google index
+  // the old extra-pro.com. Permanently redirect any extra-pro.* host to the
+  // canonical www.urjaya.fr, preserving the path + query.
+  const host = request.headers.get("host") ?? "";
+  if (host.includes("extra-pro")) {
+    const url = request.nextUrl.clone();
+    url.protocol = "https:";
+    url.host = "www.urjaya.fr";
+    url.port = "";
+    return NextResponse.redirect(url, 308);
+  }
+
   // --- Supabase auth ---
   let response = NextResponse.next({ request });
 

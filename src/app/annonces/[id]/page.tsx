@@ -20,12 +20,12 @@ export async function generateMetadata({ params }: JobDetailProps): Promise<Meta
       ? job.professions.map(p => p.name_fr).join(", ")
       : "Extra";
     return {
-      title: `${professionNames} a ${job.cities?.name ?? ""} — URJAYA`,
+      title: `${professionNames} a ${job.cities?.name ?? ""}`,
       description: `${professionNames} a ${job.cities?.name ?? ""}${salary ? ` — ${salary}` : ""}. Trouvez sur URJAYA.`,
     };
   } catch {
     return {
-      title: "Annonce — URJAYA",
+      title: "Annonce",
     };
   }
 }

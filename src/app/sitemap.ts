@@ -1,10 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getActiveJobsForSitemap } from "@/lib/queries/jobs";
 
-// Canonical URL stays on extra-pro.com until urjaya.fr DNS + Vercel
-// domain swap is complete. Flip this and robots.ts in one PR after
-// urjaya.fr resolves.
-const BASE_URL = "https://www.extra-pro.com";
+// Canonical domain. www.urjaya.fr is live; extra-pro.com 301-redirects
+// here (see middleware.ts) so Google consolidates on this host.
+const BASE_URL = "https://www.urjaya.fr";
 
 // Regenerate at most once per hour. Aligns with the change frequency
 // we declare for the homepage and avoids spamming the build with every

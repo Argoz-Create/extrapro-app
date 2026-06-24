@@ -6,7 +6,7 @@ import { getPlatformStats } from "@/lib/queries/stats";
 import type { PlatformStats } from "@/lib/types/database";
 
 export const metadata: Metadata = {
-  title: "A propos — URJAYA",
+  title: "À propos",
   description:
     "URJAYA, la solution immédiate pour recruter des extras qualifiés partout en France.",
 };

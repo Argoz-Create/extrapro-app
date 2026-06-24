@@ -7,7 +7,7 @@ import { CreateAdForm } from "@/components/dashboard/create-ad-form";
 import { NewAdHeader } from "@/components/dashboard/new-ad-header";
 
 export const metadata: Metadata = {
-  title: "Nouvelle annonce — URJAYA",
+  title: "Nouvelle annonce",
   description: "Publiez une annonce et trouvez des extras qualifiés en quelques minutes.",
 };
 

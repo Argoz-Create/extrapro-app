@@ -21,7 +21,7 @@ import type { JobAdWithRelations, Profession, City, Region, Department } from "@
 // associations band) kept for reference. Not the live production design —
 // the main route at `/` is the original green/simple design.
 export const metadata: Metadata = {
-  title: "Design preview — URJAYA",
+  title: "Design preview",
   description: "Alternative homepage design preview.",
   robots: { index: false, follow: false },
 };
