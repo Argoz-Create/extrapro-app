@@ -8,7 +8,7 @@ import { NewAdHeader } from "@/components/dashboard/new-ad-header";
 
 export const metadata: Metadata = {
   title: "Nouvelle annonce — URJAYA",
-  description: "Publiez une nouvelle annonce d'extra en restauration.",
+  description: "Publiez une annonce et trouvez des extras qualifiés en quelques minutes.",
 };
 
 export default async function NewAdPage() {

@@ -25,13 +25,13 @@ const manrope = Manrope({
 // and referenced via CSS variable in the @theme block
 
 export const metadata: Metadata = {
-  title: "URJAYA — Recrutement en restauration",
+  title: "URJAYA — Recruter des extras qualifiés, partout en France",
   description:
-    "Trouvez des extras en restauration et hotellerie. Publiez et consultez des annonces gratuitement.",
+    "La solution immédiate pour recruter des extras qualifiés partout en France. Publiez et consultez des annonces gratuitement — chaque mise en relation soutient des associations caritatives.",
   openGraph: {
-    title: "URJAYA — Recrutement en restauration",
+    title: "URJAYA — Recruter des extras qualifiés, partout en France",
     description:
-      "Trouvez des extras en restauration et hotellerie. Publiez et consultez des annonces gratuitement.",
+      "La solution immédiate pour recruter des extras qualifiés partout en France. Publiez et consultez des annonces gratuitement — chaque mise en relation soutient des associations caritatives.",
     locale: "fr_FR",
     type: "website",
   },

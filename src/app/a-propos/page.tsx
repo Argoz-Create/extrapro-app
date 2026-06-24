@@ -8,7 +8,7 @@ import type { PlatformStats } from "@/lib/types/database";
 export const metadata: Metadata = {
   title: "A propos — URJAYA",
   description:
-    "URJAYA est la plateforme de recrutement en restauration et hotellerie.",
+    "URJAYA, la solution immédiate pour recruter des extras qualifiés partout en France.",
 };
 
 export default async function AboutPage() {

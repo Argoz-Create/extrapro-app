@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import { useTranslation } from "@/lib/i18n/context";
@@ -14,9 +15,14 @@ export function TopBar() {
       <div className="h-14 max-w-5xl mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center pulse-coral">
-            <span className="text-white font-bold text-sm">U</span>
-          </div>
+          <Image
+            src="/urjaya-mark.png"
+            alt="URJAYA"
+            width={32}
+            height={32}
+            priority
+            className="h-8 w-8"
+          />
           <span className="font-display font-extrabold text-text-primary tracking-tight">
             URJAYA
           </span>
